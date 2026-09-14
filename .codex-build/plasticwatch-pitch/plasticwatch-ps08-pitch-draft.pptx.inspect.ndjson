@@ -1,0 +1,252 @@
+{"kind":"deck","id":"pr/7pc3m7","name":"Deck"}
+{"kind":"layout","layoutId":"186711cd-77f6-41bd-a82b-86a0a2b29124","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"4362afdf-8e19-48c6-8882-a328b33adfa5","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/fii5io","slide":1,"title":"PS-08 · Climate, Water & Circularity","textShapes":11}
+{"kind":"shape","id":"sh/7218bupk","slide":1,"bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/snapkz65","slide":1,"bbox":[0,0,1280,11]}
+{"kind":"textbox","id":"sh/tojqdk7a","slide":1,"text":"PS-08 · Climate, Water & Circularity","textPreview":"PS-08 · Climate, Water & Circularity","textChars":36,"textLines":1,"bbox":[80,78,600,24]}
+{"kind":"textbox","id":"sh/ups7mpov","slide":1,"text":"PlasticWatch","textPreview":"PlasticWatch","textChars":12,"textLines":1,"bbox":[80,136,840,78]}
+{"kind":"textbox","id":"sh/fq18fu5g","slide":1,"text":"Plastic Waste Intelligence Command Center","textPreview":"Plastic Waste Intelligence Command Center","textChars":41,"textLines":1,"bbox":[80,216,860,42]}
+{"kind":"textbox","id":"sh/grupoz61","slide":1,"text":"An explainable AI-GIS workflow that turns image reports into verified cleanup priorities.","textPreview":"An explainable AI-GIS workflow that turns image reports into verified cleanup priorities.","textChars":89,"textLines":1,"bbox":[80,292,720,52]}
+{"kind":"shape","id":"sh/hs3qh4nm","slide":1,"bbox":[80,388,202,30]}
+{"kind":"textbox","id":"sh/at87a5or","slide":1,"text":"DEMO / SIMULATION","textPreview":"DEMO / SIMULATION","textChars":17,"textLines":1,"bbox":[80,394,202,18]}
+{"kind":"textbox","id":"sh/buho3apc","slide":1,"text":"Synthetic reports are clearly labelled. Human teams verify every hotspot before a cleanup decision.","textPreview":"Synthetic reports are clearly labelled. Human teams verify every hotspot before a cleanup decision.","textChars":99,"textLines":1,"bbox":[80,436,700,38]}
+{"kind":"shape","id":"sh/nu9cf6ps","slide":1,"bbox":[870,126,292,390]}
+{"kind":"textbox","id":"sh/mt0v6187","slide":1,"text":"♻","textPreview":"♻","textChars":1,"textLines":1,"bbox":[930,165,170,125]}
+{"kind":"textbox","id":"sh/9wruhg7y","slide":1,"text":"REPORT\nAI EVIDENCE\nHOTSPOT\nVERIFY\nCLEANUP","textPreview":"REPORT | AI EVIDENCE | HOTSPOT | VERIFY | CLEANUP","textChars":41,"textLines":5,"bbox":[910,332,210,135]}
+{"kind":"textbox","id":"sh/8vid8bqd","slide":1,"text":"College Hackathon Proposal","textPreview":"College Hackathon Proposal","textChars":26,"textLines":1,"bbox":[80,620,400,28]}
+{"kind":"textbox","id":"sh/zqpcb6pw","slide":1,"text":"PlasticWatch · PS-08","textPreview":"PlasticWatch · PS-08","textChars":20,"textLines":1,"bbox":[72,684,300,18]}
+{"kind":"textbox","id":"sh/ypgv218b","slide":1,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[1160,684,48,18]}
+{"kind":"notes","id":"nt/fii5io","slide":1,"text":"PlasticWatch pitch deck for PS-08. All demo metrics shown later use the repository's synthetic replay data."}
+{"kind":"slide","id":"sl/8xstix","slide":2,"title":"THE CHALLENGE","textShapes":18}
+{"kind":"textbox","id":"sh/k3q9obqh","slide":2,"text":"THE CHALLENGE","textPreview":"THE CHALLENGE","textChars":13,"textLines":1,"bbox":[72,44,1136,24]}
+{"kind":"textbox","id":"sh/z2h8vqpw","slide":2,"text":"Plastic waste reports rarely become actionable work orders","textPreview":"Plastic waste reports rarely become actionable work orders","textChars":58,"textLines":1,"bbox":[72,76,1136,54]}
+{"kind":"textbox","id":"sh/yh8rml8b","slide":2,"text":"PS-08 asks for detection, geospatial clustering, prioritisation, verification, and cleanup planning.","textPreview":"PS-08 asks for detection, geospatial clustering, prioritisation, verification, and cleanup planning.","textChars":100,"textLines":1,"bbox":[72,132,1100,28]}
+{"kind":"shape","id":"sh/98ja107y","slide":2,"bbox":[72,214,525,136]}
+{"kind":"textbox","id":"sh/87a9svqd","slide":2,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[96,238,48,28]}
+{"kind":"textbox","id":"sh/761szqps","slide":2,"text":"Scattered reports","textPreview":"Scattered reports","textChars":17,"textLines":1,"bbox":[162,236,390,27]}
+{"kind":"textbox","id":"sh/m5srql87","slide":2,"text":"Images and complaints sit in separate channels.","textPreview":"Images and complaints sit in separate channels.","textChars":47,"textLines":1,"bbox":[162,276,395,44]}
+{"kind":"shape","id":"sh/hc3a507u","slide":2,"bbox":[637,214,525,136]}
+{"kind":"textbox","id":"sh/wba9wv6p","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[661,238,48,28]}
+{"kind":"textbox","id":"sh/upofqtoj","slide":2,"text":"Weak evidence","textPreview":"Weak evidence","textChars":13,"textLines":1,"bbox":[727,236,390,27]}
+{"kind":"textbox","id":"sh/fqxgzy54","slide":2,"text":"A single image can show plastic, algae, glare, or mixed waste.","textPreview":"A single image can show plastic, algae, glare, or mixed waste.","textChars":62,"textLines":1,"bbox":[727,276,395,44]}
+{"kind":"shape","id":"sh/gr6xs36p","slide":2,"bbox":[72,394,525,136]}
+{"kind":"textbox","id":"sh/hsfylona","slide":2,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[96,418,48,28]}
+{"kind":"textbox","id":"sh/2tofutov","slide":2,"text":"Water exposure","textPreview":"Water exposure","textChars":14,"textLines":1,"bbox":[162,416,390,27]}
+{"kind":"textbox","id":"sh/3uhgny50","slide":2,"text":"Sites near drains can carry waste into water bodies.","textPreview":"Sites near drains can carry waste into water bodies.","textChars":52,"textLines":1,"bbox":[162,456,395,44]}
+{"kind":"shape","id":"sh/4vqxw36l","slide":2,"bbox":[637,394,525,136]}
+{"kind":"textbox","id":"sh/pwzyp8n6","slide":2,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[661,418,48,28]}
+{"kind":"textbox","id":"sh/ix4fi9ob","slide":2,"text":"Reactive response","textPreview":"Reactive response","textChars":17,"textLines":1,"bbox":[727,416,390,27]}
+{"kind":"textbox","id":"sh/jydwre5w","slide":2,"text":"Teams lack a ranked, auditable verification queue.","textPreview":"Teams lack a ranked, auditable verification queue.","textChars":50,"textLines":1,"bbox":[727,456,395,44]}
+{"kind":"textbox","id":"sh/n29cjalo","slide":2,"text":"PlasticWatch creates one evidence trail from report to verified field action.","textPreview":"PlasticWatch creates one evidence trail from report to verified field action.","textChars":77,"textLines":1,"bbox":[72,602,1050,30]}
+{"kind":"textbox","id":"sh/m10vq543","slide":2,"text":"PlasticWatch · PS-08","textPreview":"PlasticWatch · PS-08","textChars":20,"textLines":1,"bbox":[72,684,300,18]}
+{"kind":"textbox","id":"sh/94bul03u","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1160,684,48,18]}
+{"kind":"notes","id":"nt/8xstix","slide":2,"text":"Challenge source: user-provided PS-08 brief. No external statistics are asserted on this slide."}
+{"kind":"slide","id":"sl/y9uyv8","slide":3,"title":"WORKING CORE","textShapes":26}
+{"kind":"textbox","id":"sh/cn6xcfqh","slide":3,"text":"WORKING CORE","textPreview":"WORKING CORE","textChars":12,"textLines":1,"bbox":[72,44,1136,24]}
+{"kind":"textbox","id":"sh/rmdg3a9c","slide":3,"text":"Evidence-to-action workflow","textPreview":"Evidence-to-action workflow","textChars":27,"textLines":1,"bbox":[72,76,1136,54]}
+{"kind":"textbox","id":"sh/ql4fa5sr","slide":3,"text":"The prototype keeps AI advisory. Ward teams make verification and cleanup decisions.","textPreview":"The prototype keeps AI advisory. Ward teams make verification and cleanup decisions.","textChars":84,"textLines":1,"bbox":[72,132,1100,28]}
+{"kind":"shape","id":"sh/1cfy9kre","slide":3,"bbox":[55,270,128,78]}
+{"kind":"textbox","id":"sh/0b6xgfqt","slide":3,"text":"📷","textPreview":"📷","textChars":2,"textLines":1,"bbox":[55,282,128,22]}
+{"kind":"textbox","id":"sh/zqxg7a98","slide":3,"text":"Report","textPreview":"Report","textChars":6,"textLines":1,"bbox":[55,312,128,23]}
+{"kind":"textbox","id":"sh/epofep8n","slide":3,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[187,293,34,34]}
+{"kind":"shape","id":"sh/9gzyd4ra","slide":3,"bbox":[225,270,128,78]}
+{"kind":"textbox","id":"sh/ofqxkzqp","slide":3,"text":"🤖","textPreview":"🤖","textChars":2,"textLines":1,"bbox":[225,282,128,22]}
+{"kind":"textbox","id":"sh/654vq10f","slide":3,"text":"AI evidence","textPreview":"AI evidence","textChars":11,"textLines":1,"bbox":[225,312,128,23]}
+{"kind":"textbox","id":"sh/76dcj6hk","slide":3,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[357,293,34,34]}
+{"kind":"shape","id":"sh/s7mdcbi5","slide":3,"bbox":[395,270,128,78]}
+{"kind":"textbox","id":"sh/t8vulgzq","slide":3,"text":"🔄","textPreview":"🔄","textChars":2,"textLines":1,"bbox":[395,282,128,22]}
+{"kind":"textbox","id":"sh/u94vel0b","slide":3,"text":"Merge duplicates","textPreview":"Merge duplicates","textChars":16,"textLines":1,"bbox":[395,312,128,23]}
+{"kind":"textbox","id":"sh/fadcnqhw","slide":3,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[527,293,34,34]}
+{"kind":"shape","id":"sh/gbmdgvih","slide":3,"bbox":[565,270,128,78]}
+{"kind":"textbox","id":"sh/hcfupgz2","slide":3,"text":"🔥","textPreview":"🔥","textChars":2,"textLines":1,"bbox":[565,282,128,22]}
+{"kind":"textbox","id":"sh/adkbih07","slide":3,"text":"Hotspot","textPreview":"Hotspot","textChars":7,"textLines":1,"bbox":[565,312,128,23]}
+{"kind":"textbox","id":"sh/betcbm1c","slide":3,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[697,293,34,34]}
+{"kind":"shape","id":"sh/zipsjix4","slide":3,"bbox":[735,270,128,78]}
+{"kind":"textbox","id":"sh/ehgradgz","slide":3,"text":"💧","textPreview":"💧","textChars":2,"textLines":1,"bbox":[735,282,128,22]}
+{"kind":"textbox","id":"sh/1k7alsfa","slide":3,"text":"Drain risk","textPreview":"Drain risk","textChars":10,"textLines":1,"bbox":[735,312,128,23]}
+{"kind":"textbox","id":"sh/0jy9cnyp","slide":3,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[867,293,34,34]}
+{"kind":"shape","id":"sh/repsfih8","slide":3,"bbox":[905,270,128,78]}
+{"kind":"textbox","id":"sh/qdwr6dgn","slide":3,"text":"👷","textPreview":"👷","textChars":2,"textLines":1,"bbox":[905,282,128,22]}
+{"kind":"textbox","id":"sh/dg7ah8ze","slide":3,"text":"Verify","textPreview":"Verify","textChars":6,"textLines":1,"bbox":[905,312,128,23]}
+{"kind":"textbox","id":"sh/cfy98nyt","slide":3,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[1037,293,34,34]}
+{"kind":"shape","id":"sh/ba9sr2xc","slide":3,"bbox":[1075,270,128,78]}
+{"kind":"textbox","id":"sh/a90rixg7","slide":3,"text":"🧹","textPreview":"🧹","textChars":2,"textLines":1,"bbox":[1075,282,128,22]}
+{"kind":"textbox","id":"sh/svupcze9","slide":3,"text":"Cleanup","textPreview":"Cleanup","textChars":7,"textLines":1,"bbox":[1075,312,128,23]}
+{"kind":"textbox","id":"sh/tw36l4fu","slide":3,"text":"Before / after evidence closes the loop and becomes training feedback.","textPreview":"Before / after evidence closes the loop and becomes training feedback.","textChars":70,"textLines":1,"bbox":[188,432,900,30]}
+{"kind":"textbox","id":"sh/6ts7apwj","slide":3,"text":"PlasticWatch · PS-08","textPreview":"PlasticWatch · PS-08","textChars":20,"textLines":1,"bbox":[72,684,300,18]}
+{"kind":"textbox","id":"sh/7u1ojux4","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1160,684,48,18]}
+{"kind":"notes","id":"nt/y9uyv8","slide":3,"text":"Workflow based on the PS-08 brief and the repository's PlasticWatch pipeline."}
+{"kind":"slide","id":"sl/mh2amw","slide":4,"title":"DEMO DASHBOARD","textShapes":23}
+{"kind":"textbox","id":"sh/u9ov2p03","slide":4,"text":"DEMO DASHBOARD","textPreview":"DEMO DASHBOARD","textChars":14,"textLines":1,"bbox":[72,44,1136,24]}
+{"kind":"textbox","id":"sh/hcfexkze","slide":4,"text":"A Pune municipal pilot turns six reports into three hotspots","textPreview":"A Pune municipal pilot turns six reports into three hotspots","textChars":60,"textLines":1,"bbox":[72,76,1136,54]}
+{"kind":"textbox","id":"sh/gb6x4fit","slide":4,"text":"All values below come from the current transparent replay dataset.","textPreview":"All values below come from the current transparent replay dataset.","textChars":66,"textLines":1,"bbox":[72,132,1100,28]}
+{"kind":"shape","id":"sh/7mdwrahc","slide":4,"bbox":[72,205,248,112]}
+{"kind":"textbox","id":"sh/6l4vy50r","slide":4,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[94,222,90,48]}
+{"kind":"textbox","id":"sh/t8fetkzi","slide":4,"text":"Merged hotspots","textPreview":"Merged hotspots","textChars":15,"textLines":1,"bbox":[94,272,200,22]}
+{"kind":"shape","id":"sh/s76d0fix","slide":4,"bbox":[357,205,248,112]}
+{"kind":"textbox","id":"sh/jidwnqhg","slide":4,"text":"6","textPreview":"6","textChars":1,"textLines":1,"bbox":[379,222,90,48]}
+{"kind":"textbox","id":"sh/ih4vu50v","slide":4,"text":"Reports","textPreview":"Reports","textChars":7,"textLines":1,"bbox":[379,272,200,22]}
+{"kind":"shape","id":"sh/ofq50n6h","slide":4,"bbox":[642,205,248,112]}
+{"kind":"textbox","id":"sh/9gz6ts72","slide":4,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[664,222,90,48]}
+{"kind":"textbox","id":"sh/md8nyxob","slide":4,"text":"Near-drain sites","textPreview":"Near-drain sites","textChars":16,"textLines":1,"bbox":[664,272,200,22]}
+{"kind":"shape","id":"sh/nehoripw","slide":4,"bbox":[927,205,248,112]}
+{"kind":"textbox","id":"sh/0rq5wn6l","slide":4,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[949,222,90,48]}
+{"kind":"textbox","id":"sh/1sz6ps76","slide":4,"text":"Verified reports","textPreview":"Verified reports","textChars":16,"textLines":1,"bbox":[949,272,200,22]}
+{"kind":"shape","id":"sh/eponudof","slide":4,"bbox":[72,365,760,230]}
+{"kind":"textbox","id":"sh/zqhonip0","slide":4,"text":"HOTSPOT MAP","textPreview":"HOTSPOT MAP","textChars":11,"textLines":1,"bbox":[96,390,200,20]}
+{"kind":"textbox","id":"sh/knap876p","slide":4,"text":"●","textPreview":"●","textChars":1,"textLines":1,"bbox":[240,465,30,26]}
+{"kind":"textbox","id":"sh/l8j61c7a","slide":4,"text":"PH-01\nCRITICAL  99.1/100","textPreview":"PH-01 | CRITICAL  99.1/100","textChars":24,"textLines":2,"bbox":[270,461,130,42]}
+{"kind":"textbox","id":"sh/t4z6lcze","slide":4,"text":"●","textPreview":"●","textChars":1,"textLines":1,"bbox":[440,515,30,26]}
+{"kind":"textbox","id":"sh/s365c7yt","slide":4,"text":"PH-02\nCRITICAL  91.8/100","textPreview":"PH-02 | CRITICAL  91.8/100","textChars":24,"textLines":2,"bbox":[470,511,130,42]}
+{"kind":"textbox","id":"sh/72xoj2h8","slide":4,"text":"●","textPreview":"●","textChars":1,"textLines":1,"bbox":[650,445,30,26]}
+{"kind":"textbox","id":"sh/61onaxgn","slide":4,"text":"PH-03\nVERIFY  46.5/100","textPreview":"PH-03 | VERIFY  46.5/100","textChars":22,"textLines":2,"bbox":[680,441,130,42]}
+{"kind":"shape","id":"sh/50f6hszi","slide":4,"bbox":[870,365,330,230]}
+{"kind":"textbox","id":"sh/kz6587yx","slide":4,"text":"PH-01","textPreview":"PH-01","textChars":5,"textLines":1,"bbox":[895,392,140,26]}
+{"kind":"shape","id":"sh/jyxof2hc","slide":4,"bbox":[1035,390,135,30]}
+{"kind":"textbox","id":"sh/ixon6xgr","slide":4,"text":"CRITICAL","textPreview":"CRITICAL","textChars":8,"textLines":1,"bbox":[1035,396,135,18]}
+{"kind":"textbox","id":"sh/xcf6dsz6","slide":4,"text":"85% AI confidence\n3 merged reports\n35 m to nearest drain\n1 verified report","textPreview":"85% AI confidence | 3 merged reports | 35 m to nearest drain | 1 verified report","textChars":74,"textLines":4,"bbox":[895,443,260,100]}
+{"kind":"textbox","id":"sh/wbm54nyl","slide":4,"text":"PlasticWatch · PS-08","textPreview":"PlasticWatch · PS-08","textChars":20,"textLines":1,"bbox":[72,684,300,18]}
+{"kind":"textbox","id":"sh/m50byps7","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1160,684,48,18]}
+{"kind":"notes","id":"nt/mh2amw","slide":4,"text":"Metrics calculated from backend/plasticwatch_pipeline.py. They are synthetic replay outputs, not municipal records."}
+{"kind":"slide","id":"sl/vt62ax","slide":5,"title":"EXPLAINABLE PRIORITISATION","textShapes":17}
+{"kind":"textbox","id":"sh/jat8ra5g","slide":5,"text":"EXPLAINABLE PRIORITISATION","textPreview":"EXPLAINABLE PRIORITISATION","textChars":26,"textLines":1,"bbox":[72,44,1136,24]}
+{"kind":"textbox","id":"sh/kv29kf61","slide":5,"text":"PH-01 ranks first because the evidence and water exposure are both strong","textPreview":"PH-01 ranks first because the evidence and water exposure are both strong","textChars":73,"textLines":1,"bbox":[72,76,1136,54]}
+{"kind":"textbox","id":"sh/5wbqtkn6","slide":5,"text":"Priority uses the existing scoring components rather than a black-box recommendation.","textPreview":"Priority uses the existing scoring components rather than a black-box recommendation.","textChars":85,"textLines":1,"bbox":[72,132,1100,28]}
+{"kind":"textbox","id":"sh/a50re5oj","slide":5,"text":"AI confidence","textPreview":"AI confidence","textChars":13,"textLines":1,"bbox":[120,225,220,22]}
+{"kind":"shape","id":"sh/v698nap4","slide":5,"bbox":[360,225,570,24]}
+{"kind":"shape","id":"sh/w7i9gf6p","slide":5,"bbox":[360,225,484.5,24]}
+{"kind":"textbox","id":"sh/x8bqpk7a","slide":5,"text":"85%","textPreview":"85%","textChars":3,"textLines":1,"bbox":[955,225,70,22]}
+{"kind":"textbox","id":"sh/m107a5on","slide":5,"text":"Severity","textPreview":"Severity","textChars":8,"textLines":1,"bbox":[120,303,220,22]}
+{"kind":"shape","id":"sh/n298jqp8","slide":5,"bbox":[360,303,570,24]}
+{"kind":"shape","id":"sh/r6tojqp4","slide":5,"bbox":[360,303,456,24]}
+{"kind":"textbox","id":"sh/q5kna58j","slide":5,"text":"80%","textPreview":"80%","textChars":3,"textLines":1,"bbox":[955,303,70,22]}
+{"kind":"textbox","id":"sh/d8v6l07a","slide":5,"text":"Recurrence","textPreview":"Recurrence","textChars":10,"textLines":1,"bbox":[120,381,220,22]}
+{"kind":"shape","id":"sh/c7m5cvqp","slide":5,"bbox":[360,381,570,24]}
+{"kind":"shape","id":"sh/zadonap0","slide":5,"bbox":[360,381,427.5,24]}
+{"kind":"textbox","id":"sh/e94ne58f","slide":5,"text":"75%","textPreview":"75%","textChars":3,"textLines":1,"bbox":[955,381,70,22]}
+{"kind":"textbox","id":"sh/1cv6pk76","slide":5,"text":"Drain proximity","textPreview":"Drain proximity","textChars":15,"textLines":1,"bbox":[120,459,220,22]}
+{"kind":"shape","id":"sh/0bm5gfql","slide":5,"bbox":[360,459,570,24]}
+{"kind":"shape","id":"sh/fe94b6pw","slide":5,"bbox":[360,459,570,24]}
+{"kind":"textbox","id":"sh/ud0n2l8b","slide":5,"text":"100%","textPreview":"100%","textChars":4,"textLines":1,"bbox":[955,459,70,22]}
+{"kind":"shape","id":"sh/it8ratsz","slide":5,"bbox":[1035,220,155,246]}
+{"kind":"textbox","id":"sh/juh8je9k","slide":5,"text":"PH-01","textPreview":"PH-01","textChars":5,"textLines":1,"bbox":[1055,245,115,26]}
+{"kind":"textbox","id":"sh/kvq9cja5","slide":5,"text":"99.1","textPreview":"99.1","textChars":4,"textLines":1,"bbox":[1050,294,125,52]}
+{"kind":"textbox","id":"sh/5wzqlora","slide":5,"text":"priority\n/ 100","textPreview":"priority | / 100","textChars":14,"textLines":2,"bbox":[1055,348,115,48]}
+{"kind":"textbox","id":"sh/a5o769sn","slide":5,"text":"Why this score? Expandable details in the dashboard show report evidence and the formula.","textPreview":"Why this score? Expandable details in the dashboard show report evidence and the formula.","textChars":89,"textLines":1,"bbox":[120,575,880,28]}
+{"kind":"textbox","id":"sh/v6h8fe98","slide":5,"text":"PlasticWatch · PS-08","textPreview":"PlasticWatch · PS-08","textChars":20,"textLines":1,"bbox":[72,684,300,18]}
+{"kind":"textbox","id":"sh/wrqp8jat","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1160,684,48,18]}
+{"kind":"notes","id":"nt/vt62ax","slide":5,"text":"Formula in code: confidence, severity, recurrence, and drain exposure. Percent display is illustrative scaling of the existing inputs for presentation clarity."}
+{"kind":"slide","id":"sl/9q8bd9","slide":6,"title":"AI READINESS","textShapes":24}
+{"kind":"textbox","id":"sh/b6x8nq90","slide":6,"text":"AI READINESS","textPreview":"AI READINESS","textChars":12,"textLines":1,"bbox":[72,44,1136,24]}
+{"kind":"textbox","id":"sh/w76pwvql","slide":6,"text":"TACO provides labelled waste images for the next detector stage","textPreview":"TACO provides labelled waste images for the next detector stage","textChars":63,"textLines":1,"bbox":[72,76,1136,54]}
+{"kind":"textbox","id":"sh/x8fqp0r6","slide":6,"text":"TACO is training data, not a trained detector.","textPreview":"TACO is training data, not a trained detector.","textChars":46,"textLines":1,"bbox":[72,132,1100,28]}
+{"kind":"shape","id":"sh/y9o7y58r","slide":6,"bbox":[72,205,248,115]}
+{"kind":"textbox","id":"sh/jax8ra9c","slide":6,"text":"1,500","textPreview":"1,500","textChars":5,"textLines":1,"bbox":[94,225,205,38]}
+{"kind":"textbox","id":"sh/kb690fqx","slide":6,"text":"images","textPreview":"images","textChars":6,"textLines":1,"bbox":[94,270,205,22]}
+{"kind":"shape","id":"sh/lczqtkr2","slide":6,"bbox":[357,205,248,115]}
+{"kind":"textbox","id":"sh/ed47m1s7","slide":6,"text":"4,784","textPreview":"4,784","textChars":5,"textLines":1,"bbox":[379,225,205,38]}
+{"kind":"textbox","id":"sh/zed8f69s","slide":6,"text":"labelled objects","textPreview":"labelled objects","textChars":16,"textLines":1,"bbox":[379,270,205,22]}
+{"kind":"shape","id":"sh/jahcn21s","slide":6,"bbox":[642,205,248,115]}
+{"kind":"textbox","id":"sh/i98beh07","slide":6,"text":"60","textPreview":"60","textChars":2,"textLines":1,"bbox":[664,225,205,38]}
+{"kind":"textbox","id":"sh/5czupcjy","slide":6,"text":"categories","textPreview":"categories","textChars":10,"textLines":1,"bbox":[664,270,205,22]}
+{"kind":"shape","id":"sh/kbqtg7id","slide":6,"bbox":[927,205,248,115]}
+{"kind":"textbox","id":"sh/vmxcj21g","slide":6,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[949,225,205,38]}
+{"kind":"textbox","id":"sh/alobax0b","slide":6,"text":"project classes","textPreview":"project classes","textChars":15,"textLines":1,"bbox":[949,270,205,22]}
+{"kind":"textbox","id":"sh/x8zulcjm","slide":6,"text":"Training path","textPreview":"Training path","textChars":13,"textLines":1,"bbox":[72,382,300,32]}
+{"kind":"shape","id":"sh/wnqtc7i1","slide":6,"bbox":[72,445,180,62]}
+{"kind":"textbox","id":"sh/nixsfi1k","slide":6,"text":"TACO labels","textPreview":"TACO labels","textChars":11,"textLines":1,"bbox":[84,466,156,22]}
+{"kind":"textbox","id":"sh/mhobmx0z","slide":6,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[257,458,30,30]}
+{"kind":"shape","id":"sh/qd4vyd4r","slide":6,"bbox":[297,445,180,62]}
+{"kind":"textbox","id":"sh/bedcrilc","slide":6,"text":"4-class map","textPreview":"4-class map","textChars":11,"textLines":1,"bbox":[309,466,156,22]}
+{"kind":"textbox","id":"sh/cf6d0nmx","slide":6,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[482,458,30,30]}
+{"kind":"shape","id":"sh/dgfuts3i","slide":6,"bbox":[522,445,180,62]}
+{"kind":"textbox","id":"sh/yhov2x43","slide":6,"text":"Fine-tune detector","textPreview":"Fine-tune detector","textChars":18,"textLines":1,"bbox":[534,466,156,22]}
+{"kind":"textbox","id":"sh/zixcv2lo","slide":6,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[707,458,30,30]}
+{"kind":"shape","id":"sh/0j6d47m9","slide":6,"bbox":[747,445,180,62]}
+{"kind":"textbox","id":"sh/lkfuxc3e","slide":6,"text":"Image upload","textPreview":"Image upload","textChars":12,"textLines":1,"bbox":[759,466,156,22]}
+{"kind":"textbox","id":"sh/mlov6x4z","slide":6,"text":"›","textPreview":"›","textChars":1,"textLines":1,"bbox":[932,458,30,30]}
+{"kind":"shape","id":"sh/n6xcz2lk","slide":6,"bbox":[972,445,180,62]}
+{"kind":"textbox","id":"sh/x0jypwnm","slide":6,"text":"Plastic confidence","textPreview":"Plastic confidence","textChars":18,"textLines":1,"bbox":[984,466,156,22]}
+{"kind":"textbox","id":"sh/wfaxwb6h","slide":6,"text":"Classes: plastic bottle · bag / wrapper · mixed plastic · uncertain / non-plastic","textPreview":"Classes: plastic bottle · bag / wrapper · mixed plastic · uncertain / non-plastic","textChars":81,"textLines":1,"bbox":[72,580,1030,25]}
+{"kind":"textbox","id":"sh/vehwn65w","slide":6,"text":"PlasticWatch · PS-08","textPreview":"PlasticWatch · PS-08","textChars":20,"textLines":1,"bbox":[72,684,300,18]}
+{"kind":"textbox","id":"sh/ad8fu1ob","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1160,684,48,18]}
+{"kind":"notes","id":"nt/9q8bd9","slide":6,"text":"TACO data facts read from data/taco/data/annotations.json. Source: TACO dataset, CC BY 4.0."}
+{"kind":"slide","id":"sl/9ufoc0","slide":7,"title":"FIELD OPERATIONS","textShapes":24}
+{"kind":"textbox","id":"sh/w7uxozyx","slide":7,"text":"FIELD OPERATIONS","textPreview":"FIELD OPERATIONS","textChars":16,"textLines":1,"bbox":[72,44,1136,24]}
+{"kind":"textbox","id":"sh/b6lwvuhc","slide":7,"text":"Verification protects teams from false positives and creates before / after evidence","textPreview":"Verification protects teams from false positives and creates before / after evidence","textChars":84,"textLines":1,"bbox":[72,76,1136,54]}
+{"kind":"textbox","id":"sh/a5cfmpgr","slide":7,"text":"The queue recommends inspection. It does not trigger autonomous enforcement or assign responsibility.","textPreview":"The queue recommends inspection. It does not trigger autonomous enforcement or assign responsibility.","textChars":101,"textLines":1,"bbox":[72,132,1100,28]}
+{"kind":"shape","id":"sh/943etkz6","slide":7,"bbox":[72,220,340,250]}
+{"kind":"textbox","id":"sh/o3udkfyl","slide":7,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[97,244,44,25]}
+{"kind":"textbox","id":"sh/n21wrah0","slide":7,"text":"PH-01","textPreview":"PH-01","textChars":5,"textLines":1,"bbox":[97,287,140,32]}
+{"kind":"shape","id":"sh/m1svi5gv","slide":7,"bbox":[267,286,115,30]}
+{"kind":"textbox","id":"sh/t0ne54za","slide":7,"text":"VERIFY NOW","textPreview":"VERIFY NOW","textChars":10,"textLines":1,"bbox":[267,292,115,18]}
+{"kind":"textbox","id":"sh/szexwjy5","slide":7,"text":"99.1 / 100","textPreview":"99.1 / 100","textChars":10,"textLines":1,"bbox":[97,345,220,35]}
+{"kind":"textbox","id":"sh/mtcnmhob","slide":7,"text":"3 reports · 35 m to drain","textPreview":"3 reports · 35 m to drain","textChars":25,"textLines":1,"bbox":[97,398,270,26]}
+{"kind":"textbox","id":"sh/nu5ofmpw","slide":7,"text":"📷 Collect photo + GPS\n✓ Confirm material type\n🧹 Approve cleanup if verified","textPreview":"📷 Collect photo + GPS | ✓ Confirm material type | 🧹 Approve cleanup if verified","textChars":77,"textLines":3,"bbox":[97,438,275,64]}
+{"kind":"shape","id":"sh/ovepor6h","slide":7,"bbox":[452,220,340,250]}
+{"kind":"textbox","id":"sh/9wn6hwn2","slide":7,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[477,244,44,25]}
+{"kind":"textbox","id":"sh/e5cnixof","slide":7,"text":"PH-02","textPreview":"PH-02","textChars":5,"textLines":1,"bbox":[477,287,140,32]}
+{"kind":"shape","id":"sh/z6lob2p0","slide":7,"bbox":[647,286,115,30]}
+{"kind":"textbox","id":"sh/07u5k76l","slide":7,"text":"VERIFY NOW","textPreview":"VERIFY NOW","textChars":10,"textLines":1,"bbox":[647,292,115,18]}
+{"kind":"textbox","id":"sh/1s36dc76","slide":7,"text":"91.8 / 100","textPreview":"91.8 / 100","textChars":10,"textLines":1,"bbox":[477,345,220,35]}
+{"kind":"textbox","id":"sh/i1w7u1oj","slide":7,"text":"2 reports · 20 m to drain","textPreview":"2 reports · 20 m to drain","textChars":25,"textLines":1,"bbox":[477,398,270,26]}
+{"kind":"textbox","id":"sh/j2pon654","slide":7,"text":"📷 Collect photo + GPS\n✓ Confirm material type\n🧹 Approve cleanup if verified","textPreview":"📷 Collect photo + GPS | ✓ Confirm material type | 🧹 Approve cleanup if verified","textChars":77,"textLines":3,"bbox":[477,438,275,64]}
+{"kind":"shape","id":"sh/f6hkfy5g","slide":7,"bbox":[832,220,340,250]}
+{"kind":"textbox","id":"sh/u5836t4b","slide":7,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[857,244,44,25]}
+{"kind":"textbox","id":"sh/h8zmh8nm","slide":7,"text":"PH-03","textPreview":"PH-03","textChars":5,"textLines":1,"bbox":[857,287,140,32]}
+{"kind":"shape","id":"sh/g7ql83m1","slide":7,"bbox":[1027,286,115,30]}
+{"kind":"textbox","id":"sh/3ah4jy5s","slide":7,"text":"REVIEW","textPreview":"REVIEW","textChars":6,"textLines":1,"bbox":[1027,292,115,18]}
+{"kind":"textbox","id":"sh/2983ad47","slide":7,"text":"46.5 / 100","textPreview":"46.5 / 100","textChars":10,"textLines":1,"bbox":[857,345,220,35]}
+{"kind":"textbox","id":"sh/pcjml8ny","slide":7,"text":"1 report · 210 m to drain","textPreview":"1 report · 210 m to drain","textChars":25,"textLines":1,"bbox":[857,398,270,26]}
+{"kind":"textbox","id":"sh/4balc3md","slide":7,"text":"📷 Collect photo + GPS\n✓ Confirm material type\n🧹 Approve cleanup if verified","textPreview":"📷 Collect photo + GPS | ✓ Confirm material type | 🧹 Approve cleanup if verified","textChars":77,"textLines":3,"bbox":[857,438,275,64]}
+{"kind":"textbox","id":"sh/ry14nilo","slide":7,"text":"Outcome record: reported → verified / rejected → cleaned → before / after evidence","textPreview":"Outcome record: reported → verified / rejected → cleaned → before / after evidence","textChars":82,"textLines":1,"bbox":[72,560,1060,30]}
+{"kind":"textbox","id":"sh/qds3ed43","slide":7,"text":"PlasticWatch · PS-08","textPreview":"PlasticWatch · PS-08","textChars":20,"textLines":1,"bbox":[72,684,300,18]}
+{"kind":"textbox","id":"sh/o3ul4n2h","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1160,684,48,18]}
+{"kind":"notes","id":"nt/9ufoc0","slide":7,"text":"Queue based on synthetic replay outputs. Responsible-AI scope follows the PS-08 brief."}
+{"kind":"slide","id":"sl/dnb5iz","slide":8,"title":"SCALE AND SAFEGUARDS","textShapes":13}
+{"kind":"textbox","id":"sh/yhorqxgn","slide":8,"text":"SCALE AND SAFEGUARDS","textPreview":"SCALE AND SAFEGUARDS","textChars":20,"textLines":1,"bbox":[72,44,1136,24]}
+{"kind":"textbox","id":"sh/l4zalsze","slide":8,"text":"One common report schema lets PlasticWatch expand from a demo to ward operations","textPreview":"One common report schema lets PlasticWatch expand from a demo to ward operations","textChars":80,"textLines":1,"bbox":[72,76,1136,54]}
+{"kind":"textbox","id":"sh/kj69s7yt","slide":8,"text":"The system separates evidence, prioritisation, verification, and cleanup records.","textPreview":"The system separates evidence, prioritisation, verification, and cleanup records.","textChars":81,"textLines":1,"bbox":[72,132,1100,28]}
+{"kind":"shape","id":"sh/bex8fihw","slide":8,"bbox":[72,205,345,250]}
+{"kind":"textbox","id":"sh/adormdgr","slide":8,"text":"Inputs","textPreview":"Inputs","textChars":6,"textLines":1,"bbox":[100,232,270,27]}
+{"kind":"textbox","id":"sh/xgfahsz2","slide":8,"text":"Citizen image\nWard-worker report\nStreet-camera frame","textPreview":"Citizen image | Ward-worker report | Street-camera frame","textChars":52,"textLines":3,"bbox":[100,286,270,100]}
+{"kind":"shape","id":"sh/cf69onyh","slide":8,"bbox":[457,205,345,250]}
+{"kind":"textbox","id":"sh/nad8bih0","slide":8,"text":"Decision support","textPreview":"Decision support","textChars":16,"textLines":1,"bbox":[485,232,270,27]}
+{"kind":"textbox","id":"sh/294rid0f","slide":8,"text":"Detector confidence\nDuplicate clustering\nDrain-risk score","textPreview":"Detector confidence | Duplicate clustering | Drain-risk score","textChars":57,"textLines":3,"bbox":[485,286,270,100]}
+{"kind":"shape","id":"sh/0z2xc3qx","slide":8,"bbox":[842,205,345,250]}
+{"kind":"textbox","id":"sh/10bel87i","slide":8,"text":"Field loop","textPreview":"Field loop","textChars":10,"textLines":1,"bbox":[870,232,270,27]}
+{"kind":"textbox","id":"sh/exkfat8r","slide":8,"text":"Verification result\nBefore / after evidence\nModel feedback","textPreview":"Verification result | Before / after evidence | Model feedback","textChars":58,"textLines":3,"bbox":[870,286,270,100]}
+{"kind":"shape","id":"sh/fytwjypc","slide":8,"bbox":[72,515,1135,83]}
+{"kind":"textbox","id":"sh/svix8jql","slide":8,"text":"Safeguard","textPreview":"Safeguard","textChars":9,"textLines":1,"bbox":[96,538,145,24]}
+{"kind":"textbox","id":"sh/dwbeho76","slide":8,"text":"AI confidence is evidence, not final truth. Human teams verify material type before a cleanup decision or any public claim.","textPreview":"AI confidence is evidence, not final truth. Human teams verify material type before a cleanup decision or any public claim.","textChars":123,"textLines":1,"bbox":[250,536,900,30]}
+{"kind":"textbox","id":"sh/qt0f6t8v","slide":8,"text":"PlasticWatch · PS-08","textPreview":"PlasticWatch · PS-08","textChars":20,"textLines":1,"bbox":[72,684,300,18]}
+{"kind":"textbox","id":"sh/ru9wfepg","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1160,684,48,18]}
+{"kind":"notes","id":"nt/dnb5iz","slide":8,"text":"Scalability architecture is proposed based on existing provider-based design. No claim of production deployment."}
+{"kind":"slide","id":"sl/td0plc","slide":9,"title":"LIVE DEMO SEQUENCE","textShapes":20}
+{"kind":"textbox","id":"sh/1sbi9o3q","slide":9,"text":"LIVE DEMO SEQUENCE","textPreview":"LIVE DEMO SEQUENCE","textChars":18,"textLines":1,"bbox":[72,44,1136,24]}
+{"kind":"textbox","id":"sh/epkje9kz","slide":9,"text":"A 90-second walkthrough of the working prototype","textPreview":"A 90-second walkthrough of the working prototype","textChars":48,"textLines":1,"bbox":[72,76,1136,54]}
+{"kind":"textbox","id":"sh/fqt07elk","slide":9,"text":"Use the dashboard, not slides, for the main product proof.","textPreview":"Use the dashboard, not slides, for the main product proof.","textChars":58,"textLines":1,"bbox":[72,132,1100,28]}
+{"kind":"textbox","id":"sh/ovm1kj21","slide":9,"text":"0–10 s","textPreview":"0–10 s","textChars":6,"textLines":1,"bbox":[82,193,105,22]}
+{"kind":"textbox","id":"sh/pwv2do3m","slide":9,"text":"Problem and mode","textPreview":"Problem and mode","textChars":16,"textLines":1,"bbox":[215,193,230,22]}
+{"kind":"textbox","id":"sh/2tkjitkb","slide":9,"text":"Open the header. Point out PS-08 and the DEMO / SIMULATION label.","textPreview":"Open the header. Point out PS-08 and the DEMO / SIMULATION label.","textChars":65,"textLines":1,"bbox":[460,193,690,34]}
+{"kind":"shape","id":"sh/3ud0belw","slide":9,"bbox":[72,241,1080,2]}
+{"kind":"textbox","id":"sh/cjm1o32d","slide":9,"text":"10–35 s","textPreview":"10–35 s","textChars":7,"textLines":1,"bbox":[82,268,105,22]}
+{"kind":"textbox","id":"sh/dkv2h83y","slide":9,"text":"Hotspot map","textPreview":"Hotspot map","textChars":11,"textLines":1,"bbox":[215,268,230,22]}
+{"kind":"textbox","id":"sh/hsb6987u","slide":9,"text":"Select PH-01. Explain duplicate merging, score, and drain distance.","textPreview":"Select PH-01. Explain duplicate merging, score, and drain distance.","textChars":67,"textLines":1,"bbox":[460,268,690,34]}
+{"kind":"shape","id":"sh/gr2503q9","slide":9,"bbox":[72,316,1080,2]}
+{"kind":"textbox","id":"sh/vqto7ypo","slide":9,"text":"35–55 s","textPreview":"35–55 s","textChars":7,"textLines":1,"bbox":[82,343,105,22]}
+{"kind":"textbox","id":"sh/u5knyt83","slide":9,"text":"Evidence","textPreview":"Evidence","textChars":8,"textLines":1,"bbox":[215,343,230,22]}
+{"kind":"textbox","id":"sh/5wv6d87q","slide":9,"text":"Open Evidence & AI. Show confidence and verification state.","textPreview":"Open Evidence & AI. Show confidence and verification state.","textChars":59,"textLines":1,"bbox":[460,343,690,34]}
+{"kind":"shape","id":"sh/4vm543q5","slide":9,"bbox":[72,391,1080,2]}
+{"kind":"textbox","id":"sh/3udobypk","slide":9,"text":"55–75 s","textPreview":"55–75 s","textChars":7,"textLines":1,"bbox":[82,418,105,22]}
+{"kind":"textbox","id":"sh/it4n2d8z","slide":9,"text":"Field queue","textPreview":"Field queue","textChars":11,"textLines":1,"bbox":[215,418,230,22]}
+{"kind":"textbox","id":"sh/l0r61o7m","slide":9,"text":"Open Verification Queue. Explain the order and human decision gate.","textPreview":"Open Verification Queue. Explain the order and human decision gate.","textChars":67,"textLines":1,"bbox":[460,418,690,34]}
+{"kind":"shape","id":"sh/kzi5sjq1","slide":9,"bbox":[72,466,1080,2]}
+{"kind":"textbox","id":"sh/cjm58jyx","slide":9,"text":"75–90 s","textPreview":"75–90 s","textChars":7,"textLines":1,"bbox":[82,493,105,22]}
+{"kind":"textbox","id":"sh/xkv6hofi","slide":9,"text":"TACO readiness","textPreview":"TACO readiness","textChars":14,"textLines":1,"bbox":[215,493,230,22]}
+{"kind":"textbox","id":"sh/ah4n69gr","slide":9,"text":"Show the TACO status. State that training data is ready, while the detector remains the next phase.","textPreview":"Show the TACO status. State that training data is ready, while the detector remains the next phase.","textChars":99,"textLines":1,"bbox":[460,493,690,34]}
+{"kind":"shape","id":"sh/bidofehc","slide":9,"bbox":[72,541,1080,2]}
+{"kind":"textbox","id":"sh/k76pc3yt","slide":9,"text":"PlasticWatch · PS-08","textPreview":"PlasticWatch · PS-08","textChars":20,"textLines":1,"bbox":[72,684,300,18]}
+{"kind":"textbox","id":"sh/l8f6lofe","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1160,684,48,18]}
+{"kind":"notes","id":"nt/td0plc","slide":9,"text":"Use the separately delivered demo video script for exact narration."}

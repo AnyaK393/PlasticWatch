@@ -1,0 +1,19 @@
+sys.path:
+C:\Users\ASUS\AetherSea
+C:\Users\ASUS\AetherSea\dashboard\app.py
+C:\Users\ASUS\AetherSea
+C:\Users\ASUS\AetherSea
+C:\Users\ASUS\AetherSea\dashboard
+C:\Users\ASUS\AppData\Roaming\Python\Python314\Scripts\streamlit.exe
+C:\Program Files\Python314\python314.zip
+C:\Program Files\Python314\DLLs
+C:\Program Files\Python314\Lib
+C:\Program Files\Python314
+C:\Users\ASUS\AppData\Roaming\Python\Python314\site-packages
+C:\Users\ASUS\AppData\Roaming\Python\Python314\site-packages\win32
+C:\Users\ASUS\AppData\Roaming\Python\Python314\site-packages\win32\lib
+C:\Users\ASUS\AppData\Roaming\Python\Python314\site-packages\Pythonwin
+C:\Program Files\Python314\Lib\site-packages
+
+ee path: C:\Users\ASUS\AppData\Roaming\Python\Python314\site-packages\ee\__init__.py
+streamlit path: C:\Users\ASUS\AppData\Roaming\Python\Python314\site-packages\streamlit\__init__.py

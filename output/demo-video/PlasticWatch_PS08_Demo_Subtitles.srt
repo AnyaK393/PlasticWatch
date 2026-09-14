@@ -1,0 +1,27 @@
+1
+00:00:00,000 --> 00:00:08,000
+PlasticWatch is an AI-GIS decision-support tool for PS-08. It turns image reports into verified plastic-waste cleanup priorities.
+
+2
+00:00:08,000 --> 00:00:20,000
+This prototype uses clearly labelled synthetic reports. The same workflow later accepts citizen images, ward-worker reports, or street-camera frames.
+
+3
+00:00:20,000 --> 00:00:38,000
+The map merges nearby reports into one hotspot. PH-01 has three reports, 85 percent AI confidence, and lies 35 metres from a drain.
+
+4
+00:00:38,000 --> 00:00:53,000
+The system explains why it ranked this location: confidence, severity, recurrence, and drain exposure. AI confidence is evidence, not final truth.
+
+5
+00:00:53,000 --> 00:01:08,000
+Field teams receive a ranked verification queue. This prevents wasted cleanup trips and unsupported responsibility claims.
+
+6
+00:01:08,000 --> 00:01:22,000
+TACO provides training data with 1,500 images and 4,784 labelled objects. It does not perform detection by itself.
+
+7
+00:01:22,000 --> 00:01:30,000
+PlasticWatch gives local teams an auditable path from report to verification to cleanup.
