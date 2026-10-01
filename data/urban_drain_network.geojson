@@ -1,0 +1,269 @@
+{
+  "type": "FeatureCollection",
+  "name": "Pune Urban Drainage & Waterway Network",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-mutha-river",
+        "name": "Mutha River Channel",
+        "waterway": "river",
+        "type": "primary_river",
+        "flow_direction": "NE",
+        "clog_vulnerability": "HIGH",
+        "risk_weight": 1.0
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.8012, 18.485],
+          [73.8185, 18.4975],
+          [73.834, 18.511],
+          [73.8495, 18.519],
+          [73.861, 18.528],
+          [73.8745, 18.5315],
+          [73.892, 18.535]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-mula-river",
+        "name": "Mula River Channel",
+        "waterway": "river",
+        "type": "primary_river",
+        "flow_direction": "SE",
+        "clog_vulnerability": "HIGH",
+        "risk_weight": 1.0
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.805, 18.562],
+          [73.824, 18.558],
+          [73.849, 18.551],
+          [73.868, 18.542],
+          [73.892, 18.535]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-mula-mutha-confluence",
+        "name": "Mula-Mutha Confluence Basin",
+        "waterway": "river",
+        "type": "confluence",
+        "flow_direction": "E",
+        "clog_vulnerability": "CRITICAL",
+        "risk_weight": 1.0
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.892, 18.535],
+          [73.91, 18.537],
+          [73.935, 18.54],
+          [73.955, 18.542]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-ambil-odha",
+        "name": "Ambil Odha Major Stormwater Drain",
+        "waterway": "stream",
+        "type": "storm_drain",
+        "flow_direction": "N",
+        "clog_vulnerability": "CRITICAL",
+        "risk_weight": 0.95
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.842, 18.472],
+          [73.8445, 18.483],
+          [73.848, 18.495],
+          [73.851, 18.503],
+          [73.853, 18.512],
+          [73.854, 18.5215],
+          [73.856, 18.521]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-nagzari-nallah",
+        "name": "Nagzari Nallah Urban Grate Channel",
+        "waterway": "drain",
+        "type": "storm_drain",
+        "flow_direction": "N",
+        "clog_vulnerability": "CRITICAL",
+        "risk_weight": 0.9
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.861, 18.495],
+          [73.8625, 18.506],
+          [73.8635, 18.514],
+          [73.864, 18.522],
+          [73.8655, 18.5285]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-bhairoba-nallah",
+        "name": "Bhairoba Nallah Drainage Trunk",
+        "waterway": "stream",
+        "type": "storm_drain",
+        "flow_direction": "NE",
+        "clog_vulnerability": "HIGH",
+        "risk_weight": 0.85
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.885, 18.49],
+          [73.891, 18.502],
+          [73.896, 18.515],
+          [73.902, 18.525],
+          [73.911, 18.536]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-kothrud-nallah",
+        "name": "Kothrud West Stormwater Feeder",
+        "waterway": "drain",
+        "type": "storm_drain",
+        "flow_direction": "E",
+        "clog_vulnerability": "HIGH",
+        "risk_weight": 0.8
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.792, 18.502],
+          [73.805, 18.505],
+          [73.818, 18.507],
+          [73.832, 18.51]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-shivajinagar-drain",
+        "name": "Shivajinagar Culvert Line",
+        "waterway": "drain",
+        "type": "culvert",
+        "flow_direction": "S",
+        "clog_vulnerability": "HIGH",
+        "risk_weight": 0.75
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.849, 18.538],
+          [73.8505, 18.531],
+          [73.852, 18.525]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-yerawada-canal",
+        "name": "Yerawada Spillway Canal",
+        "waterway": "canal",
+        "type": "canal",
+        "flow_direction": "SE",
+        "clog_vulnerability": "MODERATE",
+        "risk_weight": 0.7
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.882, 18.553],
+          [73.893, 18.547],
+          [73.905, 18.54]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-shaniwar-wada-culvert",
+        "name": "Shaniwar Wada Stormwater Trunk",
+        "waterway": "drain",
+        "type": "culvert",
+        "flow_direction": "NW",
+        "clog_vulnerability": "CRITICAL",
+        "risk_weight": 0.92
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.857, 18.518],
+          [73.8568, 18.5204],
+          [73.8565, 18.5215],
+          [73.855, 18.523]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-deccan-bund-drain",
+        "name": "Deccan Gymkhana Outfall Drain",
+        "waterway": "drain",
+        "type": "storm_drain",
+        "flow_direction": "N",
+        "clog_vulnerability": "HIGH",
+        "risk_weight": 0.88
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.838, 18.512],
+          [73.841, 18.516],
+          [73.844, 18.519]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "drain-hadapsar-storm-drain",
+        "name": "Hadapsar Industrial Drainage Channel",
+        "waterway": "drain",
+        "type": "storm_drain",
+        "flow_direction": "NE",
+        "clog_vulnerability": "CRITICAL",
+        "risk_weight": 0.85
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [73.925, 18.498],
+          [73.931, 18.508],
+          [73.938, 18.52]
+        ]
+      }
+    }
+  ]
+}
