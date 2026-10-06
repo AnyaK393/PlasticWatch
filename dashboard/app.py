@@ -28,9 +28,18 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from backend.forecasting_engine import ForecastingEngine
 from backend.plasticwatch_pipeline import PlasticWatchUrbanPipeline, run_plasticwatch
+from backend.provenance import (
+    PROVENANCE_TIERS,
+    get_provenance_meta,
+    render_provenance_badge,
+)
+from backend.recurrence_engine import RecurrenceEngine
 from backend.route_optimizer import RouteOptimizer
+from backend.simulator_engine import MonsoonSimulatorEngine
 from backend.taco_adapter import dataset_status, detect_waste, get_sample_images
+from backend.verification_engine import CleanupVerificationEngine
 
 # ── Page Configuration & Theming ─────────────────────────────────────────────
 st.set_page_config(
@@ -183,6 +192,58 @@ st.markdown("""
     font-size: 0.72rem;
     font-weight: 600;
   }
+  .badge-observed {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.55);
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+  .badge-derived {
+    background: rgba(56, 189, 248, 0.2);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.55);
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+  .badge-inferred {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.55);
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+  .badge-simulated {
+    background: rgba(192, 132, 252, 0.2);
+    color: #c084fc;
+    border: 1px solid rgba(192, 132, 252, 0.55);
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+  .disclaimer-box {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.5);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: #fde68a;
+    font-size: 0.86rem;
+    margin: 12px 0;
+  }
+  .feature-panel {
+    background: #0d2029;
+    border: 1px solid #1c4250;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
   .tiny-text { font-size: 0.77rem; color: #94a3b8; }
 
   /* Paper Theme Mobile Simulator inside Streamlit */
@@ -276,6 +337,26 @@ if "active_route_plan" not in st.session_state:
 if "rain_override" not in st.session_state:
     st.session_state.rain_override = None
 
+if "forecasting_engine_instance" not in st.session_state:
+    st.session_state.forecasting_engine_instance = ForecastingEngine()
+
+if "verification_engine_instance" not in st.session_state:
+    st.session_state.verification_engine_instance = CleanupVerificationEngine()
+
+if "recurrence_engine_instance" not in st.session_state:
+    st.session_state.recurrence_engine_instance = RecurrenceEngine()
+
+if "simulator_engine_instance" not in st.session_state:
+    st.session_state.simulator_engine_instance = MonsoonSimulatorEngine()
+
+if "signed_off_invoices" not in st.session_state:
+    st.session_state.signed_off_invoices = set()
+
+forecasting_engine = st.session_state.forecasting_engine_instance
+verification_engine = st.session_state.verification_engine_instance
+recurrence_engine = st.session_state.recurrence_engine_instance
+simulator_engine = st.session_state.simulator_engine_instance
+
 pipeline = st.session_state.pipeline_instance
 pipeline_data = pipeline.run_pipeline(rainfall_override_mm=st.session_state.rain_override)
 hotspots = pipeline_data["hotspots"]
@@ -360,10 +441,14 @@ st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
 
 # ── Main Tabs ─────────────────────────────────────────────────────────────────
-tab_command, tab_mobile, tab_taco = st.tabs([
-    "🏛️ Municipal Command Center (3-Panel Operational Triage)",
-    "📱 Citizen Mobile Reporter (Paper-Themed PWA View)",
-    "🧠 AI & TACO Model Readiness",
+tab_command, tab_forecast, tab_verify, tab_recurrence, tab_simulator, tab_mobile, tab_provenance = st.tabs([
+    "🏛️ Triage & Live Map",
+    "🔮 Predictive Forecasting (24–72h)",
+    "📸 AI Cleanup Verification",
+    "🔁 Recurrence & Root Cause",
+    "☔ Monsoon What-If Simulator",
+    "📱 Citizen Mobile Reporter",
+    "🔎 Evidence & Provenance Layer",
 ])
 
 
@@ -408,6 +493,7 @@ with tab_command:
             badge_class = "badge-critical" if priority == "CRITICAL" else ("badge-high" if priority == "HIGH" else "badge-moderate")
             active_class = "queue-card-active" if is_active else ""
             status_tag = "🚚 DISPATCHED" if is_dispatched else "PENDING"
+            score_chip = render_provenance_badge("derived", f"{score:.1f}")
 
             st.markdown(f"""
             <div class="queue-card {active_class}">
@@ -416,11 +502,11 @@ with tab_command:
                 <span class="{badge_class}">{priority} {score:.1f}</span>
               </div>
               <div style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 5px;">
-                🌊 <b>{dist_m:.0f}m</b> to {drain_name}
+                🌊 <b>{dist_m:.0f}m</b> to {drain_name} {render_provenance_badge('derived', f'{dist_m:.0f}m', '0.68rem')}
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
                 <span class="{ 'badge-merged' if is_merged else 'tiny-text' }">
-                  👥 {recurrence} {'reports merged' if is_merged else 'single report'}
+                  👥 {recurrence} {'reports merged' if is_merged else 'single report'} {render_provenance_badge('observed', f'{recurrence}R', '0.68rem')}
                 </span>
                 <span style="color: {'#34d399' if is_dispatched else '#f59e0b'}; font-weight: 600;">
                   {status_tag}
@@ -653,32 +739,32 @@ with tab_command:
                 st.image(str(sample_path), caption=f"Evidence Capture • {sample_photo}", use_container_width=True)
 
             # Exploded 0-100 Score Breakdown
-            st.markdown("#### ⚡ Exploded Risk Breakdown")
+            st.markdown(f"#### ⚡ Exploded Risk Breakdown {render_provenance_badge('derived')}", unsafe_allow_html=True)
             
             # Drain Proximity Component (35%)
             d_pts = active_h.get("drain_points", 0.0)
-            st.markdown(f"**Drain Proximity**: {dist_m:.0f}m to *{drain_name}*")
+            st.markdown(f"**Drain Proximity** {render_provenance_badge('derived')}: {dist_m:.0f}m to *{drain_name}*", unsafe_allow_html=True)
             st.caption(f"Score: {active_h.get('drain_score', 0):.0f}/100 • **+{d_pts:.1f} pts** (35% weight)")
             st.progress(min(1.0, active_h.get("drain_score", 0) / 100.0))
 
             # Waste Severity Component (25%)
             s_pts = active_h.get("severity_points", 0.0)
             raw_sev = active_h.get("severity_raw", 3.5)
-            st.markdown(f"**Detection Severity**: {raw_sev:.1f}/5.0 (Clog Hazard)")
+            st.markdown(f"**Detection Severity** {render_provenance_badge('inferred')}: {raw_sev:.1f}/5.0 (Clog Hazard)", unsafe_allow_html=True)
             st.caption(f"Score: {active_h.get('severity_score', 0):.0f}/100 • **+{s_pts:.1f} pts** (25% weight)")
             st.progress(min(1.0, active_h.get("severity_score", 0) / 100.0))
 
             # AI Detection Confidence Component (20%)
             c_pts = active_h.get("confidence_points", 0.0)
             raw_conf = active_h.get("confidence_raw", 0.88)
-            st.markdown(f"**AI Confidence**: {raw_conf:.0%} (TACO YOLOv8)")
+            st.markdown(f"**AI Confidence** {render_provenance_badge('inferred')}: {raw_conf:.0%} (TACO YOLOv8)", unsafe_allow_html=True)
             st.caption(f"Score: {active_h.get('confidence_score', 0):.0f}/100 • **+{c_pts:.1f} pts** (20% weight)")
             st.progress(min(1.0, active_h.get("confidence_score", 0) / 100.0))
 
             # 24h Rainfall Forecast Component (20%)
             r_pts = active_h.get("rainfall_points", 0.0)
             r_mm = active_h.get("rainfall_forecast_mm", 16.5)
-            st.markdown(f"**Rainfall Forecast**: {r_mm:.1f} mm in next 24h")
+            st.markdown(f"**Rainfall Forecast** {render_provenance_badge('simulated')}: {r_mm:.1f} mm in next 24h", unsafe_allow_html=True)
             st.caption(f"Score: {active_h.get('rainfall_score', 0):.0f}/100 • **+{r_pts:.1f} pts** (20% weight)")
             st.progress(min(1.0, active_h.get("rainfall_score", 0) / 100.0))
 
@@ -734,7 +820,675 @@ with tab_command:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# TAB 2: CITIZEN MOBILE SIMULATOR (Paper-Themed Light Editorial View)
+# TAB 2: PREDICTIVE HOTSPOT FORECASTING (24–72H)
+# ══════════════════════════════════════════════════════════════════════════════
+with tab_forecast:
+    st.markdown("### 🔮 Predictive Hotspot Forecasting (24–72h)")
+    st.markdown(
+        f"Pune Stormwater Runoff Escalation Model • Hydraulic Wash-Off Dynamics • "
+        f"{render_provenance_badge('simulated', '[Predicted / Modelled]')}",
+        unsafe_allow_html=True,
+    )
+    st.caption("Forecasts multi-day plastic accumulation and drain choking risks based on Open-Meteo precipitation, historical return rates, and drain proximity.")
+
+    fc_col1, fc_col2 = st.columns([1.6, 1.0])
+    with fc_col1:
+        timeline_choice = st.select_slider(
+            "Forecast Timeline Horizon",
+            options=[24, 48, 72],
+            value=48,
+            format_func=lambda x: f"T+{x}h Horizon ({'Immediate Inflow Surge' if x==24 else ('Mid-Storm Cumulative' if x==48 else 'Multi-Day Severe Inundation')})",
+            help="Select prediction window (24h, 48h, or 72h) to evaluate accumulation growth and choke risks.",
+        )
+    with fc_col2:
+        rain_slider_override = st.checkbox("Manual Rainfall Scenario Override", value=False)
+        if rain_slider_override:
+            rain_val = st.slider("Scenario Cumulative Rain (mm)", 0.0, 100.0, 35.0, 5.0)
+        else:
+            rain_val = None
+
+    forecast_data = forecasting_engine.generate_hotspot_forecast(
+        hotspots=hotspots,
+        horizon_hours=timeline_choice,
+        rainfall_scenario_mm=rain_val,
+    )
+
+    # 5 Spacious KPI Cards
+    f1, f2, f3, f4, f5 = st.columns(5)
+    with f1:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Timeline Horizon</div>
+          <div class="stat-val" style="color:#38bdf8;">T+{forecast_data['forecast_horizon_hours']}h</div>
+          <div class="stat-note">Multi-day projection</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with f2:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Total Plastic at Risk</div>
+          <div class="stat-val" style="color:#c084fc;">{forecast_data['total_predicted_waste_kg']:.1f} kg</div>
+          <div class="stat-note">{render_provenance_badge('simulated', '[Predicted / Modelled]')}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with f3:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Critical Escalations</div>
+          <div class="stat-val" style="color:#ef4444;">{forecast_data['critical_escalation_count']}</div>
+          <div class="stat-note">Choke probability &ge; 70%</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with f4:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">High Risk Sites</div>
+          <div class="stat-val" style="color:#f59e0b;">{forecast_data['high_escalation_count']}</div>
+          <div class="stat-note">Score &ge; 50 or &le; 45m drain</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with f5:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Rainfall Forecast</div>
+          <div class="stat-val" style="color:#34d399;">{forecast_data['rainfall_forecast_mm']:.1f} mm</div>
+          <div class="stat-note">Open-Meteo live feed</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+
+    # Grid of Hotspot Projections
+    st.markdown(f"#### 📍 Hotspot Projections ({len(forecast_data['hotspot_forecasts'])} Sites Monitored)")
+    
+    grid_cols = st.columns(2)
+    for idx, hf in enumerate(forecast_data["hotspot_forecasts"]):
+        with grid_cols[idx % 2]:
+            risk = hf["escalation_risk"]
+            r_badge_class = "badge-critical" if risk == "CRITICAL" else ("badge-high" if risk == "HIGH" else "badge-moderate")
+            tl = hf["timeline"]
+            
+            st.markdown(f"""
+            <div class="feature-panel" style="border-left: 4px solid {hf['risk_color']};">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-weight:800; font-size:1.05rem; color:#f8fafc;">{hf['hotspot_id']} • {hf['nearest_drain_name']}</span>
+                <span class="{r_badge_class}">{risk} ESCALATION</span>
+              </div>
+              <div style="font-size:0.82rem; color:#cbd5e1; margin-bottom:8px;">
+                🌊 <b>{hf['drain_distance_m']:.0f}m</b> to drain channel • Historical Return: <b>{hf['historical_return_interval_days']} days</b>
+              </div>
+              <div style="display:flex; gap:16px; margin-bottom:12px; background:#081921; padding:8px 12px; border-radius:8px;">
+                <div>
+                  <div class="tiny-text">Predicted Mass</div>
+                  <div style="font-weight:800; color:#38bdf8; font-size:1.1rem;">{hf['predicted_accumulation_kg']} kg</div>
+                </div>
+                <div>
+                  <div class="tiny-text">Est. Volume</div>
+                  <div style="font-weight:700; color:#94a3b8; font-size:1.05rem;">{hf['predicted_volume_liters']:.0f} L</div>
+                </div>
+                <div style="margin-left:auto; text-align:right;">
+                  <div class="tiny-text">Critical Window</div>
+                  <div style="font-weight:800; color:#f59e0b; font-size:0.95rem;">⏱️ {hf['critical_time_window']}</div>
+                </div>
+              </div>
+              <div style="font-size:0.82rem; font-weight:700; color:#94a3b8; margin-bottom:6px;">
+                🛠️ Specific Preventive Actions Recommended:
+              </div>
+            """, unsafe_allow_html=True)
+
+            for act in hf["preventive_actions"]:
+                st.markdown(f"<div style='font-size:0.8rem; color:#e2e8f0; margin-bottom:3px;'>▫️ {act}</div>", unsafe_allow_html=True)
+
+            st.markdown(f"""
+              <div style="margin-top:10px; padding-top:8px; border-top:1px solid #1a3c48; display:flex; justify-content:space-between; font-size:0.75rem; color:#94a3b8;">
+                <span>T+24h: <b>{tl['24h']['accum_kg']} kg</b></span>
+                <span>T+48h: <b>{tl['48h']['accum_kg']} kg</b></span>
+                <span>T+72h: <b>{tl['72h']['accum_kg']} kg</b></span>
+              </div>
+              <div style="margin-top:8px; text-align:right;">
+                {render_provenance_badge('simulated', '[Predicted / Modelled]')}
+              </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB 3: AI BEFORE/AFTER CLEANUP VERIFICATION
+# ══════════════════════════════════════════════════════════════════════════════
+with tab_verify:
+    st.markdown("### 📸 AI Before/After Cleanup Verification")
+    st.markdown(
+        f"Dual-Image TACO/YOLO Computer Vision Inference • Delta Severity Quantification • "
+        f"{render_provenance_badge('inferred', '[AI Inference / Modelled Estimate]')}",
+        unsafe_allow_html=True,
+    )
+    st.caption("Verifies contractor clearance effectiveness before releasing municipal invoices. Requires >= 85% clearance score.")
+
+    v_cases = {
+        "Shaniwar Wada Culvert (Verified Clearance • PASS)": {
+            "before": "sample_bottles_drain.jpg",
+            "after": "sample_cleared_drain.jpg",
+            "site": "Shaniwar Wada Culvert (Kasba Peth)",
+            "hotspot_id": "HOTSPOT-01",
+            "contractor": "PMC Sanitation Rapid Crew 1",
+        },
+        "Nagzari Nallah Grate (Verified Clearance • PASS)": {
+            "before": "sample_food_wrappers_culvert.jpg",
+            "after": "sample_cleared_drain.jpg",
+            "site": "Nagzari Nallah Storm Grate (Bhavani Peth)",
+            "hotspot_id": "HOTSPOT-02",
+            "contractor": "PMC Sanitation Rapid Crew 2",
+        },
+        "Mutha River Outfall (Verified Clearance • PASS)": {
+            "before": "sample_polypropylene_sacks.jpg",
+            "after": "sample_cleared_curb.jpg",
+            "site": "Mutha River Confluence Outfall",
+            "hotspot_id": "HOTSPOT-03",
+            "contractor": "PMC Heavy River Skimmer Crew 4",
+        },
+        "Shaniwar Wada Re-Inspection (Incomplete Cleanup • FLAGGED)": {
+            "before": "sample_bottles_drain.jpg",
+            "after": "sample_partial_cleanup.jpg",
+            "site": "Shaniwar Wada Culvert Curb Line",
+            "hotspot_id": "HOTSPOT-01",
+            "contractor": "PMC Sanitation Rapid Crew 1",
+        },
+    }
+
+    v_col_ctrl, v_col_meta = st.columns([1.5, 1.0])
+    with v_col_ctrl:
+        chosen_case_name = st.selectbox("Select Verification Work Order Inspection", list(v_cases.keys()))
+        case_info = v_cases[chosen_case_name]
+    with v_col_meta:
+        st.markdown(f"""
+        <div style="background:#0b1c24; border:1px solid #1a3c48; border-radius:10px; padding:10px 14px; font-size:0.82rem; margin-top:18px;">
+          <div>🏢 <b>Site:</b> {case_info['site']}</div>
+          <div>👷 <b>Contractor:</b> {case_info['contractor']}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Run dual verification
+    v_result = verification_engine.verify_cleanup(
+        before_image=case_info["before"],
+        after_image=case_info["after"],
+        hotspot_id=case_info["hotspot_id"],
+        site_name=case_info["site"],
+        contractor_id=case_info["contractor"],
+    )
+
+    # Side-by-side Visual Photo Comparison
+    v_left, v_right = st.columns(2)
+    with v_left:
+        st.markdown("#### 📷 Baseline Before-Cleanup Photo")
+        st.caption(f"Pre-intervention optical capture • {case_info['before']}")
+        b_b64 = v_result["visuals"]["before_annotated_base64"]
+        if b_b64:
+            st.image(base64.b64decode(b_b64), caption=f"Baseline: {v_result['metrics']['before_object_count']} waste objects detected (Severity: {v_result['metrics']['before_severity']}/5.0)", use_container_width=True)
+        else:
+            p = ROOT / "data" / "taco_samples" / case_info["before"]
+            if p.is_file():
+                st.image(str(p), use_container_width=True)
+
+    with v_right:
+        st.markdown("#### 📷 Clearance After-Cleanup Photo")
+        st.caption(f"Post-intervention contractor submission • {case_info['after']}")
+        a_b64 = v_result["visuals"]["after_annotated_base64"]
+        if a_b64:
+            st.image(base64.b64decode(a_b64), caption=f"Clearance: {v_result['metrics']['after_object_count']} objects remaining (Severity: {v_result['metrics']['after_severity']}/5.0)", use_container_width=True)
+        else:
+            p = ROOT / "data" / "taco_samples" / case_info["after"]
+            if p.is_file():
+                st.image(str(p), use_container_width=True)
+
+    # 4 Quantification KPI Cards
+    m1, m2, m3, m4 = st.columns(4)
+    with m1:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Object Count Reduction</div>
+          <div class="stat-val" style="color:#38bdf8;">-{v_result['metrics']['count_reduction']}</div>
+          <div class="stat-note"><b>{v_result['metrics']['count_reduction_pct']:.0f}%</b> objects eliminated</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with m2:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Severity Reduction (&Delta;)</div>
+          <div class="stat-val" style="color:#34d399;">-{v_result['metrics']['delta_severity']:.1f}</div>
+          <div class="stat-note"><b>{v_result['metrics']['severity_reduction_pct']:.0f}%</b> risk decline</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with m3:
+        eff = v_result['effectiveness_score']
+        eff_color = "#10b981" if eff >= 85 else "#f59e0b"
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Effectiveness Score</div>
+          <div class="stat-val" style="color:{eff_color};">{eff:.1f}%</div>
+          <div class="stat-note">Standard target &ge; 85%</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with m4:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Diverted Plastic Mass</div>
+          <div class="stat-val" style="color:#c084fc;">{v_result['metrics']['diverted_plastic_weight_kg']} kg</div>
+          <div class="stat-note">~{v_result['metrics']['diverted_volume_liters']:.0f} L volume diverted</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
+
+    # Adjudication Decision Banner
+    dec = v_result["decision_status"]
+    if dec == "PASS":
+        st.markdown(f"""
+        <div style="background:rgba(16, 185, 129, 0.15); border:2px solid #10b981; border-radius:12px; padding:16px; margin: 10px 0;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:1.15rem; font-weight:800; color:#34d399;">
+              ✅ DECISION STATUS: PASS ({eff:.1f}% Clearance)
+            </div>
+            {render_provenance_badge('inferred', '[AI Inference / Modelled Estimate]')}
+          </div>
+          <div style="font-size:0.86rem; color:#e2e8f0; margin-top:6px;">
+            Work order satisfies municipal clearance threshold (&ge; 85%). Contractor invoice eligible for approval.
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+        <div style="background:rgba(245, 158, 11, 0.15); border:2px solid #f59e0b; border-radius:12px; padding:16px; margin: 10px 0;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:1.15rem; font-weight:800; color:#fbbf24;">
+              ⚠️ DECISION STATUS: FLAGGED FOR REVIEW ({eff:.1f}% Clearance)
+            </div>
+            {render_provenance_badge('inferred', '[AI Inference / Modelled Estimate]')}
+          </div>
+          <div style="font-size:0.86rem; color:#e2e8f0; margin-top:6px;">
+            Clearance effectiveness is below the required 85% threshold. Field re-inspection required before contractor invoice clearance.
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Mandatory Legal Disclaimer Box
+    st.markdown(f"""
+    <div class="disclaimer-box">
+      <b>⚠️ Disclaimer:</b> {v_result['disclaimer']}
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Operator Sign-Off Interaction
+    invoice_key = f"{case_info['hotspot_id']}_{chosen_case_name}"
+    is_signed = invoice_key in st.session_state.signed_off_invoices
+
+    s_col1, s_col2 = st.columns([1.5, 1.0])
+    with s_col1:
+        op_notes = st.text_input("Operator Field Verification Remarks", value="Visual drain clearance verified. Intake grate unobstructed.", key=f"notes_{invoice_key}")
+    with s_col2:
+        st.write("")
+        st.write("")
+        if is_signed:
+            st.success("✅ Signed Off & Cleared for Contractor Payment")
+        else:
+            if st.button("✍️ Sign-Off & Approve Invoice", type="primary", use_container_width=True, key=f"sign_{invoice_key}"):
+                st.session_state.signed_off_invoices.add(invoice_key)
+                st.toast(f"✅ Contractor invoice signed off for {case_info['site']}!")
+                st.rerun()
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB 4: RECURRENCE & ROOT-CAUSE INTELLIGENCE
+# ══════════════════════════════════════════════════════════════════════════════
+with tab_recurrence:
+    st.markdown("### 🔁 Recurrence & Root-Cause Intelligence")
+    st.markdown(
+        f"Pune Pilot 30-Day Historical Dossier • Chronic Choke Points • Systemic Civic Interventions • "
+        f"{render_provenance_badge('inferred', '[Inferred / Prototype Historical Dossier]')}",
+        unsafe_allow_html=True,
+    )
+    st.caption("Analyzes repeat hotspot coordinates and contractor dispatches to deduce underlying root causes and suggest systemic civic interventions.")
+
+    rec_analysis = recurrence_engine.analyze_recurrence()
+    summary = rec_analysis["summary_metrics"]
+
+    # 5 KPI Cards
+    r1, r2, r3, r4, r5 = st.columns(5)
+    with r1:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Monitored Locations</div>
+          <div class="stat-val" style="color:#38bdf8;">{summary['total_monitored_sites']}</div>
+          <div class="stat-note">Pune Municipal Pilot</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with r2:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">30-Day Cleanups</div>
+          <div class="stat-val" style="color:#c084fc;">{summary['total_cleanups_completed']}</div>
+          <div class="stat-note">Completed work orders</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with r3:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Total Diverted Plastic</div>
+          <div class="stat-val" style="color:#34d399;">{summary['total_diverted_plastic_kg']:.0f} kg</div>
+          <div class="stat-note">Removed from drainage</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with r4:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Avg Return Interval</div>
+          <div class="stat-val" style="color:#f59e0b;">{summary['average_return_interval_days']:.1f} d</div>
+          <div class="stat-note">Days until site reclogs</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with r5:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Chronic Choke Rate</div>
+          <div class="stat-val" style="color:#ef4444;">{summary['chronic_site_percentage']:.0f}%</div>
+          <div class="stat-note">Persistence index &ge; 0.75</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
+
+    # Location Selector
+    loc_names = [f"{loc['site_id']} - {loc['name']}" for loc in rec_analysis["locations"]]
+    selected_loc_idx = st.selectbox("Select Historical Dossier Location", range(len(loc_names)), format_func=lambda i: loc_names[i])
+    selected_site = rec_analysis["locations"][selected_loc_idx]
+
+    # Site dossier detail layout
+    s_col_left, s_col_right = st.columns([1.25, 1.0], gap="large")
+
+    with s_col_left:
+        st.markdown(f"#### 📜 Location Dossier: {selected_site['name']}")
+        st.markdown(f"""
+        <div class="feature-panel">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span style="font-size:1.1rem; font-weight:800; color:#f8fafc;">{selected_site['ward']}</span>
+            <span class="badge-critical" style="background:rgba(239, 68, 68, 0.2);">{selected_site['persistence_level']} PERSISTENCE ({selected_site['recurrence_persistence_index']})</span>
+          </div>
+          <div style="font-size:0.86rem; color:#cbd5e1; margin-bottom:12px;">
+            🌊 Connected Waterway: <b>{selected_site['drain_name']}</b> ({selected_site['drain_distance_m']}m)
+          </div>
+          <div style="display:flex; gap:16px; margin-bottom:14px; background:#081b24; padding:10px 14px; border-radius:10px;">
+            <div>
+              <div class="tiny-text">Total Recurrences</div>
+              <div style="font-weight:800; color:#38bdf8; font-size:1.2rem;">{selected_site['total_recurrence_count']} events</div>
+            </div>
+            <div>
+              <div class="tiny-text">Avg Return Interval</div>
+              <div style="font-weight:800; color:#f59e0b; font-size:1.2rem;">{selected_site['average_return_interval_days']} days</div>
+            </div>
+            <div>
+              <div class="tiny-text">Diverted Plastic</div>
+              <div style="font-weight:800; color:#34d399; font-size:1.2rem;">{selected_site['total_diverted_weight_kg']} kg</div>
+            </div>
+          </div>
+          <div style="margin-bottom:12px;">
+            <div style="font-size:0.82rem; font-weight:700; color:#94a3b8; text-transform:uppercase;">Dominant Waste Stream</div>
+            <div style="font-size:0.95rem; font-weight:700; color:#fcd34d; margin-top:2px;">
+              🛍️ {selected_site['dominant_waste_stream']}
+            </div>
+          </div>
+          <div style="background:rgba(245, 158, 11, 0.08); border-left:4px solid #f59e0b; padding:12px 14px; border-radius:6px; margin-bottom:14px;">
+            <div style="font-size:0.82rem; font-weight:800; color:#fbbf24; text-transform:uppercase; margin-bottom:4px;">
+              💡 Automated Contextual Root-Cause Hypothesis
+            </div>
+            <div style="font-size:0.88rem; color:#e2e8f0; line-height:1.45;">
+              "{selected_site['root_cause_hypothesis']}"
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.82rem; font-weight:800; color:#38bdf8; text-transform:uppercase; margin-bottom:6px;">
+              🏛️ Suggested Systemic Civic Interventions
+            </div>
+        """, unsafe_allow_html=True)
+
+        for inv in selected_site["systemic_interventions"]:
+            st.markdown(f"<div style='font-size:0.84rem; color:#cbd5e1; margin-bottom:4px;'>📌 <b>{inv}</b></div>", unsafe_allow_html=True)
+
+        st.markdown(f"""
+          <div style="margin-top:12px; text-align:right;">
+            {render_provenance_badge('inferred', '[Inferred / Prototype Historical Dossier]')}
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with s_col_right:
+        st.markdown("#### 📈 Return-Rate Trend Sparkline")
+        spark_df = pd.DataFrame(selected_site["sparkline_data"])
+        if not spark_df.empty:
+            chart = alt.Chart(spark_df).mark_bar(color="#38bdf8", cornerRadiusTopLeft=4, cornerRadiusTopRight=4).encode(
+                x=alt.X("date:T", title="Cleanup Date"),
+                y=alt.Y("weight_kg:Q", title="Plastic Removed (kg)"),
+                tooltip=["date:T", "weight_kg:Q", "effectiveness_pct:Q", "status:N"],
+            ).properties(height=220)
+            st.altair_chart(chart, use_container_width=True)
+
+        st.markdown("#### 📋 30-Day Historical Cleanup Logs")
+        cleanups_df = pd.DataFrame([
+            {
+                "Log ID": c["log_id"],
+                "Date": c["timestamp"].split("T")[0],
+                "Weight (kg)": f"{c['weight_removed_kg']:.1f}",
+                "Effectiveness": f"{c['clearance_effectiveness_pct']:.0f}%",
+                "Status": c["verification_status"],
+                "Crew": c["crew_id"],
+            }
+            for c in reversed(selected_site["cleanups"])
+        ])
+        st.dataframe(cleanups_df, use_container_width=True, hide_index=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB 5: MONSOON WHAT-IF DECISION SIMULATOR
+# ══════════════════════════════════════════════════════════════════════════════
+with tab_simulator:
+    st.markdown("### ☔ Monsoon What-If Decision Simulator")
+    st.markdown(
+        f"Dynamic Municipal Stress-Testing • Hydrologic Runoff Surge • Delayed Inaction Costs • "
+        f"{render_provenance_badge('simulated', '[Simulated / Modelled Estimate]')}",
+        unsafe_allow_html=True,
+    )
+    st.caption("Models urban flood inundation footprint, plastic mass flushed into river channels, and economic inaction penalties across variable rainfall intensities, truck fleets, and dispatch delays.")
+
+    # 3 Dynamic Sliders
+    sc_col1, sc_col2, sc_col3 = st.columns(3)
+    with sc_col1:
+        sim_rain = st.slider(
+            "🌧️ 1. Rainfall Intensity (mm/hr)",
+            min_value=0.0,
+            max_value=75.0,
+            value=25.0,
+            step=2.5,
+            help="0 mm/hr = Dry; 15 mm/hr = Moderate; 40 mm/hr = Heavy; 75 mm/hr = Severe Cloudburst",
+        )
+    with sc_col2:
+        sim_fleet = st.slider(
+            "🚚 2. Available Fleet (Trucks)",
+            min_value=1,
+            max_value=10,
+            value=4,
+            step=1,
+            help="Number of municipal tipper/suction trucks available for rapid dispatch",
+        )
+    with sc_col3:
+        sim_delay = st.slider(
+            "⏱️ 3. Action Delay (Hours)",
+            min_value=0.0,
+            max_value=24.0,
+            value=2.0,
+            step=1.0,
+            help="Elapsed hours between citizen report alert and municipal crew arrival",
+        )
+
+    # Run simulation
+    sim_res = simulator_engine.simulate(
+        rainfall_intensity_mmh=sim_rain,
+        available_fleet=sim_fleet,
+        action_delay_hours=sim_delay,
+        base_hotspots=hotspots,
+    )
+    outcomes = sim_res["outcomes"]
+
+    # Scenario Alert Tag
+    st.markdown(f"""
+    <div style="background:{sim_res['alert_color']}22; border:1px solid {sim_res['alert_color']}; border-radius:10px; padding:10px 16px; margin: 10px 0; display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-weight:800; color:{sim_res['alert_color']}; font-size:0.95rem;">
+        ⚡ {sim_res['scenario_alert']}
+      </div>
+      <div>
+        {render_provenance_badge('simulated', '[Simulated / Modelled Estimate]')}
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 6 Modeled Outcomes KPI Cards
+    s1, s2, s3, s4, s5, s6 = st.columns(6)
+    with s1:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Choking Hotspots</div>
+          <div class="stat-val" style="color:#ef4444;">{outcomes['critical_choking_hotspots']}</div>
+          <div class="stat-note">Sites with grate overflow</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with s2:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Plastic at Risk</div>
+          <div class="stat-val" style="color:#38bdf8;">{outcomes['plastic_mass_at_risk_kg']:.0f} kg</div>
+          <div class="stat-note">Catchment wash-off mass</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with s3:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Swept Into Rivers</div>
+          <div class="stat-val" style="color:#f87171;">{outcomes['plastic_swept_into_rivers_kg']:.0f} kg</div>
+          <div class="stat-note">Flushed into Mula-Mutha</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with s4:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Flood Inundation</div>
+          <div class="stat-val" style="color:#fbbf24;">{outcomes['potential_flood_inundation_area_sqm']:,.0f} m²</div>
+          <div class="stat-note">Submerged urban footprint</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with s5:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Preventable Flood</div>
+          <div class="stat-val" style="color:#34d399;">{outcomes['preventable_flood_area_sqm']:,.0f} m²</div>
+          <div class="stat-note">Avertable via early fleet</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with s6:
+        st.markdown(f"""
+        <div class="stat-card">
+          <div class="stat-label">Cost of Inaction</div>
+          <div class="stat-val" style="color:#c084fc;">₹{outcomes['estimated_civic_cost_of_inaction_inr']:,.0f}</div>
+          <div class="stat-note">Damage & dewatering penalty</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
+
+    # Comparative Scenario Cards (Selected vs Optimal vs Worst-Case)
+    comp_c1, comp_c2 = st.columns([1.3, 1.0], gap="large")
+    with comp_c1:
+        st.markdown("#### ⚖️ Comparative Before/After Scenario Benchmarking")
+        bench = sim_res["comparative_benchmarks"]
+        opt = bench["optimal_immediate_dispatch"]
+        worst = bench["unmitigated_worst_case"]
+
+        st.markdown(f"""
+        <div class="feature-panel">
+          <table style="width:100%; border-collapse:collapse; font-size:0.86rem;">
+            <thead>
+              <tr style="border-bottom:1px solid #1e4253; color:#94a3b8; text-align:left;">
+                <th style="padding:8px 6px;">Scenario Model</th>
+                <th style="padding:8px 6px;">Fleet</th>
+                <th style="padding:8px 6px;">Delay</th>
+                <th style="padding:8px 6px;">Plastic in River</th>
+                <th style="padding:8px 6px;">Inundation Area</th>
+                <th style="padding:8px 6px;">Civic Cost (INR)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid #133240; color:#34d399;">
+                <td style="padding:10px 6px;"><b>🟢 Optimal (Immediate Dispatch)</b></td>
+                <td style="padding:10px 6px;">10 trucks</td>
+                <td style="padding:10px 6px;">0 hrs</td>
+                <td style="padding:10px 6px;">{opt['plastic_swept_kg']:.0f} kg</td>
+                <td style="padding:10px 6px;">&le; 450 m²</td>
+                <td style="padding:10px 6px;"><b>₹{opt['estimated_cost_inr']:,.0f}</b></td>
+              </tr>
+              <tr style="border-bottom:1px solid #133240; color:#38bdf8; background:#081b24;">
+                <td style="padding:10px 6px;"><b>🔵 Current Selected Scenario</b></td>
+                <td style="padding:10px 6px;">{sim_fleet} trucks</td>
+                <td style="padding:10px 6px;">{sim_delay:.0f} hrs</td>
+                <td style="padding:10px 6px;"><b>{outcomes['plastic_swept_into_rivers_kg']:.0f} kg</b></td>
+                <td style="padding:10px 6px;"><b>{outcomes['potential_flood_inundation_area_sqm']:,.0f} m²</b></td>
+                <td style="padding:10px 6px;"><b>₹{outcomes['estimated_civic_cost_of_inaction_inr']:,.0f}</b></td>
+              </tr>
+              <tr style="color:#ef4444;">
+                <td style="padding:10px 6px;"><b>🔴 Worst-Case (Unmitigated Inaction)</b></td>
+                <td style="padding:10px 6px;">0 trucks</td>
+                <td style="padding:10px 6px;">24 hrs</td>
+                <td style="padding:10px 6px;">{worst['plastic_swept_kg']:.0f} kg</td>
+                <td style="padding:10px 6px;">{worst['flood_area_sqm']:,.0f} m²</td>
+                <td style="padding:10px 6px;"><b>₹{worst['estimated_cost_inr']:,.0f}</b></td>
+              </tr>
+            </tbody>
+          </table>
+          <div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:#94a3b8;">
+            <span>Averting {outcomes['plastic_prevented_from_rivers_pct']:.0f}% of river plastic compared to unmitigated inaction</span>
+            {render_provenance_badge('simulated', '[Simulated / Modelled Estimate]')}
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with comp_c2:
+        st.markdown("#### 💰 Cost of Inaction Breakdown")
+        cb = outcomes["cost_breakdown_inr"]
+        st.markdown(f"""
+        <div class="feature-panel">
+          <div style="margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.84rem;">
+              <span style="color:#94a3b8;">Suction & Dewatering Pumping:</span>
+              <span style="font-weight:700; color:#cbd5e1;">₹{cb['dewatering_pumping']:,.0f}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-top:6px;">
+              <span style="color:#94a3b8;">Traffic Disruption Economic Loss:</span>
+              <span style="font-weight:700; color:#cbd5e1;">₹{cb['traffic_disruption_impact']:,.0f}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-top:6px;">
+              <span style="color:#94a3b8;">River Environmental Penalties:</span>
+              <span style="font-weight:700; color:#cbd5e1;">₹{cb['river_restoration_penalty']:,.0f}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-top:6px;">
+              <span style="color:#94a3b8;">Emergency Contractor Overtime:</span>
+              <span style="font-weight:700; color:#cbd5e1;">₹{cb['emergency_contractor_surcharge']:,.0f}</span>
+            </div>
+          </div>
+          <div style="padding-top:10px; border-top:1px solid #1a3c48; display:flex; justify-content:space-between; font-weight:800; font-size:1.05rem; color:#c084fc;">
+            <span>Total Civic Burden:</span>
+            <span>₹{outcomes['estimated_civic_cost_of_inaction_inr']:,.0f}</span>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB 6: CITIZEN MOBILE SIMULATOR (Paper-Themed Light Editorial View)
 # ══════════════════════════════════════════════════════════════════════════════
 with tab_mobile:
     m_col1, m_col2 = st.columns([1.1, 1.2], gap="large")
@@ -782,9 +1536,9 @@ with tab_mobile:
 
             st.markdown(f"""
             <div style="background:#faf6ee; border:1px solid #e3d7c3; border-radius:10px; padding:10px 12px; margin:10px 0; font-family:'Newsreader', serif; font-size:12px; color:#2d2824;">
-              <div><b>GPS Lock:</b> <span class="font-mono-code">{mock_lat:.4f}° N, {mock_lon:.4f}° E</span></div>
-              <div><b>AI Confidence:</b> {detection['mean_confidence']:.0%} (TACO taxonomy)</div>
-              <div><b>Clog Severity:</b> <span style="color:#a63d1e; font-weight:800;">{detection['severity']}/5.0</span></div>
+              <div><b>GPS Lock:</b> <span class="font-mono-code">{mock_lat:.4f}° N, {mock_lon:.4f}° E</span> {render_provenance_badge('observed')}</div>
+              <div><b>AI Confidence:</b> {detection['mean_confidence']:.0%} (TACO taxonomy) {render_provenance_badge('inferred')}</div>
+              <div><b>Clog Severity:</b> <span style="color:#a63d1e; font-weight:800;">{detection['severity']}/5.0</span> {render_provenance_badge('inferred')}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -838,10 +1592,92 @@ with tab_mobile:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# TAB 3: TACO DATASET & MODEL LAB
+# TAB 7: EVIDENCE & PROVENANCE LAYER (SYSTEM-WIDE DEFENSIBILITY)
 # ══════════════════════════════════════════════════════════════════════════════
-with tab_taco:
-    st.markdown("### 🧠 TACO Dataset & AI Inference Engine")
+with tab_provenance:
+    st.markdown("### 🔎 Evidence & Provenance Layer (System-Wide Defensibility)")
+    st.markdown(
+        "Standardized 4-tier data provenance framework ensuring full legal, auditable, "
+        "and defensible transparency for Pune Municipal Corporation (PMC) operators and executive leadership.",
+    )
+
+    p_col1, p_col2 = st.columns(2)
+    with p_col1:
+        st.markdown(f"""
+        <div class="feature-panel" style="border-top:3px solid #10b981;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-weight:800; font-size:1.05rem; color:#10b981;">🟢 Tier 1: [Observed]</span>
+            {render_provenance_badge('observed')}
+          </div>
+          <p style="font-size:0.85rem; color:#cbd5e1; line-height:1.45;">
+            <b>Ground-Truth Observational Layer:</b> Unmodified data collected directly from field agents, citizen smartphones, and physical sensors.
+          </p>
+          <ul style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
+            <li>Raw GPS latitude & longitude coordinates</li>
+            <li>Immutable ISO-8601 upload timestamps</li>
+            <li>Unprocessed citizen camera captures</li>
+            <li>PMC field crew physical weigh-scale receipts</li>
+          </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown(f"""
+        <div class="feature-panel" style="border-top:3px solid #fbbf24;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-weight:800; font-size:1.05rem; color:#fbbf24;">🟡 Tier 3: [Inferred]</span>
+            {render_provenance_badge('inferred')}
+          </div>
+          <p style="font-size:0.85rem; color:#cbd5e1; line-height:1.45;">
+            <b>Machine Learning & Statistical Deduction:</b> Algorithmic inferences generated via computer vision and probabilistic models.
+          </p>
+          <ul style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
+            <li>TACO/YOLOv8 detected object bounding boxes & confidence scores</li>
+            <li>Before/After cleanup clearance ratios</li>
+            <li>Automated contextual root-cause hypotheses</li>
+            <li>Dominant polymer classification (HDPE, PET, EPS)</li>
+          </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with p_col2:
+        st.markdown(f"""
+        <div class="feature-panel" style="border-top:3px solid #38bdf8;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-weight:800; font-size:1.05rem; color:#38bdf8;">🔵 Tier 2: [Derived]</span>
+            {render_provenance_badge('derived')}
+          </div>
+          <p style="font-size:0.85rem; color:#cbd5e1; line-height:1.45;">
+            <b>Deterministic Mathematical Calculation:</b> Computed spatial metrics and deterministic formulaic transformations.
+          </p>
+          <ul style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
+            <li>DBSCAN spatial consolidation halos (eps = 50m)</li>
+            <li>Geodesic distance to nearest storm drain channel (m)</li>
+            <li>0–100 Weighted Hydrological Risk Score formula</li>
+            <li>Optimized TSP municipal truck route polyline</li>
+          </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown(f"""
+        <div class="feature-panel" style="border-top:3px solid #c084fc;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-weight:800; font-size:1.05rem; color:#c084fc;">🟣 Tier 4: [Simulated]</span>
+            {render_provenance_badge('simulated')}
+          </div>
+          <p style="font-size:0.85rem; color:#cbd5e1; line-height:1.45;">
+            <b>Parametric Scenario Projections:</b> Hydraulic simulations and predictive what-if scenario estimations.
+          </p>
+          <ul style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
+            <li>Upcoming 24–72h Open-Meteo precipitation wash-off</li>
+            <li>Monsoon cloudburst flood inundation footprint (sq meters)</li>
+            <li>Plastic mass flushed into river basin under delay</li>
+            <li>Estimated civic economic cost of inaction (INR)</li>
+          </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # TACO AI Readiness status preserved
+    st.markdown("#### 🧠 TACO Model Readiness & Dataset Attribution")
     taco = dataset_status()
     if taco.get("available"):
         tc1, tc2, tc3, tc4 = st.columns(4)
@@ -853,20 +1689,4 @@ with tab_taco:
             st.metric("Curated Roadside Samples", taco.get("sample_images", 5))
         with tc4:
             st.metric("Inference Engine", "Active (Calibrated YOLOv8)")
-
         st.caption(taco.get("license", "CC BY 4.0 Attribution"))
-
-        st.markdown("#### 🎯 Curated Urban Waste Target Classes")
-        class_cols = st.columns(len(taco["target_classes"]))
-        icons = ["🍾", "🛍️", "🥫", "📦", "🥤"]
-        for col, target, icon in zip(class_cols, taco["target_classes"], icons):
-            with col:
-                st.markdown(f"""
-                <div style="background:#0e232e; border:1px solid #1f4255; border-radius:10px; padding:14px; text-align:center;">
-                  <div style="font-size:2rem;">{icon}</div>
-                  <div style="font-weight:700; color:#38bdf8; font-size:0.88rem; margin-top:6px;">{target.replace('_', ' ').title()}</div>
-                  <div class="tiny-text" style="margin-top:2px;">TACO COCO Class</div>
-                </div>
-                """, unsafe_allow_html=True)
-    else:
-        st.warning("TACO dataset status unavailable.")

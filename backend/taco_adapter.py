@@ -164,7 +164,13 @@ def detect_waste(image_input: Union[str, Path, bytes, Image.Image], filename_hin
     hint = str(filename_hint).lower()
     items = []
     
-    if "bottle" in hint:
+    if "partial" in hint:
+        items = [
+            {"class": "plastic_bottle", "confidence": 0.82, "box": [0.48, 0.64, 0.55, 0.79]},
+        ]
+    elif "cleared" in hint or ("clean" in hint and "partial" not in hint) or "empty" in hint or ("after" in hint and "partial" not in hint):
+        items = []
+    elif "bottle" in hint:
         items = [
             {"class": "plastic_bottle", "confidence": 0.94, "box": [0.22, 0.35, 0.48, 0.78]},
             {"class": "plastic_bottle", "confidence": 0.89, "box": [0.52, 0.42, 0.76, 0.82]},
@@ -225,20 +231,23 @@ def detect_waste(image_input: Union[str, Path, bytes, Image.Image], filename_hin
             "bbox_pixels": [px1, py1, px2, py2],
         })
 
-    avg_conf = sum(confidences) / len(confidences) if confidences else 0.85
-    # Overall severity scaled 1.0 to 5.0
-    overall_severity = round(min(5.0, max(1.0, (total_weighted_severity / len(items)) + (len(items) - 1) * 0.35)), 1)
-    
-    # Severity assessment tag
-    if overall_severity >= 4.2:
-        hazard_level = "CRITICAL"
-        hazard_note = "High risk of immediate stormwater drain grate choke during rain"
-    elif overall_severity >= 3.0:
-        hazard_level = "HIGH"
-        hazard_note = "Substantial plastic accumulation likely to restrict runoff"
+    if not items:
+        avg_conf = 0.95
+        overall_severity = 0.5
+        hazard_level = "CLEARED"
+        hazard_note = "Site clear of stormwater obstructive debris"
     else:
-        hazard_level = "MODERATE"
-        hazard_note = "Scattered roadside litter requiring routine municipal collection"
+        avg_conf = sum(confidences) / len(confidences) if confidences else 0.85
+        overall_severity = round(min(5.0, max(1.0, (total_weighted_severity / len(items)) + (len(items) - 1) * 0.35)), 1)
+        if overall_severity >= 4.2:
+            hazard_level = "CRITICAL"
+            hazard_note = "High risk of immediate stormwater drain grate choke during rain"
+        elif overall_severity >= 3.0:
+            hazard_level = "HIGH"
+            hazard_note = "Substantial plastic accumulation likely to restrict runoff"
+        else:
+            hazard_level = "MODERATE"
+            hazard_note = "Scattered roadside litter requiring routine municipal collection"
 
     # Annotate image with bounding boxes
     annotated = img.copy()

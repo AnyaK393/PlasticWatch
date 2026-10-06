@@ -1,0 +1,83 @@
+{
+  "project_classes": [
+    "plastic_bottle",
+    "plastic_bag_wrapper",
+    "can_metal",
+    "carton_paper",
+    "other_plastic"
+  ],
+  "mapping": {
+    "plastic_bottle": [
+      "Clear plastic bottle",
+      "Other plastic bottle",
+      "Plastic bottle cap",
+      "Plastic lid"
+    ],
+    "plastic_bag_wrapper": [
+      "Single-use carrier bag",
+      "Polypropylene bag",
+      "Garbage bag",
+      "Plastic film",
+      "Crisp packet",
+      "Other plastic wrapper"
+    ],
+    "can_metal": [
+      "Food Can",
+      "Drink can",
+      "Metal bottle cap",
+      "Aluminium foil",
+      "Aerosol",
+      "Aluminium blister pack"
+    ],
+    "carton_paper": [
+      "Drink carton",
+      "Meal carton",
+      "Egg carton",
+      "Other carton",
+      "Corrugated carton",
+      "Paper cup",
+      "Pizza box",
+      "Magazine paper",
+      "Normal paper",
+      "Paper bag",
+      "Toilet tube"
+    ],
+    "other_plastic": [
+      "Disposable plastic cup",
+      "Foam cup",
+      "Other plastic cup",
+      "Disposable food container",
+      "Plastic straw",
+      "Other plastic",
+      "Plastic glooves",
+      "Plastic utensils",
+      "Spread tub",
+      "Tupperware",
+      "Pop tab",
+      "Foam food container"
+    ]
+  },
+  "excluded_categories": [
+    "Battery",
+    "Carded blister pack",
+    "Glass bottle",
+    "Broken glass",
+    "Glass cup",
+    "Food waste",
+    "Glass jar",
+    "Metal lid",
+    "Tissues",
+    "Wrapping paper",
+    "Plastified paper bag",
+    "Six pack rings",
+    "Other plastic container",
+    "Rope & strings",
+    "Scrap metal",
+    "Shoe",
+    "Squeezable tube",
+    "Paper straw",
+    "Styrofoam piece",
+    "Unlabeled litter",
+    "Cigarette"
+  ]
+}

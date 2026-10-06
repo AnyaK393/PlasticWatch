@@ -23,6 +23,7 @@ data/cache/
 .env
 .streamlit/secrets.toml
 *.json
+!data/*.json
 venv/
 pycache/.codex-build/**/node_modules/
 

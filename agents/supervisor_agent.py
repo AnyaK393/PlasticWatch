@@ -4,7 +4,6 @@ import os
 import json
 from dotenv import load_dotenv
 from typing import Dict, Any, List
-import google.generativeai as genai
 
 load_dotenv()
 
@@ -33,6 +32,20 @@ class SupervisorAgent:
                 self.model = genai.GenerativeModel("gemini-2.5-flash")
             except Exception:
                 self.model = None
+
+    def generate_dispatch_briefing(
+        self,
+        hotspots_count: int,
+        total_distance: float,
+        waypoint_list: list,
+    ) -> str:
+        """Generates dispatch briefing string."""
+        return (
+            f"=== DISPATCH BRIEFING ===\n"
+            f"Targets: {hotspots_count} hotspots\n"
+            f"Total Distance: {total_distance:.1f} km\n"
+            f"Waypoints: {len(waypoint_list)} stops planned."
+        )
 
     def generate_mission_report(
         self,

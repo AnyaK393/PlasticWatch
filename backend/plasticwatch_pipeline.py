@@ -276,6 +276,7 @@ class PlasticWatchUrbanPipeline:
         for idx, h in enumerate(scored_hotspots, 1):
             h["id"] = f"HOTSPOT-{idx:02d}"
             h["hotspot_id"] = f"HOTSPOT-{idx:02d}"
+            h["score"] = h["total_score"]
 
         # Summary KPIs
         total_reports = len(raw_reports)
@@ -289,6 +290,7 @@ class PlasticWatchUrbanPipeline:
         current_rain = scored_hotspots[0]["rainfall_forecast_mm"] if scored_hotspots else 16.5
 
         return {
+            "challenge_id": "PS-08",
             "area": "Pune Municipal Corporation (PMC) - Smart Drain Pilot",
             "mode": "live_urban_intelligence",
             "mode_label": "Urban Civic Environmental Intelligence Engine",

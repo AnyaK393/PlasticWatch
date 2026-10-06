@@ -142,3 +142,23 @@ class DBSCANClusteringEngine:
             }
             for h in results if h["cluster_dbscan_id"] != -1
         ]
+
+
+class DebrisClusterer:
+    """Legacy marine clusterer helper for backward compatibility."""
+
+    def __init__(self, density_threshold: int = 20):
+        self.threshold = density_threshold
+
+    def create_density_grid(self, mask: np.ndarray, block_size: int = 10) -> np.ndarray:
+        h, w = mask.shape
+        gh = (h + block_size - 1) // block_size
+        gw = (w + block_size - 1) // block_size
+        grid = np.zeros((gh, gw), dtype=int)
+        for i in range(gh):
+            for j in range(gw):
+                grid[i, j] = int(np.sum(mask[i * block_size:(i + 1) * block_size, j * block_size:(j + 1) * block_size]))
+        return grid
+
+    def extract_dense_regions(self, density_grid: np.ndarray) -> np.ndarray:
+        return density_grid >= self.threshold

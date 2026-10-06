@@ -1,0 +1,387 @@
+[
+  {
+    "id": "CR-201",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.94,
+    "severity": 4.6,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-01T10:14:00Z",
+    "source": "Citizen Mobile App (GPS Verified)",
+    "verification": "verified",
+    "notes": "Severe plastic bottle buildup choking stormwater culvert inlet."
+  },
+  {
+    "id": "CR-202",
+    "lat": 18.5207,
+    "lon": 73.8569,
+    "plastic_confidence": 0.89,
+    "severity": 4.2,
+    "photo_filename": "sample_plastic_bag_curb.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper",
+      "other_plastic"
+    ],
+    "submitted_at": "2026-10-01T10:28:00Z",
+    "source": "Citizen Mobile App (GPS Verified)",
+    "verification": "pending",
+    "notes": "Second report of plastic bags around same culvert curb."
+  },
+  {
+    "id": "CR-203",
+    "lat": 18.5205,
+    "lon": 73.8566,
+    "plastic_confidence": 0.91,
+    "severity": 4.4,
+    "photo_filename": "sample_mixed_waste_grate.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "other_plastic"
+    ],
+    "submitted_at": "2026-10-01T10:45:00Z",
+    "source": "Citizen Mobile App (GPS Verified)",
+    "verification": "pending",
+    "notes": "Third report: waste overflowing into storm drain opening."
+  },
+  {
+    "id": "CR-204",
+    "lat": 18.506,
+    "lon": 73.8625,
+    "plastic_confidence": 0.92,
+    "severity": 4.1,
+    "photo_filename": "sample_food_wrappers_culvert.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper",
+      "carton_paper"
+    ],
+    "submitted_at": "2026-10-01T09:30:00Z",
+    "source": "Citizen Mobile App (GPS Verified)",
+    "verification": "verified",
+    "notes": "Nagzari Nallah street grate covered with multilayer plastic packaging."
+  },
+  {
+    "id": "CR-205",
+    "lat": 18.5063,
+    "lon": 73.8627,
+    "plastic_confidence": 0.88,
+    "severity": 3.8,
+    "photo_filename": "sample_beverage_cans_gutter.jpg",
+    "detected_classes": [
+      "can_metal",
+      "plastic_bottle"
+    ],
+    "submitted_at": "2026-10-01T11:02:00Z",
+    "source": "Citizen Mobile App (GPS Verified)",
+    "verification": "pending",
+    "notes": "Duplicate report 35m from CR-204 along Nagzari drainage corridor."
+  },
+  {
+    "id": "CR-206",
+    "lat": 18.5074,
+    "lon": 73.8077,
+    "plastic_confidence": 0.84,
+    "severity": 3.5,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "can_metal"
+    ],
+    "submitted_at": "2026-10-01T08:45:00Z",
+    "source": "Citizen Mobile App (GPS Verified)",
+    "verification": "verified",
+    "notes": "Kothrud stormwater feeder roadside waste pile."
+  },
+  {
+    "id": "CR-207",
+    "lat": 18.535,
+    "lon": 73.892,
+    "plastic_confidence": 0.87,
+    "severity": 4.5,
+    "photo_filename": "sample_mixed_waste_grate.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper",
+      "plastic_bottle",
+      "other_plastic"
+    ],
+    "submitted_at": "2026-10-01T11:20:00Z",
+    "source": "Citizen Mobile App (GPS Verified)",
+    "verification": "pending",
+    "notes": "Mula-Mutha confluence outfall: heavy floating plastic buildup."
+  },
+  {
+    "id": "CR-208",
+    "lat": 18.548,
+    "lon": 73.9053,
+    "plastic_confidence": 0.76,
+    "severity": 2.6,
+    "photo_filename": "sample_food_wrappers_culvert.jpg",
+    "detected_classes": [
+      "other_plastic",
+      "carton_paper"
+    ],
+    "submitted_at": "2026-10-01T07:15:00Z",
+    "source": "Citizen Mobile App (GPS Verified)",
+    "verification": "pending",
+    "notes": "Yerawada side canal minor litter accumulation."
+  },
+  {
+    "id": "CR-209",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.7,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper",
+      "plastic_bottle"
+    ],
+    "submitted_at": "2026-10-01T17:31:38+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Test report from test suite"
+  },
+  {
+    "id": "CR-210",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.7,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-01T17:33:33+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Test report from test suite"
+  },
+  {
+    "id": "CR-211",
+    "lat": 18.506,
+    "lon": 73.8625,
+    "plastic_confidence": 0.87,
+    "severity": 3.7,
+    "photo_filename": "sample_food_wrappers_culvert.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper",
+      "other_plastic"
+    ],
+    "submitted_at": "2026-10-01T18:09:42+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Grate covered with discarded plastic bottles"
+  },
+  {
+    "id": "CR-212",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.7,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-01T18:39:17+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Test report from test suite"
+  },
+  {
+    "id": "CR-213",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.7,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper",
+      "plastic_bottle"
+    ],
+    "submitted_at": "2026-10-01T18:40:04+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Test report from test suite"
+  },
+  {
+    "id": "CR-214",
+    "lat": 18.535,
+    "lon": 73.892,
+    "plastic_confidence": 0.88,
+    "severity": 3.7,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-01T18:43:14+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Citizen mobile upload via PWA/API Feeder"
+  },
+  {
+    "id": "CR-215",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.87,
+    "severity": 3.5,
+    "photo_filename": "sample_beverage_cans_gutter.jpg",
+    "detected_classes": [
+      "carton_paper",
+      "can_metal"
+    ],
+    "submitted_at": "2026-10-01T19:49:18+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Citizen mobile upload via PWA/API Feeder"
+  },
+  {
+    "id": "CR-216",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.87,
+    "severity": 3.5,
+    "photo_filename": "sample_beverage_cans_gutter.jpg",
+    "detected_classes": [
+      "carton_paper",
+      "can_metal"
+    ],
+    "submitted_at": "2026-10-01T19:49:25+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Citizen mobile upload via PWA/API Feeder"
+  },
+  {
+    "id": "CR-217",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.87,
+    "severity": 3.5,
+    "photo_filename": "sample_beverage_cans_gutter.jpg",
+    "detected_classes": [
+      "can_metal",
+      "carton_paper"
+    ],
+    "submitted_at": "2026-10-02T20:35:32+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "repeated complaint"
+  },
+  {
+    "id": "CR-218",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.87,
+    "severity": 3.5,
+    "photo_filename": "sample_beverage_cans_gutter.jpg",
+    "detected_classes": [
+      "carton_paper",
+      "can_metal"
+    ],
+    "submitted_at": "2026-10-03T11:08:41+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "repeated complaint"
+  },
+  {
+    "id": "CR-219",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.87,
+    "severity": 3.5,
+    "photo_filename": "sample_beverage_cans_gutter.jpg",
+    "detected_classes": [
+      "carton_paper",
+      "can_metal"
+    ],
+    "submitted_at": "2026-10-03T12:39:08+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "repeated complaint"
+  },
+  {
+    "id": "CR-220",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.7,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-05T13:32:19+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Test report from test suite"
+  },
+  {
+    "id": "CR-221",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.7,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-05T14:15:09+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Test report from test suite"
+  },
+  {
+    "id": "CR-222",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.7,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper",
+      "plastic_bottle"
+    ],
+    "submitted_at": "2026-10-05T14:18:10+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Test report from test suite"
+  },
+  {
+    "id": "CR-223",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.7,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper",
+      "plastic_bottle"
+    ],
+    "submitted_at": "2026-10-05T14:21:05+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Test report from test suite"
+  },
+  {
+    "id": "CR-224",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.7,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-05T14:23:35+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Test report from test suite"
+  }
+]

@@ -1,14 +1,17 @@
-import xarray as xr
+"""Test dataset ingestion (legacy marine NetCDF)."""
+import unittest
+from pathlib import Path
 
-ds = xr.open_dataset(
-    "data/hycom_data.nc",
-    engine="netcdf4"
-)
 
-print(ds)
+class TestDataset(unittest.TestCase):
+    def test_hycom_dataset(self):
+        nc_path = Path("data/hycom_data.nc")
+        if not nc_path.is_file():
+            self.skipTest("HYCOM dataset file data/hycom_data.nc not found (marine legacy).")
+        import xarray as xr
+        ds = xr.open_dataset(str(nc_path), engine="netcdf4")
+        self.assertIsNotNone(ds)
 
-print("\nVARIABLES:")
-print(list(ds.variables))
 
-print("\nCOORDS:")
-print(list(ds.coords))
+if __name__ == "__main__":
+    unittest.main()

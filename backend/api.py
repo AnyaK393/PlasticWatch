@@ -24,13 +24,18 @@ from pydantic import BaseModel, Field
 
 from backend.clustering_engine import DBSCANClusteringEngine
 from backend.drain_risk_engine import DrainRiskEngine
+from backend.forecasting_engine import ForecastingEngine
 from backend.plasticwatch_pipeline import (
     PlasticWatchUrbanPipeline,
     get_seed_reports,
     run_plasticwatch,
 )
+from backend.provenance import PROVENANCE_TIERS, render_provenance_badge
+from backend.recurrence_engine import RecurrenceEngine
 from backend.route_optimizer import RouteOptimizer
+from backend.simulator_engine import MonsoonSimulatorEngine
 from backend.taco_adapter import dataset_status, detect_waste, get_sample_images
+from backend.verification_engine import CleanupVerificationEngine
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +74,33 @@ class DispatchRequest(BaseModel):
     hotspot_ids: List[str] = Field(default_factory=list, description="List of hotspot IDs to dispatch")
     truck_id: Optional[str] = Field("PMC-TRUCK-04", description="Assigned municipal truck ID")
     crew_name: Optional[str] = Field("PMC Rapid Sanitation Crew 2", description="Assigned cleanup crew")
+
+
+class ForecastRequest(BaseModel):
+    horizon_hours: int = Field(48, ge=24, le=72, description="Forecast window (24, 48, or 72 hours)")
+    rainfall_scenario_mm: Optional[float] = Field(None, description="Optional manual rainfall override in mm")
+
+
+class CleanupVerificationRequest(BaseModel):
+    before_image: str = Field("sample_bottles_drain.jpg", description="Pre-cleanup sample filename, path, or base64")
+    after_image: str = Field("sample_cleared_drain.jpg", description="Post-cleanup clearance sample filename, path, or base64")
+    hotspot_id: Optional[str] = Field("HOTSPOT-01", description="Hotspot identifier")
+    site_name: Optional[str] = Field("Shaniwar Wada Culvert", description="Location name")
+    contractor_id: Optional[str] = Field("PMC-SANITATION-04", description="Cleanup crew/contractor ID")
+    operator_notes: Optional[str] = Field("", description="Field operator notes")
+
+
+class SimulationRequest(BaseModel):
+    rainfall_intensity_mmh: float = Field(25.0, ge=0.0, le=75.0, description="Rainfall intensity in mm/hr (0-75)")
+    available_fleet: int = Field(4, ge=1, le=10, description="Available suction/tipper trucks (1-10)")
+    action_delay_hours: float = Field(2.0, ge=0.0, le=24.0, description="Action delay in hours (0-24)")
+
+
+forecasting_engine = ForecastingEngine()
+verification_engine = CleanupVerificationEngine()
+recurrence_engine = RecurrenceEngine()
+simulator_engine = MonsoonSimulatorEngine()
+HISTORICAL_DOSSIER_PATH = ROOT / "data" / "historical_urban_dossier.json"
 
 
 # ── Static & Mobile Client Routes ────────────────────────────────────────────
@@ -193,3 +225,136 @@ async def list_sample_catalog():
 async def get_taco_status():
     """TACO dataset facts and training pipeline status."""
     return dataset_status()
+
+
+# ── Advanced Municipal Intelligence Endpoints (Features 1-5) ──────────────────
+@app.get("/api/forecast")
+async def get_hotspot_forecast(
+    horizon_hours: int = 48,
+    rain_override_mm: Optional[float] = None,
+):
+    """Predictive Hotspot Forecasting (24-72h) with escalation risk and preventive actions."""
+    pipeline_data = pipeline.run_pipeline(rainfall_override_mm=rain_override_mm)
+    hotspots = pipeline_data.get("hotspots", [])
+    forecast = forecasting_engine.generate_hotspot_forecast(
+        hotspots=hotspots,
+        horizon_hours=horizon_hours,
+        rainfall_scenario_mm=rain_override_mm,
+    )
+    return forecast
+
+
+@app.post("/api/forecast")
+async def post_hotspot_forecast(request: ForecastRequest):
+    """Predictive Hotspot Forecasting via POST with custom scenario payload."""
+    pipeline_data = pipeline.run_pipeline(rainfall_override_mm=request.rainfall_scenario_mm)
+    hotspots = pipeline_data.get("hotspots", [])
+    forecast = forecasting_engine.generate_hotspot_forecast(
+        hotspots=hotspots,
+        horizon_hours=request.horizon_hours,
+        rainfall_scenario_mm=request.rainfall_scenario_mm,
+    )
+    return forecast
+
+
+@app.post("/api/verify-cleanup")
+async def verify_cleanup_endpoint(
+    request: Optional[CleanupVerificationRequest] = None,
+    before_file: Optional[UploadFile] = File(None),
+    after_file: Optional[UploadFile] = File(None),
+    hotspot_id: Optional[str] = Form(None),
+    contractor_id: Optional[str] = Form(None),
+):
+    """AI Before/After Cleanup Verification comparing pre vs post clearance photos."""
+    if before_file and after_file:
+        b_bytes = await before_file.read()
+        a_bytes = await after_file.read()
+        result = verification_engine.verify_cleanup(
+            before_image=b_bytes,
+            after_image=a_bytes,
+            hotspot_id=hotspot_id or "HS-UPLOAD",
+            contractor_id=contractor_id or "PMC-SANITATION-CREW",
+        )
+        return result
+
+    if request:
+        result = verification_engine.verify_cleanup(
+            before_image=request.before_image,
+            after_image=request.after_image,
+            hotspot_id=request.hotspot_id,
+            site_name=request.site_name,
+            contractor_id=request.contractor_id,
+            operator_notes=request.operator_notes,
+        )
+        return result
+
+    # Default fallback demo verification
+    return verification_engine.verify_cleanup(
+        before_image="sample_bottles_drain.jpg",
+        after_image="sample_cleared_drain.jpg",
+        hotspot_id="HOTSPOT-01",
+        site_name="Shaniwar Wada Culvert",
+    )
+
+
+@app.get("/api/recurrence")
+async def get_recurrence_intelligence(site_id: Optional[str] = None):
+    """Historical recurrence metrics, return intervals, and automated root-cause hypotheses."""
+    pipeline_data = pipeline.run_pipeline()
+    report = recurrence_engine.analyze_recurrence(
+        site_id_filter=site_id,
+        active_hotspots=pipeline_data.get("hotspots", []),
+    )
+    return report
+
+
+@app.get("/api/simulate")
+async def get_monsoon_simulation(
+    rainfall_intensity: float = 25.0,
+    fleet: int = 4,
+    delay_hours: float = 2.0,
+):
+    """Monsoon What-If Decision Simulator modeling flood area, plastic swept, and inaction costs."""
+    pipeline_data = pipeline.run_pipeline()
+    return simulator_engine.simulate(
+        rainfall_intensity_mmh=rainfall_intensity,
+        available_fleet=fleet,
+        action_delay_hours=delay_hours,
+        base_hotspots=pipeline_data.get("hotspots", []),
+    )
+
+
+@app.post("/api/simulate")
+async def post_monsoon_simulation(request: SimulationRequest):
+    """Monsoon What-If Decision Simulator via POST with JSON body."""
+    pipeline_data = pipeline.run_pipeline()
+    return simulator_engine.simulate(
+        rainfall_intensity_mmh=request.rainfall_intensity_mmh,
+        available_fleet=request.available_fleet,
+        action_delay_hours=request.action_delay_hours,
+        base_hotspots=pipeline_data.get("hotspots", []),
+    )
+
+
+@app.get("/api/dossier")
+async def get_historical_dossier():
+    """Returns the Pune 30-day historical cleanup dossier and pilot location logs."""
+    if HISTORICAL_DOSSIER_PATH.is_file():
+        return json.loads(HISTORICAL_DOSSIER_PATH.read_text(encoding="utf-8"))
+    raise HTTPException(status_code=404, detail="Historical dossier file not found")
+
+
+@app.get("/api/provenance")
+async def get_provenance_definitions():
+    """Evidence & Provenance Layer tier taxonomy (Observed, Derived, Inferred, Simulated)."""
+    return {
+        "status": "success",
+        "provenance_framework": "PlasticWatch Defensible Civic Intelligence",
+        "tiers": PROVENANCE_TIERS,
+    }
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("backend.api:app", host="0.0.0.0", port=8000, reload=True)
+
