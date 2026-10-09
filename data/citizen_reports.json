@@ -383,5 +383,69 @@
     "source": "Citizen Mobile App (Live Ingestion)",
     "verification": "pending",
     "notes": "Test report from test suite"
+  },
+  {
+    "id": "CR-225",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.8,
+    "photo_filename": "taco2.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-06T13:37:26+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Citizen mobile upload via PWA/API Feeder"
+  },
+  {
+    "id": "CR-226",
+    "lat": 18.5204,
+    "lon": 73.8568,
+    "plastic_confidence": 0.88,
+    "severity": 3.8,
+    "photo_filename": "taco2.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-06T14:42:01+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Citizen mobile upload via PWA/API Feeder"
+  },
+  {
+    "id": "CR-227",
+    "lat": 18.468468,
+    "lon": 73.933858,
+    "plastic_confidence": 0.88,
+    "severity": 3.8,
+    "photo_filename": "109379.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-08T19:40:03+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Mobile Citizen Camera Observation"
+  },
+  {
+    "id": "CR-228",
+    "lat": 18.468468,
+    "lon": 73.933858,
+    "plastic_confidence": 0.88,
+    "severity": 3.8,
+    "photo_filename": "109379.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-08T19:48:03+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Mobile Citizen Camera Observation"
   }
 ]

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoLens | Citizen Civic Reporting</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col justify-between p-4 font-sans">
+  
+  <div>
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-6">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🌱</span>
+        <h1 class="text-xl font-bold tracking-tight text-emerald-400">EcoLens</h1>
+      </div>
+      <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/20 font-medium">Citizen Portal</span>
+    </div>
+
+    <div class="mb-5">
+      <h2 class="text-lg font-semibold text-slate-100">Report Waste Accumulation</h2>
+      <p class="text-xs text-slate-400 mt-1">Geo-tagged reports feed municipal drain-risk models.</p>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 mb-4">
+      <label class="block text-xs font-medium text-slate-300 mb-2">Capture / Upload Photo</label>
+      <input type="file" id="imageInput" accept="image/*" capture="environment" 
+             class="block w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-500 file:text-slate-950 hover:file:bg-emerald-400 cursor-pointer mb-3"/>
+      
+      <div id="previewContainer" class="hidden relative rounded-xl overflow-hidden max-h-48 border border-slate-700">
+        <img id="preview" class="w-full object-cover">
+      </div>
+    </div>
+
+    <!-- Location Status Card -->
+    <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 mb-4">
+      <div class="flex justify-between items-center mb-1">
+        <span class="text-xs font-medium text-slate-300">GPS Telemetry</span>
+        <button onclick="fetchLocation()" class="text-xs text-emerald-400 underline hover:text-emerald-300">Refresh</button>
+      </div>
+      <p id="locStatus" class="text-xs text-amber-400">Acquiring coordinates...</p>
+      <input type="hidden" id="lat">
+      <input type="hidden" id="lng">
+    </div>
+
+    <!-- Submit Button -->
+    <button id="submitBtn" onclick="submitReport()" 
+            class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-xl transition duration-200 shadow-lg shadow-emerald-500/20">
+      Transmit Civic Report
+    </button>
+  </div>
+
+  <!-- Status / Response Toast -->
+  <div id="statusToast" class="hidden mt-4 p-4 rounded-xl border text-xs"></div>
+
+  <footer class="text-center text-[11px] text-slate-500 py-2 border-t border-slate-800/60 mt-4">
+    PCMC Smart Sanitation Network &bull; API Layer
+  </footer>
+
+  <script>
+    const previewContainer = document.getElementById('previewContainer');
+    const preview = document.getElementById('preview');
+    const imageInput = document.getElementById('imageInput');
+    const locStatus = document.getElementById('locStatus');
+    const latInput = document.getElementById('lat');
+    const lngInput = document.getElementById('lng');
+    const statusToast = document.getElementById('statusToast');
+
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (file) {
+        preview.src = URL.createObjectURL(file);
+        previewContainer.classList.remove('hidden');
+      }
+    });
+
+    function fetchLocation() {
+      locStatus.innerText = "Acquiring GPS fix...";
+      locStatus.className = "text-xs text-amber-400";
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            latInput.value = pos.coords.latitude;
+            lngInput.value = pos.coords.longitude;
+            locStatus.innerText = `Lat: ${pos.coords.latitude.toFixed(5)}, Lng: ${pos.coords.longitude.toFixed(5)}`;
+            locStatus.className = "text-xs text-emerald-400 font-mono";
+          },
+          (err) => {
+            // Fallback default: PCCOE Campus Pune
+            latInput.value = "18.6517";
+            lngInput.value = "73.7615";
+            locStatus.innerText = "Location Mocked (PCCOE Campus)";
+            locStatus.className = "text-xs text-slate-400 italic font-mono";
+          }
+        );
+      }
+    }
+    fetchLocation();
+
+    async function submitReport() {
+      const file = imageInput.files[0];
+      if (!file) {
+        alert("Please attach or capture a waste photo.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("latitude", latInput.value || "18.6517");
+      formData.append("longitude", lngInput.value || "73.7615");
+
+      const btn = document.getElementById('submitBtn');
+      btn.innerText = "Analyzing & Clustering...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/api/v1/citizen/report", {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        
+        statusToast.classList.remove('hidden');
+        if (res.ok) {
+          statusToast.className = "p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs";
+          statusToast.innerHTML = `<strong>Report Registered!</strong><br>Ticket: #${data.report_id || 'PCMC-REC-101'}<br>Risk Level: ${data.risk_score ?? 'Evaluated'}/100<br>Status: Hotspot updated in Command System`;
+        } else {
+          statusToast.className = "p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-300 text-xs";
+          statusToast.innerHTML = `<strong>Submission Rejected</strong><br>${data.detail || 'Could not verify waste.'}`;
+        }
+      } catch (err) {
+        statusToast.classList.remove('hidden');
+        statusToast.className = "p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-300 text-xs";
+        statusToast.innerText = "Network Error: Could not reach ingestion gateway.";
+      } finally {
+        btn.innerText = "Transmit Civic Report";
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
