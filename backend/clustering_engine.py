@@ -13,6 +13,8 @@ from sklearn.cluster import DBSCAN
 logger = logging.getLogger(__name__)
 
 EARTH_RADIUS_METERS = 6371000.0
+# Average cost of one redundant municipal truck dispatch avoided by deduplication
+COST_PER_REDUNDANT_DISPATCH_INR = 1800.0
 
 
 class DBSCANClusteringEngine:
@@ -27,6 +29,7 @@ class DBSCANClusteringEngine:
         self.eps_meters = eps_meters
         self.eps_radians = eps_meters / EARTH_RADIUS_METERS
         self.min_samples = min_samples
+        self.last_telemetry: Dict[str, Any] = self.consolidation_telemetry(0, [])
 
     def haversine_distance_m(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
         """Calculate great-circle distance between two points in meters."""
@@ -47,6 +50,7 @@ class DBSCANClusteringEngine:
             List of hotspot dicts with merged report counts, centroids, and underlying reports.
         """
         if not reports:
+            self.last_telemetry = self.consolidation_telemetry(0, [])
             return []
 
         coords = np.array([[r["lat"], r["lon"]] for r in reports])
@@ -127,7 +131,24 @@ class DBSCANClusteringEngine:
             })
             hotspot_idx += 1
 
+        self.last_telemetry = self.consolidation_telemetry(len(reports), hotspots)
         return hotspots
+
+    @staticmethod
+    def consolidation_telemetry(total_reports: int, hotspots: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """Deduplication statistics: how many truck dispatches the 50m merge avoided."""
+        consolidated = len(hotspots)
+        prevented = max(0, total_reports - consolidated)
+        compression_pct = (1.0 - consolidated / total_reports) * 100.0 if total_reports > 0 else 0.0
+        return {
+            "total_reports": total_reports,
+            "consolidated_hotspots": consolidated,
+            "merged_clusters": sum(1 for h in hotspots if h.get("is_merged")),
+            "compression_ratio_pct": round(compression_pct, 1),
+            "prevented_duplicate_dispatches": prevented,
+            "cost_per_dispatch_inr": COST_PER_REDUNDANT_DISPATCH_INR,
+            "estimated_civic_savings_inr": round(prevented * COST_PER_REDUNDANT_DISPATCH_INR, 0),
+        }
 
     def cluster_coordinates(self, coordinates: List[List[float]]) -> List[Dict[str, Any]]:
         """Legacy helper for raw [lat, lon] coordinates."""

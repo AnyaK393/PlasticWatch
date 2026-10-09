@@ -18,13 +18,32 @@ from typing import Any, Dict, List, Optional, Union
 
 from backend.clustering_engine import DBSCANClusteringEngine
 from backend.drain_risk_engine import DrainRiskEngine
+from backend.recurrence_engine import attribute_landuse_root_cause
 from backend.route_optimizer import RouteOptimizer
-from backend.taco_adapter import detect_waste, get_sample_images
+from backend.storage import CorruptDataError, locked, read_json, write_bytes_atomic, write_json
+from backend.taco_adapter import REVIEW_STATUS, detect_waste, get_sample_images
 
 logger = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORTS_DB_PATH = ROOT / "data" / "citizen_reports.json"
+SAMPLES_DIR = ROOT / "data" / "taco_samples"
+UPLOADS_DIR = ROOT / "data" / "uploads"
+
+# Reports in these states stay out of DBSCAN clustering and the cleanup queue
+EXCLUDED_FROM_QUEUE = {REVIEW_STATUS, "rejected"}
+
+
+def resolve_photo_path(photo_filename: Optional[str]) -> Optional[Path]:
+    """Locate a report photo among citizen uploads first, then curated samples."""
+    if not photo_filename:
+        return None
+    name = Path(str(photo_filename)).name  # never follow directory components
+    for base in (UPLOADS_DIR, SAMPLES_DIR):
+        candidate = base / name
+        if candidate.is_file():
+            return candidate
+    return None
 
 
 @dataclass
@@ -163,31 +182,64 @@ class PlasticWatchUrbanPipeline:
         self.risk_engine = DrainRiskEngine()
         self.route_optimizer = RouteOptimizer()
         self._reports_cache: Optional[List[Dict[str, Any]]] = None
+        self._reports_mtime: Optional[float] = None
+
+    def _db_mtime(self) -> Optional[float]:
+        try:
+            return REPORTS_DB_PATH.stat().st_mtime
+        except OSError:
+            return None
 
     def get_reports(self) -> List[Dict[str, Any]]:
-        """Retrieve all active citizen reports."""
-        if self._reports_cache is not None:
+        """Retrieve all active citizen reports.
+
+        The cache is invalidated when the JSON file changes on disk, so reports
+        submitted through the API process appear in the dashboard process.
+        """
+        if self._reports_cache is not None and self._reports_mtime == self._db_mtime():
             return self._reports_cache
 
-        if REPORTS_DB_PATH.is_file():
-            try:
-                data = json.loads(REPORTS_DB_PATH.read_text(encoding="utf-8"))
-                self._reports_cache = data
-                return self._reports_cache
-            except Exception as e:
-                logger.error("Failed to load reports DB: %s", e)
+        try:
+            data = read_json(REPORTS_DB_PATH, None)
+        except CorruptDataError as e:
+            # The damaged file is preserved as *.corrupt-<timestamp>; continue from seeds
+            logger.error("%s", e)
+            data = None
+        if isinstance(data, list):
+            self._reports_cache = [r for r in data if self._valid_report(r)]
+            self._reports_mtime = self._db_mtime()
+            return self._reports_cache
 
         # Initialize with seed reports
         seeds = [r.to_dict() for r in get_seed_reports()]
         self.save_reports(seeds)
         return seeds
 
+    @staticmethod
+    def _valid_report(r: Any) -> bool:
+        """Skip malformed rows instead of crashing clustering."""
+        try:
+            lat, lon = float(r["lat"]), float(r["lon"])
+            return -90.0 <= lat <= 90.0 and -180.0 <= lon <= 180.0 and bool(r.get("id"))
+        except (KeyError, TypeError, ValueError):
+            return False
+
+    @staticmethod
+    def _next_report_id(reports: List[Dict[str, Any]]) -> str:
+        nums = []
+        for r in reports:
+            try:
+                nums.append(int(str(r.get("id", "")).split("-")[-1]))
+            except ValueError:
+                pass
+        return f"CR-{max(nums, default=200) + 1}"
+
     def save_reports(self, reports: List[Dict[str, Any]]) -> None:
         """Persist reports to disk."""
         self._reports_cache = reports
         try:
-            REPORTS_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-            REPORTS_DB_PATH.write_text(json.dumps(reports, indent=2), encoding="utf-8")
+            write_json(REPORTS_DB_PATH, reports)
+            self._reports_mtime = self._db_mtime()
         except Exception as e:
             logger.error("Failed to save reports DB: %s", e)
 
@@ -200,26 +252,63 @@ class PlasticWatchUrbanPipeline:
         image_bytes: Optional[bytes] = None,
     ) -> Dict[str, Any]:
         """Ingest a new citizen mobile report, run TACO detection, and append to database."""
-        reports = self.get_reports()
-        next_id = f"CR-{len(reports) + 201}"
+        if not (-90.0 <= float(lat) <= 90.0 and -180.0 <= float(lon) <= 180.0):
+            raise ValueError("Coordinates out of range")
+        notes = (notes or "")[:500]
+        ran_detection = True
+        upload_suffix = None
 
-        # Run AI detection
+        # Run AI detection (slow: done before taking the database lock)
         if image_bytes:
             detection = detect_waste(image_bytes, filename_hint=photo_filename)
+            upload_suffix = Path(photo_filename or "").suffix.lower()
+            if upload_suffix not in {".jpg", ".jpeg", ".png", ".webp"}:
+                upload_suffix = ".jpg"
         else:
-            sample_path = ROOT / "data" / "taco_samples" / photo_filename
-            if sample_path.is_file():
+            sample_path = resolve_photo_path(photo_filename)
+            if sample_path is not None:
                 detection = detect_waste(str(sample_path), filename_hint=photo_filename)
             else:
+                ran_detection = False
                 detection = {
                     "mean_confidence": 0.88,
                     "severity": 3.8,
                     "detected_items": [{"class": "plastic_bottle"}, {"class": "plastic_bag_wrapper"}],
                     "hazard_level": "HIGH",
+                    "needs_review": False,
                 }
 
         classes = [item.get("class", "plastic_bottle") for item in detection.get("detected_items", [])]
 
+        # Ambiguity routing: unreadable photos, or photos where AI could not confirm any waste
+        review_reasons: List[str] = []
+        if detection.get("needs_review"):
+            review_reasons.extend(detection.get("image_quality", {}).get("reasons", []) or ["image quality"])
+        if ran_detection and not detection.get("waste_detected", True):
+            review_reasons.append("AI could not confirm waste in photo")
+        needs_review = bool(review_reasons)
+
+        # Reserve the id, store the photo and append the report atomically
+        with locked(REPORTS_DB_PATH):
+            self._reports_cache = None
+            reports = list(self.get_reports())
+            next_id = self._next_report_id(reports)
+            if image_bytes:
+                # Persist the real citizen photo so operators see it in the inspection drawer
+                stored_name = f"{next_id}{upload_suffix}"
+                try:
+                    write_bytes_atomic(UPLOADS_DIR / stored_name, image_bytes)
+                    photo_filename = stored_name
+                except OSError as e:
+                    logger.error("Failed to store uploaded photo: %s", e)
+            new_rep = self._build_report(next_id, lat, lon, photo_filename, notes, detection, classes, needs_review, review_reasons)
+            reports.append(new_rep)
+            self.save_reports(reports)
+
+        return self._submission_response(next_id, new_rep, detection, needs_review, review_reasons)
+
+    @staticmethod
+    def _build_report(next_id, lat, lon, photo_filename, notes, detection, classes, needs_review, review_reasons) -> Dict[str, Any]:
         new_rep = CitizenReport(
             id=next_id,
             lat=round(lat, 6),
@@ -230,42 +319,126 @@ class PlasticWatchUrbanPipeline:
             detected_classes=list(set(classes)),
             submitted_at=datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
             source="Citizen Mobile App (Live Ingestion)",
-            verification="pending",
+            verification=REVIEW_STATUS if needs_review else "pending",
             notes=notes or "Citizen mobile upload via PWA/API Feeder",
         ).to_dict()
+        new_rep["status"] = REVIEW_STATUS if needs_review else "ACTIVE"
+        if needs_review:
+            new_rep["review_reasons"] = review_reasons
+            new_rep["image_quality"] = {k: v for k, v in detection.get("image_quality", {}).items() if k != "thresholds"}
+        return new_rep
 
-        reports.append(new_rep)
-        self.save_reports(reports)
+    @staticmethod
+    def _submission_response(next_id, new_rep, detection, needs_review, review_reasons) -> Dict[str, Any]:
+        if needs_review:
+            if detection.get("needs_review"):
+                review_message = detection.get("review_message") or "⚠️ Photo appears blurry or dark. Submitted to Municipal Operator Review Queue."
+            else:
+                review_message = "⚠️ AI could not confirm waste in this photo. Submitted to Municipal Operator Review Queue."
+            message = f"Report {next_id} routed to the Municipal Operator Review Queue ({'; '.join(review_reasons)})."
+        else:
+            review_message = ""
+            message = f"Report {next_id} successfully submitted and indexed for DBSCAN clustering."
+
+        # The annotated image is large and already returned by /api/detect
+        detection_summary = {k: v for k, v in detection.items() if k not in ("annotated_image", "annotated_image_base64", "trace")}
 
         return {
             "status": "success",
             "report": new_rep,
-            "detection": detection,
-            "message": f"Report {next_id} successfully submitted and indexed for DBSCAN clustering.",
+            "detection": detection_summary,
+            "needs_review": needs_review,
+            "review_message": review_message,
+            "message": message,
         }
 
-    def run_pipeline(self, rainfall_override_mm: Optional[float] = None) -> Dict[str, Any]:
-        """Run the end-to-end urban intelligence pipeline."""
-        raw_reports = self.get_reports()
+    # ── Operator Review Queue (blurry / dark / ambiguous captures) ───────────
+    def get_review_queue(self) -> List[Dict[str, Any]]:
+        return [r for r in self.get_reports() if r.get("verification") == REVIEW_STATUS]
+
+    def _set_review_outcome(self, report_id: str, verification: str, status: str, operator_note: str) -> Optional[Dict[str, Any]]:
+        with locked(REPORTS_DB_PATH):
+            self._reports_cache = None
+            reports = list(self.get_reports())
+            for r in reports:
+                if r.get("id") == report_id:
+                    if r.get("verification") != REVIEW_STATUS:
+                        raise ValueError(f"{report_id} is not awaiting review (current: {r.get('verification')})")
+                    r["verification"] = verification
+                    r["status"] = status
+                    r["reviewed_at"] = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+                    if operator_note:
+                        r["operator_review_note"] = operator_note[:500]
+                    self.save_reports(reports)
+                    return r
+        return None
+
+    def approve_report(self, report_id: str, operator_note: str = "") -> Optional[Dict[str, Any]]:
+        """Operator confirms the capture; it joins DBSCAN clustering and the cleanup queue."""
+        return self._set_review_outcome(report_id, "verified", "APPROVED", operator_note)
+
+    def reject_report(self, report_id: str, operator_note: str = "") -> Optional[Dict[str, Any]]:
+        """Operator rejects the capture; it stays on record but out of the queue."""
+        return self._set_review_outcome(report_id, "rejected", "REJECTED", operator_note)
+
+    def run_pipeline(
+        self,
+        rainfall_override_mm: Optional[float] = None,
+        rainfall_intensity_mmh: Optional[float] = None,
+        drain_silt_ratio: Optional[float] = None,
+        surface_slope_factor: float = 1.0,
+    ) -> Dict[str, Any]:
+        """Run the end-to-end urban intelligence pipeline.
+
+        Args:
+            rainfall_override_mm: Optional 24h forecast rainfall override (mm).
+            rainfall_intensity_mmh: Rainfall intensity 0-75 mm/hr; None = live Open-Meteo current hour.
+            drain_silt_ratio: Siltation override 0.0-1.0; None = each drain's own desilting record.
+            surface_slope_factor: 1.0 flat, 1.25 moderate, 1.5 steep.
+        """
+        if rainfall_intensity_mmh is None:
+            live = self.risk_engine.fetch_live_rainfall_intensity()
+            rainfall_intensity_mmh = live["rainfall_intensity_mmh"]
+            rain_source = live["source"]
+        else:
+            rain_source = "scenario override"
+        all_reports = self.get_reports()
+        # Unverified / rejected captures wait in the operator review queue
+        raw_reports = [r for r in all_reports if r.get("verification") not in EXCLUDED_FROM_QUEUE]
+        review_queue = [r for r in all_reports if r.get("verification") == REVIEW_STATUS]
 
         # Step 1: DBSCAN Spatial Clustering (eps=50m)
         hotspot_clusters = self.clustering_engine.cluster_reports(raw_reports)
+        cluster_telemetry = self.clustering_engine.last_telemetry
 
         # Step 2: Urban Drain Proximity & Context Risk Scoring (0-100)
         scored_hotspots = []
         for cluster in hotspot_clusters:
-            risk = self.risk_engine.compute_risk(cluster, rainfall_override_mm=rainfall_override_mm)
+            risk = self.risk_engine.compute_risk(
+                cluster,
+                rainfall_override_mm=rainfall_override_mm,
+                rainfall_intensity_mmh=rainfall_intensity_mmh,
+                drain_silt_ratio=drain_silt_ratio,
+                surface_slope_factor=surface_slope_factor,
+            )
             
             # Combine cluster info with risk breakdown
             combined = {**cluster, **risk}
+            cluster_reports = cluster.get("reports", [])
             # Verification status of hotspot
-            verified_count = sum(r.get("verification") == "verified" for r in cluster.get("reports", []))
+            verified_count = sum(r.get("verification") == "verified" for r in cluster_reports)
             combined["verified_count"] = verified_count
             combined["dispatch_status"] = "PENDING"
+            combined["status"] = "ACTIVE"
+            # Stable identity across re-ranking (HOTSPOT-NN ids follow the live score order)
+            combined["site_key"] = min(str(rid) for rid in cluster.get("report_ids", ["UNKNOWN"]))
+            combined["landuse_attribution"] = attribute_landuse_root_cause(cluster["lat"], cluster["lon"])
             
-            # Primary sample photo
-            rep_photos = [r.get("photo_filename") for r in cluster.get("reports", []) if r.get("photo_filename")]
-            combined["primary_photo"] = rep_photos[0] if rep_photos else "sample_bottles_drain.jpg"
+            # Primary photo: most recent capture whose image is on disk (real citizen uploads first)
+            ordered = sorted(cluster_reports, key=lambda r: str(r.get("submitted_at", "")), reverse=True)
+            existing = [r["photo_filename"] for r in ordered if resolve_photo_path(r.get("photo_filename"))]
+            rep_photos = [r.get("photo_filename") for r in cluster_reports if r.get("photo_filename")]
+            combined["primary_photo"] = existing[0] if existing else (rep_photos[0] if rep_photos else "sample_bottles_drain.jpg")
             
             scored_hotspots.append(combined)
 
@@ -305,18 +478,40 @@ class PlasticWatchUrbanPipeline:
                 "high_priority_sites": high_count,
                 "moderate_sites": moderate_count,
                 "mean_detection_confidence": round(mean_conf, 2),
+                "pending_review_reports": len(review_queue),
+                "compression_ratio_pct": cluster_telemetry["compression_ratio_pct"],
+                "prevented_duplicate_dispatches": cluster_telemetry["prevented_duplicate_dispatches"],
+                "estimated_civic_savings_inr": cluster_telemetry["estimated_civic_savings_inr"],
             },
+            "environment": {
+                "rainfall_intensity_mmh": max(0.0, min(75.0, float(rainfall_intensity_mmh))),
+                "rainfall_source": rain_source,
+                "drain_silt_ratio": None if drain_silt_ratio is None else max(0.0, min(1.0, float(drain_silt_ratio))),
+                "drain_silt_source": "per-drain desilting records" if drain_silt_ratio is None else "scenario override",
+                "silt_range": [
+                    min((h["drain_silt_ratio"] for h in scored_hotspots), default=0.0),
+                    max((h["drain_silt_ratio"] for h in scored_hotspots), default=0.0),
+                ],
+                "surface_slope_factor": max(1.0, min(1.5, float(surface_slope_factor))),
+            },
+            "cluster_telemetry": cluster_telemetry,
             "hotspots": scored_hotspots,
             "reports": raw_reports,
+            "review_queue": review_queue,
             "formula": (
-                "0.35 * Drain Proximity (m) + 0.25 * Detection Severity (1-5) + "
-                "0.20 * TACO Confidence + 0.20 * Open-Meteo Rain Forecast (24h) + Recurrence"
+                "0.35 * Drain Proximity x Live Env (rain intensity, siltation, slope) + "
+                "0.25 * Detection Severity (1-5) + 0.20 * TACO Confidence + "
+                "0.20 * Open-Meteo Rain Forecast (24h) + Recurrence"
             ),
         }
 
-    def dispatch_work_order(self, hotspot_ids: List[str]) -> Dict[str, Any]:
-        """Dispatch municipal truck route for selected hotspots."""
-        pipeline_data = self.run_pipeline()
+    def dispatch_work_order(self, hotspot_ids: List[str], **pipeline_kwargs: Any) -> Dict[str, Any]:
+        """Dispatch municipal truck route for selected hotspots.
+
+        Pass the same environment kwargs used for ranking (rainfall_intensity_mmh, ...)
+        so HOTSPOT-NN ids resolve to the sites the operator selected.
+        """
+        pipeline_data = self.run_pipeline(**pipeline_kwargs)
         target_hotspots = [h for h in pipeline_data["hotspots"] if h["id"] in hotspot_ids or h.get("hotspot_id") in hotspot_ids]
         
         if not target_hotspots:
@@ -330,6 +525,17 @@ class PlasticWatchUrbanPipeline:
 _pipeline = PlasticWatchUrbanPipeline()
 
 
-def run_plasticwatch(mode: str = "replay", rainfall_override_mm: Optional[float] = None) -> Dict[str, Any]:
+def run_plasticwatch(
+    mode: str = "replay",
+    rainfall_override_mm: Optional[float] = None,
+    rainfall_intensity_mmh: float = 0.0,
+    drain_silt_ratio: float = 0.0,
+    surface_slope_factor: float = 1.0,
+) -> Dict[str, Any]:
     """Compatibility runner matching dashboard invocation signature."""
-    return _pipeline.run_pipeline(rainfall_override_mm=rainfall_override_mm)
+    return _pipeline.run_pipeline(
+        rainfall_override_mm=rainfall_override_mm,
+        rainfall_intensity_mmh=rainfall_intensity_mmh,
+        drain_silt_ratio=drain_silt_ratio,
+        surface_slope_factor=surface_slope_factor,
+    )

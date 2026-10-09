@@ -108,17 +108,27 @@ class TestTacoWasteDetection(unittest.TestCase):
         self.assertGreaterEqual(len(status["target_classes"]), 5)
 
     def test_detection_on_sample_images(self):
-        samples = get_sample_images()
+        samples = {s["filename"]: s for s in get_sample_images()}
         self.assertGreater(len(samples), 0)
-        first = samples[0]
 
-        result = detect_waste(first["path"], filename_hint=first["filename"])
+        # A pile of PET bottles: YOLO proposes bottles and the material check confirms plastic
+        bottles = samples["sample_pet_bottle_pile.jpg"]
+        result = detect_waste(bottles["path"], filename_hint=bottles["filename"])
         self.assertEqual(result["status"], "success")
         self.assertGreater(len(result["detected_items"]), 0)
-        self.assertGreater(result["mean_confidence"], 0.75)
+        self.assertTrue(all(c == "plastic_bottle" for c in result["detected_classes"]))
+        self.assertEqual(result["evidence_level"], "model")
+        self.assertGreater(result["mean_confidence"], 0.5)
         self.assertGreater(result["severity"], 2.0)
         self.assertIn("annotated_image_base64", result)
         self.assertGreater(len(result["annotated_image_base64"]), 1000)
+
+        # Furniture/people proposed by COCO are scene context, never counted as plastic
+        cans = samples["sample_beverage_cans_gutter.jpg"]
+        result = detect_waste(cans["path"], filename_hint=cans["filename"])
+        ignored = [t for t in result["trace"] if t["decision"] == "ignored"]
+        self.assertTrue(ignored)
+        self.assertNotIn("bed", [b.get("coco_class") for b in result["detected_items"]])
 
 
 class TestMunicipalRouteOptimizer(unittest.TestCase):

@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "municipality": "Pune Municipal Corporation (PMC)",
+  "description": "Municipal land-use landmark nodes used for root-cause attribution of recurring plastic accumulation.",
+  "nodes": [
+    {
+      "node_id": "LU-HADAPSAR-IND",
+      "name": "Hadapsar Industrial Estate",
+      "lat": 18.5020,
+      "lon": 73.9280,
+      "category": "Industrial"
+    },
+    {
+      "node_id": "LU-MANDAI-MKT",
+      "name": "Mahatma Phule Mandai / Market Yard",
+      "lat": 18.5135,
+      "lon": 73.8560,
+      "category": "Commercial Produce Market"
+    },
+    {
+      "node_id": "LU-SWARGATE-BUS",
+      "name": "Swargate State Bus Terminal",
+      "lat": 18.5015,
+      "lon": 73.8580,
+      "category": "Transit Hub"
+    },
+    {
+      "node_id": "LU-KASBA-RES",
+      "name": "Kasba Peth Heritage Core",
+      "lat": 18.5204,
+      "lon": 73.8568,
+      "category": "High-Density Residential Culvert"
+    },
+    {
+      "node_id": "LU-SANGAM-OUT",
+      "name": "Mula-Mutha Sangam Outfall",
+      "lat": 18.5350,
+      "lon": 73.8920,
+      "category": "Riverine Confluence"
+    }
+  ]
+}

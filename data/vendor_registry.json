@@ -1,0 +1,52 @@
+[
+  {
+    "vendor_id": "VEND-PUNE-KASBA",
+    "name": "Sahyadri Civic Desilting Consortium",
+    "assigned_zones": ["Kasba Peth", "Bhavani Peth", "Shaniwar Wada", "Nagzari", "Swargate", "Mandai"],
+    "zone_anchors": [[18.5204, 73.8568], [18.5060, 73.8625], [18.5135, 73.8560], [18.5015, 73.8580]],
+    "equipment": "Heavy Hydraulic Suction Unit",
+    "crew_type": "Suction & Desilting Crew",
+    "rate_per_ton_inr": 2400.0,
+    "base_mobilization_inr": 1500.0
+  },
+  {
+    "vendor_id": "VEND-PUNE-HADAPSAR",
+    "name": "Hadapsar Industrial Waste Solvers",
+    "assigned_zones": ["Hadapsar", "Magarpatta", "Wanowrie"],
+    "zone_anchors": [[18.5020, 73.9280], [18.5155, 73.9270], [18.4870, 73.8990], [18.4685, 73.9339]],
+    "equipment": "Tipper Truck & Netting Crew",
+    "crew_type": "Tipper & Netting Crew",
+    "rate_per_ton_inr": 2100.0,
+    "base_mobilization_inr": 1200.0
+  },
+  {
+    "vendor_id": "VEND-PUNE-SANGAM",
+    "name": "Mula-Mutha Riverfront Sanitation Cooperative",
+    "assigned_zones": ["Sangamwadi", "Yerawada", "Kalyani Nagar", "Mutha River", "Mula-Mutha"],
+    "zone_anchors": [[18.5350, 73.8920], [18.5480, 73.9053], [18.5463, 73.9033]],
+    "equipment": "Floating Boom Skimmer & Amphibious Excavator",
+    "crew_type": "River Skimmer & Boom Crew",
+    "rate_per_ton_inr": 2850.0,
+    "base_mobilization_inr": 2200.0
+  },
+  {
+    "vendor_id": "VEND-PUNE-KOTHRUD",
+    "name": "Paud Road Urban Sweep Services",
+    "assigned_zones": ["Kothrud", "Karve Nagar", "Warje", "Paud Road"],
+    "zone_anchors": [[18.5074, 73.8077], [18.4900, 73.8200], [18.4840, 73.8030]],
+    "equipment": "Compact Mechanical Sweeper & Mini Tipper",
+    "crew_type": "Manual Litter Sweep",
+    "rate_per_ton_inr": 1850.0,
+    "base_mobilization_inr": 950.0
+  },
+  {
+    "vendor_id": "VEND-PCMC-AKURDI",
+    "name": "Pradhikaran Green Drain Maintenance Co.",
+    "assigned_zones": ["Akurdi", "Nigdi", "Ravet", "Pradhikaran", "PCCOE"],
+    "zone_anchors": [[18.6517, 73.7615], [18.6480, 73.7700], [18.6560, 73.7680]],
+    "equipment": "Jetting-cum-Suction Machine",
+    "crew_type": "Suction & Desilting Crew",
+    "rate_per_ton_inr": 2250.0,
+    "base_mobilization_inr": 1300.0
+  }
+]

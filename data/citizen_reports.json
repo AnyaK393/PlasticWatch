@@ -447,5 +447,141 @@
     "source": "Citizen Mobile App (Live Ingestion)",
     "verification": "pending",
     "notes": "Mobile Citizen Camera Observation"
+  },
+  {
+    "id": "CR-229",
+    "lat": 18.652414,
+    "lon": 73.762774,
+    "plastic_confidence": 0.0,
+    "severity": 0.0,
+    "photo_filename": "CR-229.jpg",
+    "detected_classes": [],
+    "submitted_at": "2026-10-09T07:08:50+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "rejected",
+    "notes": "Mobile Citizen Camera Observation",
+    "status": "REJECTED",
+    "review_reasons": [
+      "blurry / out of focus (sharpness 0.44, need 0.52+)",
+      "AI could not confirm waste in photo"
+    ],
+    "image_quality": {
+      "is_low_resolution": false,
+      "is_dark": false,
+      "is_overexposed": false,
+      "is_low_contrast": false,
+      "is_blurry": true,
+      "is_motion_blurred": false,
+      "is_featureless": false,
+      "needs_review": true,
+      "reasons": [
+        "blurry / out of focus (sharpness 0.44, need 0.52+)"
+      ],
+      "tier": "citizen",
+      "mean_luminance": 58.5,
+      "contrast": 51.5,
+      "clipped_highlights": 0.01,
+      "sharpness_ratio": 0.44,
+      "edge_isotropy": 0.92,
+      "scene_edge_strength": 173.6,
+      "blur_variance": 0.44,
+      "resolution": [
+        960,
+        1280
+      ]
+    },
+    "reviewed_at": "2026-10-09T07:09:23+00:00",
+    "operator_review_note": "Rejected by operator: unusable or no waste present"
+  },
+  {
+    "id": "CR-230",
+    "lat": 18.652414,
+    "lon": 73.762774,
+    "plastic_confidence": 0.0,
+    "severity": 0.0,
+    "photo_filename": "CR-230.jpg",
+    "detected_classes": [],
+    "submitted_at": "2026-10-09T07:09:05+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "PENDING_OPERATOR_VERIFICATION",
+    "notes": "Mobile Citizen Camera Observation",
+    "status": "PENDING_OPERATOR_VERIFICATION",
+    "review_reasons": [
+      "blurry / out of focus (sharpness 0.44, need 0.52+)",
+      "AI could not confirm waste in photo"
+    ],
+    "image_quality": {
+      "is_low_resolution": false,
+      "is_dark": false,
+      "is_overexposed": false,
+      "is_low_contrast": false,
+      "is_blurry": true,
+      "is_motion_blurred": false,
+      "is_featureless": false,
+      "needs_review": true,
+      "reasons": [
+        "blurry / out of focus (sharpness 0.44, need 0.52+)"
+      ],
+      "tier": "citizen",
+      "mean_luminance": 58.5,
+      "contrast": 51.5,
+      "clipped_highlights": 0.01,
+      "sharpness_ratio": 0.44,
+      "edge_isotropy": 0.92,
+      "scene_edge_strength": 173.6,
+      "blur_variance": 0.44,
+      "resolution": [
+        960,
+        1280
+      ]
+    }
+  },
+  {
+    "id": "CR-231",
+    "lat": 18.652414,
+    "lon": 73.762774,
+    "plastic_confidence": 0.32,
+    "severity": 0.8,
+    "photo_filename": "CR-231.jpg",
+    "detected_classes": [
+      "other_plastic"
+    ],
+    "submitted_at": "2026-10-09T07:13:13+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Mobile Citizen Camera Observation",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "CR-232",
+    "lat": 18.652414,
+    "lon": 73.762774,
+    "plastic_confidence": 0.51,
+    "severity": 5.0,
+    "photo_filename": "CR-232.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-09T07:14:19+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Mobile Citizen Camera Observation",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "CR-233",
+    "lat": 18.652414,
+    "lon": 73.762774,
+    "plastic_confidence": 0.51,
+    "severity": 5.0,
+    "photo_filename": "CR-233.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-09T07:14:31+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Mobile Citizen Camera Observation",
+    "status": "ACTIVE"
   }
 ]

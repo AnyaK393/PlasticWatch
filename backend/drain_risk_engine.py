@@ -9,9 +9,11 @@ Calculates an explainable 0-100 Risk Score for waste hotspots based on:
 """
 from __future__ import annotations
 
+from datetime import date, datetime, timedelta, timezone
 import json
 import logging
 import math
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 import urllib.request
@@ -25,6 +27,9 @@ logger = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parents[1]
 DRAIN_GEOJSON = ROOT / "data" / "urban_drain_network.geojson"
 EARTH_RADIUS_METERS = 6371000.0
+IST = timezone(timedelta(hours=5, minutes=30))
+LIVE_RAIN_TTL_S = 600
+MAX_SILT_RATIO = 0.9
 
 
 class DrainRiskEngine:
@@ -35,6 +40,8 @@ class DrainRiskEngine:
         self.drains: List[Dict[str, Any]] = []
         self._load_drain_network()
         self._cached_rainfall: Optional[float] = None
+        self._live_rain: Optional[Dict[str, Any]] = None
+        self._live_rain_at: float = 0.0
 
     def _load_drain_network(self) -> None:
         """Load drain geometries from GeoJSON using Shapely."""
@@ -60,6 +67,8 @@ class DrainRiskEngine:
                         "flow_direction": props.get("flow_direction", "N"),
                         "clog_vulnerability": props.get("clog_vulnerability", "HIGH"),
                         "risk_weight": float(props.get("risk_weight", 1.0)),
+                        "last_desilted": props.get("last_desilted"),
+                        "silt_accrual_pct_per_day": float(props.get("silt_accrual_pct_per_day") or 0.0),
                         "geometry": line,
                     })
             logger.info("Loaded %d drain/waterway features into DrainRiskEngine.", len(self.drains))
@@ -94,6 +103,55 @@ class DrainRiskEngine:
 
         return round(min_dist_m, 1), closest_drain or {}
 
+    @staticmethod
+    def drain_silt_status(drain: Dict[str, Any], today: Optional[date] = None) -> Dict[str, Any]:
+        """Siltation of a drain from its last desilting date and accrual rate."""
+        today = today or datetime.now(IST).date()
+        last = drain.get("last_desilted")
+        rate = float(drain.get("silt_accrual_pct_per_day") or 0.0)
+        if not last or rate <= 0:
+            return {"silt_ratio": 0.0, "days_since_desilting": None, "last_desilted": last,
+                    "basis": "Open channel / river: not subject to inlet siltation"}
+        try:
+            days = max(0, (today - date.fromisoformat(last)).days)
+        except ValueError:
+            return {"silt_ratio": 0.0, "days_since_desilting": None, "last_desilted": last, "basis": "Invalid desilting date"}
+        ratio = min(MAX_SILT_RATIO, days * rate / 100.0)
+        return {
+            "silt_ratio": round(ratio, 3),
+            "days_since_desilting": days,
+            "last_desilted": last,
+            "basis": f"{days} days since desilting on {last} at {rate:.2f}%/day",
+        }
+
+    def fetch_live_rainfall_intensity(self, lat: float = 18.5204, lon: float = 73.8567) -> Dict[str, Any]:
+        """Current-hour rainfall intensity (mm/h) from Open-Meteo, cached for 10 minutes."""
+        if self._live_rain is not None and time.time() - self._live_rain_at < LIVE_RAIN_TTL_S:
+            return self._live_rain
+        url = (
+            f"https://api.open-meteo.com/v1/forecast?latitude={lat:.4f}&longitude={lon:.4f}"
+            "&hourly=precipitation&forecast_days=1&timezone=Asia%2FKolkata"
+        )
+        result = {"rainfall_intensity_mmh": 0.0, "source": "offline fallback (0 mm/h)", "observed_hour": None}
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "PlasticWatchCivic/1.0"})
+            with urllib.request.urlopen(req, timeout=4) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            times = data.get("hourly", {}).get("time", [])
+            values = data.get("hourly", {}).get("precipitation", [])
+            hour_key = datetime.now(IST).strftime("%Y-%m-%dT%H:00")
+            if hour_key in times:
+                val = values[times.index(hour_key)]
+                result = {
+                    "rainfall_intensity_mmh": round(float(val or 0.0), 1),
+                    "source": "Open-Meteo current hour",
+                    "observed_hour": hour_key,
+                }
+        except Exception as exc:
+            logger.info("Live rainfall intensity unavailable (%s); using 0 mm/h.", exc)
+        self._live_rain, self._live_rain_at = result, time.time()
+        return result
+
     def fetch_rainfall_forecast(self, lat: float = 18.5204, lon: float = 73.8567, use_cache: bool = True) -> float:
         """Fetch 24-hour total expected rainfall in mm from Open-Meteo API.
         
@@ -122,16 +180,37 @@ class DrainRiskEngine:
             self._cached_rainfall = 16.5
             return self._cached_rainfall
 
+    @staticmethod
+    def environmental_multiplier(
+        rainfall_intensity_mmh: float = 0.0,
+        drain_silt_ratio: float = 0.0,
+        surface_slope_factor: float = 1.0,
+    ) -> float:
+        """Live environmental amplification: (1 + rain/20) * (1 + silt) * slope."""
+        rain = max(0.0, min(75.0, float(rainfall_intensity_mmh)))
+        silt = max(0.0, min(1.0, float(drain_silt_ratio)))
+        slope = max(1.0, min(1.5, float(surface_slope_factor)))
+        return (1.0 + rain / 20.0) * (1.0 + silt) * slope
+
     def compute_risk(
         self,
         hotspot: Dict[str, Any],
-        rainfall_override_mm: Optional[float] = None
+        rainfall_override_mm: Optional[float] = None,
+        rainfall_intensity_mmh: float = 0.0,
+        drain_silt_ratio: Optional[float] = 0.0,
+        surface_slope_factor: float = 1.0,
     ) -> Dict[str, Any]:
         """Compute the full 0-100 urban drainage risk score and exploded breakdown.
-        
+
+        drain_silt_ratio=None uses the nearest drain's own siltation (desilting records).
+
         Formula:
-          Risk Score = 0.35 * DrainScore + 0.25 * SeverityScore + 0.20 * ConfScore + 0.20 * RainScore
+          EnvScore   = min(100, ProximityScore(d) * (1 + rain_mmh/20) * (1 + silt) * slope)
+          Risk Score = 0.35 * EnvScore + 0.25 * SeverityScore + 0.20 * ConfScore + 0.20 * RainForecastScore
           + Recurrence Bonus (up to 10 points)
+
+        With no live rain, clean drains and flat terrain the multiplier is 1.0, so the
+        score equals the static drain-proximity model.
         """
         lat = hotspot["lat"]
         lon = hotspot["lon"]
@@ -139,14 +218,28 @@ class DrainRiskEngine:
         raw_sev = float(hotspot.get("severity", 3.5))  # 1.0 to 5.0
         recurrence = int(hotspot.get("recurrence", 1))
 
-        # 1. Drain Proximity (Weight: 35%)
+        rain_i = max(0.0, min(75.0, float(rainfall_intensity_mmh)))
+        slope = max(1.0, min(1.5, float(surface_slope_factor)))
+
+        # 1. Drain Proximity x Live Environment (Weight: 35%)
         dist_m, nearest_drain = self.calculate_drain_distance_m(lat, lon)
+        if drain_silt_ratio is None:
+            silt_info = self.drain_silt_status(nearest_drain)
+            silt = silt_info["silt_ratio"]
+            silt_source = "drain maintenance record"
+        else:
+            silt = max(0.0, min(1.0, float(drain_silt_ratio)))
+            silt_info = {"basis": "scenario override"}
+            silt_source = "scenario override"
         drain_name = nearest_drain.get("name", "Stormwater Channel")
         drain_type = nearest_drain.get("type", "storm_drain")
-        
+
         # Proximity score 0 - 100: exponential decay with distance
         # 10m -> 98 pts, 35m -> 85 pts, 75m -> 65 pts, 150m -> 35 pts, 300m -> 10 pts
-        drain_score = round(max(5.0, min(100.0, 100.0 * math.exp(-((dist_m / 110.0)**1.15)))), 1)
+        proximity_score = round(max(5.0, min(100.0, 100.0 * math.exp(-((dist_m / 110.0)**1.15)))), 1)
+        env_multiplier = self.environmental_multiplier(rain_i, silt, slope)
+        env_score = round(min(100.0, proximity_score * env_multiplier), 1)
+        drain_score = env_score
         drain_points = round(drain_score * 0.35, 1)
 
         # 2. Detection Severity (Weight: 25%)
@@ -198,6 +291,15 @@ class DrainRiskEngine:
             "nearest_drain_distance_m": dist_m,
             "drain_score": drain_score,
             "drain_points": drain_points,
+            "drain_proximity_base_score": proximity_score,
+            "env_score": env_score,
+            "env_points": drain_points,
+            "env_multiplier": round(env_multiplier, 3),
+            "rainfall_intensity_mmh": rain_i,
+            "drain_silt_ratio": silt,
+            "drain_silt_source": silt_source,
+            "drain_silt_basis": silt_info.get("basis"),
+            "surface_slope_factor": slope,
             "severity_raw": raw_sev,
             "severity_score": sev_score,
             "severity_points": sev_points,
@@ -210,7 +312,7 @@ class DrainRiskEngine:
             "recurrence_count": recurrence,
             "recurrence_bonus": recurrence_bonus,
             "formula_breakdown": (
-                f"Risk {total_score}/100 = Drain ({drain_points} pts) + "
+                f"Risk {total_score}/100 = Drain x Env ({drain_points} pts) + "
                 f"Severity ({sev_points} pts) + Conf ({conf_points} pts) + "
                 f"Rain ({rain_points} pts) + Repeat (+{recurrence_bonus} pts)"
             ),

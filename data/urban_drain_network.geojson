@@ -17,18 +17,41 @@
         "type": "primary_river",
         "flow_direction": "NE",
         "clog_vulnerability": "HIGH",
-        "risk_weight": 1.0
+        "risk_weight": 1.0,
+        "last_desilted": null,
+        "silt_accrual_pct_per_day": 0.0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.8012, 18.485],
-          [73.8185, 18.4975],
-          [73.834, 18.511],
-          [73.8495, 18.519],
-          [73.861, 18.528],
-          [73.8745, 18.5315],
-          [73.892, 18.535]
+          [
+            73.8012,
+            18.485
+          ],
+          [
+            73.8185,
+            18.4975
+          ],
+          [
+            73.834,
+            18.511
+          ],
+          [
+            73.8495,
+            18.519
+          ],
+          [
+            73.861,
+            18.528
+          ],
+          [
+            73.8745,
+            18.5315
+          ],
+          [
+            73.892,
+            18.535
+          ]
         ]
       }
     },
@@ -41,16 +64,33 @@
         "type": "primary_river",
         "flow_direction": "SE",
         "clog_vulnerability": "HIGH",
-        "risk_weight": 1.0
+        "risk_weight": 1.0,
+        "last_desilted": null,
+        "silt_accrual_pct_per_day": 0.0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.805, 18.562],
-          [73.824, 18.558],
-          [73.849, 18.551],
-          [73.868, 18.542],
-          [73.892, 18.535]
+          [
+            73.805,
+            18.562
+          ],
+          [
+            73.824,
+            18.558
+          ],
+          [
+            73.849,
+            18.551
+          ],
+          [
+            73.868,
+            18.542
+          ],
+          [
+            73.892,
+            18.535
+          ]
         ]
       }
     },
@@ -63,15 +103,29 @@
         "type": "confluence",
         "flow_direction": "E",
         "clog_vulnerability": "CRITICAL",
-        "risk_weight": 1.0
+        "risk_weight": 1.0,
+        "last_desilted": null,
+        "silt_accrual_pct_per_day": 0.0
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.892, 18.535],
-          [73.91, 18.537],
-          [73.935, 18.54],
-          [73.955, 18.542]
+          [
+            73.892,
+            18.535
+          ],
+          [
+            73.91,
+            18.537
+          ],
+          [
+            73.935,
+            18.54
+          ],
+          [
+            73.955,
+            18.542
+          ]
         ]
       }
     },
@@ -84,18 +138,41 @@
         "type": "storm_drain",
         "flow_direction": "N",
         "clog_vulnerability": "CRITICAL",
-        "risk_weight": 0.95
+        "risk_weight": 0.95,
+        "last_desilted": "2026-05-12",
+        "silt_accrual_pct_per_day": 0.3
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.842, 18.472],
-          [73.8445, 18.483],
-          [73.848, 18.495],
-          [73.851, 18.503],
-          [73.853, 18.512],
-          [73.854, 18.5215],
-          [73.856, 18.521]
+          [
+            73.842,
+            18.472
+          ],
+          [
+            73.8445,
+            18.483
+          ],
+          [
+            73.848,
+            18.495
+          ],
+          [
+            73.851,
+            18.503
+          ],
+          [
+            73.853,
+            18.512
+          ],
+          [
+            73.854,
+            18.5215
+          ],
+          [
+            73.856,
+            18.521
+          ]
         ]
       }
     },
@@ -108,16 +185,33 @@
         "type": "storm_drain",
         "flow_direction": "N",
         "clog_vulnerability": "CRITICAL",
-        "risk_weight": 0.9
+        "risk_weight": 0.9,
+        "last_desilted": "2026-05-18",
+        "silt_accrual_pct_per_day": 0.34
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.861, 18.495],
-          [73.8625, 18.506],
-          [73.8635, 18.514],
-          [73.864, 18.522],
-          [73.8655, 18.5285]
+          [
+            73.861,
+            18.495
+          ],
+          [
+            73.8625,
+            18.506
+          ],
+          [
+            73.8635,
+            18.514
+          ],
+          [
+            73.864,
+            18.522
+          ],
+          [
+            73.8655,
+            18.5285
+          ]
         ]
       }
     },
@@ -130,16 +224,33 @@
         "type": "storm_drain",
         "flow_direction": "NE",
         "clog_vulnerability": "HIGH",
-        "risk_weight": 0.85
+        "risk_weight": 0.85,
+        "last_desilted": "2026-05-08",
+        "silt_accrual_pct_per_day": 0.26
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.885, 18.49],
-          [73.891, 18.502],
-          [73.896, 18.515],
-          [73.902, 18.525],
-          [73.911, 18.536]
+          [
+            73.885,
+            18.49
+          ],
+          [
+            73.891,
+            18.502
+          ],
+          [
+            73.896,
+            18.515
+          ],
+          [
+            73.902,
+            18.525
+          ],
+          [
+            73.911,
+            18.536
+          ]
         ]
       }
     },
@@ -152,15 +263,29 @@
         "type": "storm_drain",
         "flow_direction": "E",
         "clog_vulnerability": "HIGH",
-        "risk_weight": 0.8
+        "risk_weight": 0.8,
+        "last_desilted": "2026-05-25",
+        "silt_accrual_pct_per_day": 0.22
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.792, 18.502],
-          [73.805, 18.505],
-          [73.818, 18.507],
-          [73.832, 18.51]
+          [
+            73.792,
+            18.502
+          ],
+          [
+            73.805,
+            18.505
+          ],
+          [
+            73.818,
+            18.507
+          ],
+          [
+            73.832,
+            18.51
+          ]
         ]
       }
     },
@@ -173,14 +298,25 @@
         "type": "culvert",
         "flow_direction": "S",
         "clog_vulnerability": "HIGH",
-        "risk_weight": 0.75
+        "risk_weight": 0.75,
+        "last_desilted": "2026-04-30",
+        "silt_accrual_pct_per_day": 0.2
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.849, 18.538],
-          [73.8505, 18.531],
-          [73.852, 18.525]
+          [
+            73.849,
+            18.538
+          ],
+          [
+            73.8505,
+            18.531
+          ],
+          [
+            73.852,
+            18.525
+          ]
         ]
       }
     },
@@ -193,14 +329,25 @@
         "type": "canal",
         "flow_direction": "SE",
         "clog_vulnerability": "MODERATE",
-        "risk_weight": 0.7
+        "risk_weight": 0.7,
+        "last_desilted": "2026-05-05",
+        "silt_accrual_pct_per_day": 0.18
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.882, 18.553],
-          [73.893, 18.547],
-          [73.905, 18.54]
+          [
+            73.882,
+            18.553
+          ],
+          [
+            73.893,
+            18.547
+          ],
+          [
+            73.905,
+            18.54
+          ]
         ]
       }
     },
@@ -213,15 +360,29 @@
         "type": "culvert",
         "flow_direction": "NW",
         "clog_vulnerability": "CRITICAL",
-        "risk_weight": 0.92
+        "risk_weight": 0.92,
+        "last_desilted": "2026-05-20",
+        "silt_accrual_pct_per_day": 0.32
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.857, 18.518],
-          [73.8568, 18.5204],
-          [73.8565, 18.5215],
-          [73.855, 18.523]
+          [
+            73.857,
+            18.518
+          ],
+          [
+            73.8568,
+            18.5204
+          ],
+          [
+            73.8565,
+            18.5215
+          ],
+          [
+            73.855,
+            18.523
+          ]
         ]
       }
     },
@@ -234,14 +395,25 @@
         "type": "storm_drain",
         "flow_direction": "N",
         "clog_vulnerability": "HIGH",
-        "risk_weight": 0.88
+        "risk_weight": 0.88,
+        "last_desilted": "2026-05-15",
+        "silt_accrual_pct_per_day": 0.24
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.838, 18.512],
-          [73.841, 18.516],
-          [73.844, 18.519]
+          [
+            73.838,
+            18.512
+          ],
+          [
+            73.841,
+            18.516
+          ],
+          [
+            73.844,
+            18.519
+          ]
         ]
       }
     },
@@ -254,16 +426,28 @@
         "type": "storm_drain",
         "flow_direction": "NE",
         "clog_vulnerability": "CRITICAL",
-        "risk_weight": 0.85
+        "risk_weight": 0.85,
+        "last_desilted": "2026-04-28",
+        "silt_accrual_pct_per_day": 0.36
       },
       "geometry": {
         "type": "LineString",
         "coordinates": [
-          [73.925, 18.498],
-          [73.931, 18.508],
-          [73.938, 18.52]
+          [
+            73.925,
+            18.498
+          ],
+          [
+            73.931,
+            18.508
+          ],
+          [
+            73.938,
+            18.52
+          ]
         ]
       }
     }
-  ]
+  ],
+  "maintenance_note": "last_desilted = PMC pre-monsoon nallah desilting date; silt_accrual_pct_per_day = share of conveyance capacity lost per day since. Rivers are not inlet-desilted (rate 0)."
 }

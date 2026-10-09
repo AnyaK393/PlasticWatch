@@ -28,3 +28,8 @@ venv/
 pycache/.codex-build/**/node_modules/
 
 .codex-build/**/node_modules/
+
+data/uploads/
+data/work_orders.json
+data/cleanup_verification/verification_overrides.json
+*.lock

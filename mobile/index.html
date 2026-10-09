@@ -170,7 +170,7 @@
 
       <!-- Submit Report Button -->
       <div class="pt-1">
-        <button id="submit-btn" onclick="submitCitizenReport()" 
+        <button id="submit-btn" onclick="submitCitizenReport()" title="Submit Citizen Report" aria-label="Submit Citizen Report" 
                 class="w-full py-3.5 px-4 bg-[#284e3a] hover:bg-[#1e3c2c] text-[#f7f3ea] font-serif font-bold text-sm tracking-wide rounded-xl shadow-md active:scale-[0.98] transition flex items-center justify-center space-x-2 border border-[#1b3627]">
           <i class="fa-solid fa-paper-plane text-xs text-[#c9dec3]"></i>
           <span>Transmit Report to Municipal Grid</span>
@@ -181,8 +181,8 @@
 
     <!-- Toast Notification Popup -->
     <div id="toast" class="fixed top-14 left-4 right-4 max-w-[390px] mx-auto z-50 transform -translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
-      <div class="bg-[#fffdf9] border-2 border-[#284e3a] rounded-xl p-4 shadow-xl flex items-start space-x-3">
-        <div class="w-8 h-8 rounded-full bg-[#eaf2ed] border border-[#284e3a] flex items-center justify-center flex-shrink-0 text-[#284e3a] text-sm">
+      <div id="toast-box" class="bg-[#fffdf9] border-2 border-[#284e3a] rounded-xl p-4 shadow-xl flex items-start space-x-3">
+        <div id="toast-icon" class="w-8 h-8 rounded-full bg-[#eaf2ed] border border-[#284e3a] flex items-center justify-center flex-shrink-0 text-[#284e3a] text-sm">
           <i class="fa-solid fa-check"></i>
         </div>
         <div class="flex-1">
@@ -201,6 +201,60 @@
     let currentPhoto = "sample_bottles_drain.jpg";
     let currentSeverity = 0.0;
     let currentConf = 0.0;
+    let currentFile = null;
+    const REVIEW_TOAST = "⚠️ Photo appears blurry or dark. Submitted to Municipal Operator Review Queue.";
+    // ngrok free tunnels inject a browser warning page unless this header is sent
+    const API_HEADERS = { 'ngrok-skip-browser-warning': 'true' };
+    const MAX_UPLOAD_SIDE = 1280;
+
+    // Shrink camera photos (often 3-8 MB) before they cross the tunnel.
+    // Drawing through <img> applies EXIF orientation in modern mobile browsers.
+    function downscaleImage(file) {
+      return new Promise((resolve) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(1, MAX_UPLOAD_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.naturalWidth * scale);
+          canvas.height = Math.round(img.naturalHeight * scale);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          URL.revokeObjectURL(url);
+          canvas.toBlob((blob) => resolve(blob || file), 'image/jpeg', 0.85);
+        };
+        img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };  // e.g. HEIC: let the server report it
+        img.src = url;
+      });
+    }
+
+    async function apiFetch(url, options, timeoutMs = 45000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const res = await fetch(url, { ...options, headers: { ...API_HEADERS, ...(options.headers || {}) }, signal: controller.signal });
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (_) {
+          throw new Error(`Server returned non-JSON (HTTP ${res.status}). Is the tunnel pointing at the API?`);
+        }
+        if (!res.ok) throw new Error(data.detail ? JSON.stringify(data.detail) : `HTTP ${res.status}`);
+        return data;
+      } catch (err) {
+        if (err.name === 'AbortError') throw new Error('Request timed out after 45 s (slow network or tunnel).');
+        throw err;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function showDetectError(message) {
+      document.getElementById('detection-tags').innerHTML = `
+        <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-serif font-bold border border-amber-300">
+          Analysis failed: tap Snap again
+        </span>`;
+      document.getElementById('hazard-title').innerHTML = '<i class="fa-solid fa-plug-circle-exclamation text-xs"></i> Could not analyse photo';
+      document.getElementById('hazard-desc').innerText = message;
+    }
 
     // 1. Clock Update
     setInterval(() => {
@@ -251,7 +305,7 @@
       const file = e.target.files[0];
       if (!file) return;
 
-      currentPhoto = file.name || "live_camera_capture.jpg";
+      currentPhoto = (file.name || "live_camera_capture").replace(/\.[^.]+$/, '') + '.jpg';
 
       // Show immediate preview
       const previewUrl = URL.createObjectURL(file);
@@ -260,16 +314,20 @@
       // Show spinner
       const spinner = document.getElementById('ai-analyzing-spinner');
       spinner.classList.remove('hidden');
-
-      const formData = new FormData();
-      formData.append('file', file);
+      e.target.value = '';  // allow re-selecting the same photo
 
       try {
-        const res = await fetch('/api/detect', {
-          method: 'POST',
-          body: formData
-        });
-        const result = await res.json();
+        const upload = await downscaleImage(file);
+        currentFile = upload;
+
+        const formData = new FormData();
+        formData.append('file', upload, currentPhoto);
+        const result = await apiFetch('/api/detect', { method: 'POST', body: formData });
+
+        // Image quality guard: blurry / dark capture
+        if (result.needs_review) {
+          showToast('Photo Quality Check', result.review_message || REVIEW_TOAST, 'OPERATOR REVIEW QUEUE', 'warn');
+        }
         
         // Show annotated image if returned
         if (result.annotated_image) {
@@ -313,6 +371,7 @@
         }
       } catch (err) {
         console.error("Inference call failed:", err);
+        showDetectError(err.message);
       } finally {
         spinner.classList.add('hidden');
       }
@@ -327,36 +386,59 @@
       const notes = document.getElementById('report-notes').value || "Mobile Citizen Camera Observation";
 
       try {
-        const payload = {
-          lat: currentLat,
-          lon: currentLon,
-          photo_filename: currentPhoto,
-          notes: notes
-        };
+        let data;
+        if (currentFile) {
+          // Send the real photo so operators see it in the inspection drawer
+          const formData = new FormData();
+          formData.append('lat', currentLat);
+          formData.append('lon', currentLon);
+          formData.append('notes', notes);
+          formData.append('file', currentFile, currentPhoto);
+          data = await apiFetch('/api/reports/upload', { method: 'POST', body: formData });
+        } else {
+          const payload = {
+            lat: currentLat,
+            lon: currentLon,
+            photo_filename: currentPhoto,
+            notes: notes
+          };
+          data = await apiFetch('/api/reports', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        }
 
-        const res = await fetch('/api/reports', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-        showToast(
-          'Report Dispatched!',
-          `Live GPS: ${currentLat.toFixed(4)}, ${currentLon.toFixed(4)} • Severity: ${currentSeverity.toFixed(1)}/5`,
-          `REF #${data.report ? data.report.id : 'CR-' + Math.floor(Math.random()*9000 + 1000)}`
-        );
+        const ref = `REF #${data.report ? data.report.id : 'CR-' + Math.floor(Math.random()*9000 + 1000)}`;
+        if (data.needs_review) {
+          showToast('Sent for Operator Review', data.review_message || REVIEW_TOAST, ref, 'warn');
+        } else {
+          showToast(
+            'Report Dispatched!',
+            `Live GPS: ${currentLat.toFixed(4)}, ${currentLon.toFixed(4)} • Severity: ${currentSeverity.toFixed(1)}/5`,
+            ref
+          );
+        }
         document.getElementById('report-notes').value = '';
       } catch (err) {
-        showToast('Submission Complete', 'Report queued into local municipal buffer.', `LAT: ${currentLat.toFixed(4)}`);
+        console.error("Report submission failed:", err);
+        showToast('Submission Failed', err.message, 'Please retry', 'warn');
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-paper-plane text-xs text-[#c9dec3]"></i> <span>Transmit Report to Municipal Grid</span>';
       }
     }
 
-    function showToast(title, desc, ref) {
+    function showToast(title, desc, ref, variant) {
       const toast = document.getElementById('toast');
+      const warn = variant === 'warn';
+      const box = document.getElementById('toast-box');
+      const icon = document.getElementById('toast-icon');
+      box.style.borderColor = warn ? '#b45309' : '#284e3a';
+      icon.style.borderColor = warn ? '#b45309' : '#284e3a';
+      icon.style.color = warn ? '#b45309' : '#284e3a';
+      icon.style.background = warn ? '#fef3c7' : '#eaf2ed';
+      icon.innerHTML = warn ? '<i class="fa-solid fa-triangle-exclamation"></i>' : '<i class="fa-solid fa-check"></i>';
       document.getElementById('toast-title').innerText = title;
       document.getElementById('toast-desc').innerText = desc;
       document.getElementById('toast-id').innerText = ref;
@@ -367,7 +449,7 @@
       setTimeout(() => {
         toast.classList.remove('opacity-100', 'translate-y-0');
         toast.classList.add('opacity-0', '-translate-y-24');
-      }, 4000);
+      }, warn ? 6000 : 4000);
     }
   </script>
 </body>

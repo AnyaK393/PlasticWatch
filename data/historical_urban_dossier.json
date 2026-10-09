@@ -1,9 +1,9 @@
 {
-  "version": "2.0.0",
+  "version": "3.0.0",
   "municipality": "Pune Municipal Corporation (PMC)",
   "ward_jurisdiction": "Zone 1 (Kasba-Vishrambaugwada) & Zone 2 (Kothrud-Bavdhan)",
-  "time_window_days": 30,
-  "start_date": "2026-09-05T00:00:00Z",
+  "time_window_days": 92,
+  "start_date": "2026-07-05T00:00:00Z",
   "end_date": "2026-10-04T23:59:59Z",
   "locations": [
     {
@@ -22,7 +22,7 @@
         "plastic_bag_wrapper",
         "other_plastic"
       ],
-      "total_recurrence_count": 9,
+      "total_recurrence_count": 25,
       "average_return_interval_days": 3.2,
       "recurrence_persistence_index": 0.88,
       "root_cause_hypothesis": "Unregulated street food & market produce unloading near historic gate culvert at 04:00 AM; discarded packaging washed into intake curb.",
@@ -37,6 +37,390 @@
       "sample_partial_image": "sample_partial_cleanup.jpg",
       "cleanups": [
         {
+          "log_id": "LOG-SW-H01",
+          "timestamp": "2026-07-06T04:15:00Z",
+          "crew_id": "PMC-CREW-1",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 38.0,
+          "clearance_effectiveness_pct": 89.5,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 38.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 115.1,
+          "first_reported_at": "2026-07-04T04:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 26.1,
+            "plastic_bag_wrapper": 44.4,
+            "can_metal": 5.1,
+            "carton_paper": 11.1,
+            "other_plastic": 13.3
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H02",
+          "timestamp": "2026-07-07T03:15:00Z",
+          "crew_id": "PMC-CREW-1",
+          "truck_id": "PMC-TRUCK-05",
+          "weight_removed_kg": 19.0,
+          "clearance_effectiveness_pct": 89.3,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "monsoon_preemptive",
+          "notes": "Pre-emptive clearance after 44 mm rain day.",
+          "rainfall_prev_48h_mm": 131.9,
+          "first_reported_at": "2026-07-05T02:00:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 19.5,
+            "plastic_bag_wrapper": 48.6,
+            "can_metal": 5.7,
+            "carton_paper": 13.0,
+            "other_plastic": 13.2
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H03",
+          "timestamp": "2026-07-09T03:00:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 32.5,
+          "clearance_effectiveness_pct": 90.9,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "monsoon_preemptive",
+          "notes": "Pre-emptive clearance after 45 mm rain day.",
+          "rainfall_prev_48h_mm": 60.6,
+          "first_reported_at": "2026-07-08T01:00:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 19.1,
+            "plastic_bag_wrapper": 52.5,
+            "can_metal": 5.1,
+            "carton_paper": 10.2,
+            "other_plastic": 13.1
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H04",
+          "timestamp": "2026-07-14T02:00:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-02",
+          "weight_removed_kg": 37.0,
+          "clearance_effectiveness_pct": 89.5,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 37.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 0.0,
+          "first_reported_at": "2026-07-13T09:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 19.2,
+            "plastic_bag_wrapper": 45.4,
+            "can_metal": 7.5,
+            "carton_paper": 15.1,
+            "other_plastic": 12.8
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H05",
+          "timestamp": "2026-07-18T01:15:00Z",
+          "crew_id": "PMC-CREW-2",
+          "truck_id": "PMC-TRUCK-05",
+          "weight_removed_kg": 34.0,
+          "clearance_effectiveness_pct": 91.6,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 34.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 7.1,
+          "first_reported_at": "2026-07-15T12:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 20.2,
+            "plastic_bag_wrapper": 44.9,
+            "can_metal": 7.1,
+            "carton_paper": 12.7,
+            "other_plastic": 15.1
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H06",
+          "timestamp": "2026-07-22T01:00:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 35.5,
+          "clearance_effectiveness_pct": 93.0,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 35.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 16.0,
+          "first_reported_at": "2026-07-20T02:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 19.0,
+            "plastic_bag_wrapper": 49.2,
+            "can_metal": 6.4,
+            "carton_paper": 9.4,
+            "other_plastic": 16.0
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H07",
+          "timestamp": "2026-07-27T03:00:00Z",
+          "crew_id": "PMC-CREW-2",
+          "truck_id": "PMC-TRUCK-02",
+          "weight_removed_kg": 43.5,
+          "clearance_effectiveness_pct": 87.6,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 43.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 7.6,
+          "first_reported_at": "2026-07-25T15:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 18.5,
+            "plastic_bag_wrapper": 49.9,
+            "can_metal": 4.6,
+            "carton_paper": 11.5,
+            "other_plastic": 15.5
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H08",
+          "timestamp": "2026-07-31T02:45:00Z",
+          "crew_id": "PMC-CREW-1",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 36.0,
+          "clearance_effectiveness_pct": 84.7,
+          "verification_status": "FLAGGED",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": false,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 36.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 11.1,
+          "first_reported_at": "2026-07-30T03:00:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 19.1,
+            "plastic_bag_wrapper": 49.3,
+            "can_metal": 5.1,
+            "carton_paper": 11.5,
+            "other_plastic": 15.0
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H09",
+          "timestamp": "2026-08-04T02:15:00Z",
+          "crew_id": "PMC-CREW-2",
+          "truck_id": "PMC-TRUCK-05",
+          "weight_removed_kg": 37.5,
+          "clearance_effectiveness_pct": 92.8,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 37.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 14.0,
+          "first_reported_at": "2026-08-01T00:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 22.9,
+            "plastic_bag_wrapper": 44.5,
+            "can_metal": 6.6,
+            "carton_paper": 13.6,
+            "other_plastic": 12.4
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H10",
+          "timestamp": "2026-08-09T03:15:00Z",
+          "crew_id": "PMC-CREW-1",
+          "truck_id": "PMC-TRUCK-05",
+          "weight_removed_kg": 43.0,
+          "clearance_effectiveness_pct": 90.1,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 43.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 4.1,
+          "first_reported_at": "2026-08-06T12:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 18.5,
+            "plastic_bag_wrapper": 49.1,
+            "can_metal": 6.2,
+            "carton_paper": 12.3,
+            "other_plastic": 13.9
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H11",
+          "timestamp": "2026-08-13T04:00:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 41.5,
+          "clearance_effectiveness_pct": 90.1,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 41.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 28.2,
+          "first_reported_at": "2026-08-12T09:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 20.3,
+            "plastic_bag_wrapper": 45.4,
+            "can_metal": 5.2,
+            "carton_paper": 14.5,
+            "other_plastic": 14.6
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H12",
+          "timestamp": "2026-08-18T03:30:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 41.0,
+          "clearance_effectiveness_pct": 86.7,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 41.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 2.8,
+          "first_reported_at": "2026-08-15T23:00:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 24.9,
+            "plastic_bag_wrapper": 42.2,
+            "can_metal": 6.7,
+            "carton_paper": 10.8,
+            "other_plastic": 15.4
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H13",
+          "timestamp": "2026-08-22T03:45:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-05",
+          "weight_removed_kg": 30.5,
+          "clearance_effectiveness_pct": 90.4,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 30.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 1.7,
+          "first_reported_at": "2026-08-19T13:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 20.1,
+            "plastic_bag_wrapper": 49.1,
+            "can_metal": 6.4,
+            "carton_paper": 12.8,
+            "other_plastic": 11.6
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H14",
+          "timestamp": "2026-08-26T01:00:00Z",
+          "crew_id": "PMC-CREW-2",
+          "truck_id": "PMC-TRUCK-02",
+          "weight_removed_kg": 36.5,
+          "clearance_effectiveness_pct": 92.8,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 36.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 2.1,
+          "first_reported_at": "2026-08-24T02:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 16.7,
+            "plastic_bag_wrapper": 47.6,
+            "can_metal": 6.6,
+            "carton_paper": 13.4,
+            "other_plastic": 15.7
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H15",
+          "timestamp": "2026-08-30T00:45:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-02",
+          "weight_removed_kg": 30.0,
+          "clearance_effectiveness_pct": 87.7,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 30.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 7.3,
+          "first_reported_at": "2026-08-28T02:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 25.5,
+            "plastic_bag_wrapper": 46.3,
+            "can_metal": 5.3,
+            "carton_paper": 10.4,
+            "other_plastic": 12.5
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-SW-H16",
+          "timestamp": "2026-09-03T02:45:00Z",
+          "crew_id": "PMC-CREW-1",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 38.0,
+          "clearance_effectiveness_pct": 94.1,
+          "verification_status": "PASS",
+          "before_image": "sample_bottles_drain.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 38.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 4.4,
+          "first_reported_at": "2026-08-31T13:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 22.3,
+            "plastic_bag_wrapper": 46.9,
+            "can_metal": 6.0,
+            "carton_paper": 13.6,
+            "other_plastic": 11.2
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
           "log_id": "LOG-SW-01",
           "timestamp": "2026-09-06T06:30:00Z",
           "crew_id": "PMC-CREW-1",
@@ -47,7 +431,18 @@
           "before_image": "sample_bottles_drain.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Severe PET bottle blockage cleared from culvert mouth."
+          "notes": "Severe PET bottle blockage cleared from culvert mouth.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 5.1,
+          "first_reported_at": "2026-09-03T09:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 17.7,
+            "plastic_bag_wrapper": 50.7,
+            "can_metal": 7.2,
+            "carton_paper": 10.6,
+            "other_plastic": 13.8
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-SW-02",
@@ -60,7 +455,18 @@
           "before_image": "sample_bottles_drain.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Post-monsoon shower accumulation cleared."
+          "notes": "Post-monsoon shower accumulation cleared.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 3.9,
+          "first_reported_at": "2026-09-06T01:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 24.7,
+            "plastic_bag_wrapper": 44.1,
+            "can_metal": 6.7,
+            "carton_paper": 13.2,
+            "other_plastic": 11.3
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-SW-03",
@@ -73,7 +479,18 @@
           "before_image": "sample_plastic_bag_curb.jpg",
           "after_image": "sample_cleared_curb.jpg",
           "operator_signed_off": true,
-          "notes": "Heavy film blockage removed before weekend foot traffic."
+          "notes": "Heavy film blockage removed before weekend foot traffic.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 2.0,
+          "first_reported_at": "2026-09-11T06:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 24.1,
+            "plastic_bag_wrapper": 42.8,
+            "can_metal": 5.7,
+            "carton_paper": 13.2,
+            "other_plastic": 14.2
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-SW-04",
@@ -86,7 +503,18 @@
           "before_image": "sample_bottles_drain.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Routine de-silting and plastic scoop."
+          "notes": "Routine de-silting and plastic scoop.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 2.3,
+          "first_reported_at": "2026-09-14T23:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 20.1,
+            "plastic_bag_wrapper": 45.2,
+            "can_metal": 5.6,
+            "carton_paper": 13.3,
+            "other_plastic": 15.8
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-SW-05",
@@ -99,7 +527,18 @@
           "before_image": "sample_mixed_waste_grate.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Vendor packaging accumulation cleared."
+          "notes": "Vendor packaging accumulation cleared.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 6.9,
+          "first_reported_at": "2026-09-17T01:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 22.9,
+            "plastic_bag_wrapper": 45.3,
+            "can_metal": 5.9,
+            "carton_paper": 13.3,
+            "other_plastic": 12.6
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-SW-06",
@@ -112,7 +551,18 @@
           "before_image": "sample_pet_bottle_pile.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Festive crowd plastic debris removed from intake."
+          "notes": "Festive crowd plastic debris removed from intake.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 14.5,
+          "first_reported_at": "2026-09-20T20:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 20.6,
+            "plastic_bag_wrapper": 48.7,
+            "can_metal": 5.6,
+            "carton_paper": 10.3,
+            "other_plastic": 14.8
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-SW-07",
@@ -125,7 +575,18 @@
           "before_image": "sample_bottles_drain.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Pre-rain grate clearing."
+          "notes": "Pre-rain grate clearing.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 2.4,
+          "first_reported_at": "2026-09-25T20:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 25.6,
+            "plastic_bag_wrapper": 41.4,
+            "can_metal": 7.6,
+            "carton_paper": 12.9,
+            "other_plastic": 12.5
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-SW-08",
@@ -138,7 +599,18 @@
           "before_image": "sample_mixed_waste_grate.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Market unloading discard removed."
+          "notes": "Market unloading discard removed.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 4.7,
+          "first_reported_at": "2026-09-27T00:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 24.2,
+            "plastic_bag_wrapper": 43.0,
+            "can_metal": 6.8,
+            "carton_paper": 13.6,
+            "other_plastic": 12.4
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-SW-09",
@@ -151,7 +623,18 @@
           "before_image": "sample_bottles_drain.jpg",
           "after_image": "sample_partial_cleanup.jpg",
           "operator_signed_off": false,
-          "notes": "Contractor missed side gutter silt; re-inspection required."
+          "notes": "Contractor missed side gutter silt; re-inspection required.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 0.2,
+          "first_reported_at": "2026-10-01T22:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 23.6,
+            "plastic_bag_wrapper": 43.4,
+            "can_metal": 6.4,
+            "carton_paper": 11.1,
+            "other_plastic": 15.5
+          },
+          "record_source": "pilot_log"
         }
       ]
     },
@@ -171,7 +654,7 @@
         "can_metal",
         "carton_paper"
       ],
-      "total_recurrence_count": 7,
+      "total_recurrence_count": 18,
       "average_return_interval_days": 4.1,
       "recurrence_persistence_index": 0.79,
       "root_cause_hypothesis": "Broken culvert apron acting as a hydraulic sediment trap; heavy pedestrian transit corridor discarding single-serve snack sachets.",
@@ -186,6 +669,270 @@
       "sample_partial_image": "sample_partial_cleanup.jpg",
       "cleanups": [
         {
+          "log_id": "LOG-NZ-H01",
+          "timestamp": "2026-07-06T03:30:00Z",
+          "crew_id": "PMC-CREW-1",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 29.0,
+          "clearance_effectiveness_pct": 89.0,
+          "verification_status": "PASS",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "monsoon_preemptive",
+          "notes": "Pre-emptive clearance after 88 mm rain day.",
+          "rainfall_prev_48h_mm": 115.1,
+          "first_reported_at": "2026-07-03T03:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 39.7,
+            "plastic_bag_wrapper": 17.8,
+            "can_metal": 23.0,
+            "carton_paper": 10.2,
+            "other_plastic": 9.3
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-NZ-H02",
+          "timestamp": "2026-07-09T01:00:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-03",
+          "weight_removed_kg": 38.5,
+          "clearance_effectiveness_pct": 81.5,
+          "verification_status": "FLAGGED",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": false,
+          "trigger": "monsoon_preemptive",
+          "notes": "Pre-emptive clearance after 45 mm rain day.",
+          "rainfall_prev_48h_mm": 60.6,
+          "first_reported_at": "2026-07-07T03:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 42.3,
+            "plastic_bag_wrapper": 20.4,
+            "can_metal": 21.0,
+            "carton_paper": 10.1,
+            "other_plastic": 6.2
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-NZ-H03",
+          "timestamp": "2026-07-16T03:15:00Z",
+          "crew_id": "PMC-CREW-1",
+          "truck_id": "PMC-TRUCK-02",
+          "weight_removed_kg": 43.5,
+          "clearance_effectiveness_pct": 88.1,
+          "verification_status": "PASS",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 43.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 2.4,
+          "first_reported_at": "2026-07-14T14:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 40.6,
+            "plastic_bag_wrapper": 15.7,
+            "can_metal": 26.0,
+            "carton_paper": 11.0,
+            "other_plastic": 6.7
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-NZ-H04",
+          "timestamp": "2026-07-22T02:30:00Z",
+          "crew_id": "PMC-CREW-2",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 44.0,
+          "clearance_effectiveness_pct": 94.9,
+          "verification_status": "PASS",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 44.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 16.0,
+          "first_reported_at": "2026-07-20T18:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 36.8,
+            "plastic_bag_wrapper": 19.5,
+            "can_metal": 27.7,
+            "carton_paper": 8.3,
+            "other_plastic": 7.7
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-NZ-H05",
+          "timestamp": "2026-07-26T01:45:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 33.0,
+          "clearance_effectiveness_pct": 95.1,
+          "verification_status": "PASS",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 33.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 17.2,
+          "first_reported_at": "2026-07-24T14:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 41.7,
+            "plastic_bag_wrapper": 19.8,
+            "can_metal": 21.3,
+            "carton_paper": 9.9,
+            "other_plastic": 7.3
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-NZ-H06",
+          "timestamp": "2026-08-01T03:45:00Z",
+          "crew_id": "PMC-CREW-2",
+          "truck_id": "PMC-TRUCK-04",
+          "weight_removed_kg": 51.5,
+          "clearance_effectiveness_pct": 89.6,
+          "verification_status": "PASS",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 51.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 23.1,
+          "first_reported_at": "2026-07-31T06:00:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 43.5,
+            "plastic_bag_wrapper": 18.6,
+            "can_metal": 24.0,
+            "carton_paper": 8.6,
+            "other_plastic": 5.3
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-NZ-H07",
+          "timestamp": "2026-08-07T02:00:00Z",
+          "crew_id": "PMC-CREW-1",
+          "truck_id": "PMC-TRUCK-02",
+          "weight_removed_kg": 43.0,
+          "clearance_effectiveness_pct": 92.9,
+          "verification_status": "PASS",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 43.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 14.2,
+          "first_reported_at": "2026-08-04T01:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 43.5,
+            "plastic_bag_wrapper": 17.9,
+            "can_metal": 22.4,
+            "carton_paper": 9.1,
+            "other_plastic": 7.1
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-NZ-H08",
+          "timestamp": "2026-08-11T01:30:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-02",
+          "weight_removed_kg": 32.5,
+          "clearance_effectiveness_pct": 93.0,
+          "verification_status": "PASS",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 32.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 5.9,
+          "first_reported_at": "2026-08-08T21:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 42.9,
+            "plastic_bag_wrapper": 19.0,
+            "can_metal": 22.7,
+            "carton_paper": 9.0,
+            "other_plastic": 6.4
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-NZ-H09",
+          "timestamp": "2026-08-16T01:00:00Z",
+          "crew_id": "PMC-CREW-3",
+          "truck_id": "PMC-TRUCK-02",
+          "weight_removed_kg": 41.5,
+          "clearance_effectiveness_pct": 90.4,
+          "verification_status": "PASS",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 41.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 5.5,
+          "first_reported_at": "2026-08-14T13:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 34.7,
+            "plastic_bag_wrapper": 22.3,
+            "can_metal": 26.9,
+            "carton_paper": 8.7,
+            "other_plastic": 7.4
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-NZ-H10",
+          "timestamp": "2026-08-23T01:00:00Z",
+          "crew_id": "PMC-CREW-1",
+          "truck_id": "PMC-TRUCK-03",
+          "weight_removed_kg": 46.5,
+          "clearance_effectiveness_pct": 93.3,
+          "verification_status": "PASS",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 46.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 3.6,
+          "first_reported_at": "2026-08-21T14:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 42.6,
+            "plastic_bag_wrapper": 18.8,
+            "can_metal": 23.6,
+            "carton_paper": 8.3,
+            "other_plastic": 6.7
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-NZ-H11",
+          "timestamp": "2026-08-30T03:15:00Z",
+          "crew_id": "PMC-CREW-2",
+          "truck_id": "PMC-TRUCK-02",
+          "weight_removed_kg": 47.5,
+          "clearance_effectiveness_pct": 90.8,
+          "verification_status": "PASS",
+          "before_image": "sample_food_wrappers_culvert.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 47.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 7.3,
+          "first_reported_at": "2026-08-28T00:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 41.3,
+            "plastic_bag_wrapper": 19.3,
+            "can_metal": 23.5,
+            "carton_paper": 9.8,
+            "other_plastic": 6.1
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
           "log_id": "LOG-NZ-01",
           "timestamp": "2026-09-07T08:00:00Z",
           "crew_id": "PMC-CREW-2",
@@ -196,7 +943,18 @@
           "before_image": "sample_food_wrappers_culvert.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Heavy snack wrapper and tin can accumulation scooped."
+          "notes": "Heavy snack wrapper and tin can accumulation scooped.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 6.8,
+          "first_reported_at": "2026-09-06T08:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 39.8,
+            "plastic_bag_wrapper": 17.1,
+            "can_metal": 24.1,
+            "carton_paper": 11.1,
+            "other_plastic": 7.9
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-NZ-02",
@@ -209,7 +967,18 @@
           "before_image": "sample_beverage_cans_gutter.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Beverage can buildup cleared from intake grate."
+          "notes": "Beverage can buildup cleared from intake grate.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 3.2,
+          "first_reported_at": "2026-09-10T00:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 42.0,
+            "plastic_bag_wrapper": 19.9,
+            "can_metal": 24.7,
+            "carton_paper": 7.4,
+            "other_plastic": 6.0
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-NZ-03",
@@ -222,7 +991,18 @@
           "before_image": "sample_snack_wrappers_curb.jpg",
           "after_image": "sample_cleared_curb.jpg",
           "operator_signed_off": true,
-          "notes": "Multi-layer laminate packaging extracted from apron vortex."
+          "notes": "Multi-layer laminate packaging extracted from apron vortex.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 9.9,
+          "first_reported_at": "2026-09-14T13:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 37.7,
+            "plastic_bag_wrapper": 21.9,
+            "can_metal": 24.9,
+            "carton_paper": 7.7,
+            "other_plastic": 7.8
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-NZ-04",
@@ -235,7 +1015,18 @@
           "before_image": "sample_food_wrappers_culvert.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Routine nallah desilt and rake."
+          "notes": "Routine nallah desilt and rake.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 11.5,
+          "first_reported_at": "2026-09-18T16:00:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 38.5,
+            "plastic_bag_wrapper": 20.7,
+            "can_metal": 23.1,
+            "carton_paper": 10.0,
+            "other_plastic": 7.7
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-NZ-05",
@@ -248,7 +1039,18 @@
           "before_image": "sample_beverage_cans_gutter.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Stormwater corridor de-weeding and packaging extraction."
+          "notes": "Stormwater corridor de-weeding and packaging extraction.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 9.9,
+          "first_reported_at": "2026-09-23T02:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 41.2,
+            "plastic_bag_wrapper": 16.5,
+            "can_metal": 26.2,
+            "carton_paper": 8.6,
+            "other_plastic": 7.5
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-NZ-06",
@@ -261,7 +1063,18 @@
           "before_image": "sample_food_wrappers_culvert.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Intake grate cleared before forecast downpour."
+          "notes": "Intake grate cleared before forecast downpour.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 1.3,
+          "first_reported_at": "2026-09-26T11:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 45.9,
+            "plastic_bag_wrapper": 16.0,
+            "can_metal": 22.4,
+            "carton_paper": 7.5,
+            "other_plastic": 8.2
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-NZ-07",
@@ -274,7 +1087,18 @@
           "before_image": "sample_food_wrappers_culvert.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Autumn festival holiday residue cleared."
+          "notes": "Autumn festival holiday residue cleared.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 3.2,
+          "first_reported_at": "2026-10-01T02:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 37.3,
+            "plastic_bag_wrapper": 22.3,
+            "can_metal": 24.8,
+            "carton_paper": 8.6,
+            "other_plastic": 7.0
+          },
+          "record_source": "pilot_log"
         }
       ]
     },
@@ -294,20 +1118,212 @@
         "plastic_bag_wrapper",
         "carton_paper"
       ],
-      "total_recurrence_count": 6,
+      "total_recurrence_count": 14,
       "average_return_interval_days": 5.0,
       "recurrence_persistence_index": 0.74,
       "root_cause_hypothesis": "Upstream commercial packaging wholesale market & construction fly-tipping during 02:00-04:00 AM off-hours.",
       "systemic_interventions": [
         "Deploy night CCTV camera surveillance at river bridge approach",
         "Install floating heavy-duty river trash skimmer boom across outfall span",
-        "Levy strict PMC fly-tipping penal fines (\u20b925,000 per violation)",
+        "Levy strict PMC fly-tipping penal fines (₹25,000 per violation)",
         "Coordinate cross-ward patrol between Sangamwadi and Yerawada"
       ],
       "sample_before_image": "sample_polypropylene_sacks.jpg",
       "sample_after_image": "sample_cleared_curb.jpg",
       "sample_partial_image": "sample_partial_cleanup.jpg",
       "cleanups": [
+        {
+          "log_id": "LOG-MO-H01",
+          "timestamp": "2026-07-06T00:30:00Z",
+          "crew_id": "PMC-CREW-4",
+          "truck_id": "PMC-TRUCK-07",
+          "weight_removed_kg": 100.0,
+          "clearance_effectiveness_pct": 92.0,
+          "verification_status": "PASS",
+          "before_image": "sample_polypropylene_sacks.jpg",
+          "after_image": "sample_cleared_curb.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 100.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 115.1,
+          "first_reported_at": "2026-07-04T00:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 19.3,
+            "plastic_bag_wrapper": 28.4,
+            "can_metal": 6.4,
+            "carton_paper": 9.8,
+            "other_plastic": 36.1
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-MO-H02",
+          "timestamp": "2026-07-07T01:15:00Z",
+          "crew_id": "PMC-CREW-4",
+          "truck_id": "PMC-TRUCK-07",
+          "weight_removed_kg": 46.0,
+          "clearance_effectiveness_pct": 91.7,
+          "verification_status": "PASS",
+          "before_image": "sample_polypropylene_sacks.jpg",
+          "after_image": "sample_cleared_curb.jpg",
+          "operator_signed_off": true,
+          "trigger": "monsoon_preemptive",
+          "notes": "Pre-emptive clearance after 44 mm rain day.",
+          "rainfall_prev_48h_mm": 131.9,
+          "first_reported_at": "2026-07-05T19:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 17.4,
+            "plastic_bag_wrapper": 24.6,
+            "can_metal": 5.1,
+            "carton_paper": 10.7,
+            "other_plastic": 42.2
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-MO-H03",
+          "timestamp": "2026-07-09T00:45:00Z",
+          "crew_id": "PMC-CREW-4",
+          "truck_id": "PMC-TRUCK-07",
+          "weight_removed_kg": 54.5,
+          "clearance_effectiveness_pct": 91.6,
+          "verification_status": "PASS",
+          "before_image": "sample_polypropylene_sacks.jpg",
+          "after_image": "sample_cleared_curb.jpg",
+          "operator_signed_off": true,
+          "trigger": "monsoon_preemptive",
+          "notes": "Pre-emptive clearance after 45 mm rain day.",
+          "rainfall_prev_48h_mm": 60.6,
+          "first_reported_at": "2026-07-06T16:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 15.6,
+            "plastic_bag_wrapper": 27.1,
+            "can_metal": 5.6,
+            "carton_paper": 11.7,
+            "other_plastic": 40.0
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-MO-H04",
+          "timestamp": "2026-07-22T00:45:00Z",
+          "crew_id": "PMC-CREW-4",
+          "truck_id": "PMC-TRUCK-07",
+          "weight_removed_kg": 81.5,
+          "clearance_effectiveness_pct": 90.4,
+          "verification_status": "PASS",
+          "before_image": "sample_polypropylene_sacks.jpg",
+          "after_image": "sample_cleared_curb.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 81.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 16.0,
+          "first_reported_at": "2026-07-20T00:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 15.3,
+            "plastic_bag_wrapper": 30.3,
+            "can_metal": 4.9,
+            "carton_paper": 9.9,
+            "other_plastic": 39.6
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-MO-H05",
+          "timestamp": "2026-07-28T01:00:00Z",
+          "crew_id": "PMC-CREW-4",
+          "truck_id": "PMC-TRUCK-07",
+          "weight_removed_kg": 71.0,
+          "clearance_effectiveness_pct": 95.5,
+          "verification_status": "PASS",
+          "before_image": "sample_polypropylene_sacks.jpg",
+          "after_image": "sample_cleared_curb.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 71.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 12.1,
+          "first_reported_at": "2026-07-26T07:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 20.1,
+            "plastic_bag_wrapper": 27.9,
+            "can_metal": 5.2,
+            "carton_paper": 11.7,
+            "other_plastic": 35.1
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-MO-H06",
+          "timestamp": "2026-08-04T02:15:00Z",
+          "crew_id": "PMC-CREW-4",
+          "truck_id": "PMC-TRUCK-07",
+          "weight_removed_kg": 70.0,
+          "clearance_effectiveness_pct": 92.6,
+          "verification_status": "PASS",
+          "before_image": "sample_polypropylene_sacks.jpg",
+          "after_image": "sample_cleared_curb.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 70.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 14.0,
+          "first_reported_at": "2026-08-02T10:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 19.6,
+            "plastic_bag_wrapper": 33.1,
+            "can_metal": 5.0,
+            "carton_paper": 10.7,
+            "other_plastic": 31.6
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-MO-H07",
+          "timestamp": "2026-08-12T03:30:00Z",
+          "crew_id": "PMC-CREW-4",
+          "truck_id": "PMC-TRUCK-07",
+          "weight_removed_kg": 75.5,
+          "clearance_effectiveness_pct": 89.8,
+          "verification_status": "PASS",
+          "before_image": "sample_polypropylene_sacks.jpg",
+          "after_image": "sample_cleared_curb.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 75.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 25.9,
+          "first_reported_at": "2026-08-09T01:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 22.6,
+            "plastic_bag_wrapper": 31.2,
+            "can_metal": 4.4,
+            "carton_paper": 9.4,
+            "other_plastic": 32.4
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-MO-H08",
+          "timestamp": "2026-08-25T04:00:00Z",
+          "crew_id": "PMC-CREW-4",
+          "truck_id": "PMC-TRUCK-07",
+          "weight_removed_kg": 65.5,
+          "clearance_effectiveness_pct": 98.4,
+          "verification_status": "PASS",
+          "before_image": "sample_polypropylene_sacks.jpg",
+          "after_image": "sample_cleared_curb.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 65.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 3.8,
+          "first_reported_at": "2026-08-23T18:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 15.3,
+            "plastic_bag_wrapper": 30.7,
+            "can_metal": 4.7,
+            "carton_paper": 11.3,
+            "other_plastic": 38.0
+          },
+          "record_source": "seeded_prototype"
+        },
         {
           "log_id": "LOG-MO-01",
           "timestamp": "2026-09-08T09:30:00Z",
@@ -319,7 +1335,18 @@
           "before_image": "sample_polypropylene_sacks.jpg",
           "after_image": "sample_cleared_curb.jpg",
           "operator_signed_off": true,
-          "notes": "Heavy industrial polypropylene sacks hoisted from outfall bank."
+          "notes": "Heavy industrial polypropylene sacks hoisted from outfall bank.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 7.4,
+          "first_reported_at": "2026-09-06T21:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 17.6,
+            "plastic_bag_wrapper": 29.1,
+            "can_metal": 4.3,
+            "carton_paper": 10.8,
+            "other_plastic": 38.2
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-MO-02",
@@ -332,7 +1359,18 @@
           "before_image": "sample_polypropylene_sacks.jpg",
           "after_image": "sample_cleared_curb.jpg",
           "operator_signed_off": true,
-          "notes": "Thermocol packaging blocks removed from water intake."
+          "notes": "Thermocol packaging blocks removed from water intake.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 9.2,
+          "first_reported_at": "2026-09-13T08:00:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 16.8,
+            "plastic_bag_wrapper": 30.0,
+            "can_metal": 6.1,
+            "carton_paper": 10.1,
+            "other_plastic": 37.0
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-MO-03",
@@ -345,7 +1383,18 @@
           "before_image": "sample_mixed_waste_grate.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Floating debris trapped at confluence boom cleared."
+          "notes": "Floating debris trapped at confluence boom cleared.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 11.5,
+          "first_reported_at": "2026-09-17T23:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 16.2,
+            "plastic_bag_wrapper": 25.8,
+            "can_metal": 4.4,
+            "carton_paper": 11.0,
+            "other_plastic": 42.6
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-MO-04",
@@ -358,7 +1407,18 @@
           "before_image": "sample_polypropylene_sacks.jpg",
           "after_image": "sample_cleared_curb.jpg",
           "operator_signed_off": true,
-          "notes": "Crane deployed to lift large waterlogged sacks."
+          "notes": "Crane deployed to lift large waterlogged sacks.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 9.9,
+          "first_reported_at": "2026-09-22T11:00:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 21.4,
+            "plastic_bag_wrapper": 27.4,
+            "can_metal": 5.9,
+            "carton_paper": 9.7,
+            "other_plastic": 35.6
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-MO-05",
@@ -371,7 +1431,18 @@
           "before_image": "sample_polypropylene_sacks.jpg",
           "after_image": "sample_cleared_curb.jpg",
           "operator_signed_off": true,
-          "notes": "Post-monsoon flood wash-out retrieval."
+          "notes": "Post-monsoon flood wash-out retrieval.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 2.9,
+          "first_reported_at": "2026-09-27T11:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 19.2,
+            "plastic_bag_wrapper": 34.0,
+            "can_metal": 4.4,
+            "carton_paper": 9.0,
+            "other_plastic": 33.4
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-MO-06",
@@ -384,7 +1455,18 @@
           "before_image": "sample_polypropylene_sacks.jpg",
           "after_image": "sample_cleared_curb.jpg",
           "operator_signed_off": true,
-          "notes": "Routine river outfall boom maintenance."
+          "notes": "Routine river outfall boom maintenance.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 0.0,
+          "first_reported_at": "2026-10-03T02:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 17.3,
+            "plastic_bag_wrapper": 34.0,
+            "can_metal": 4.2,
+            "carton_paper": 9.4,
+            "other_plastic": 35.1
+          },
+          "record_source": "pilot_log"
         }
       ]
     },
@@ -404,7 +1486,7 @@
         "can_metal",
         "carton_paper"
       ],
-      "total_recurrence_count": 5,
+      "total_recurrence_count": 17,
       "average_return_interval_days": 5.8,
       "recurrence_persistence_index": 0.65,
       "root_cause_hypothesis": "Curbside takeaway food kiosk strip without segregated bins; rapid litter drift into low-inlet roadside catchpit during rain.",
@@ -419,6 +1501,294 @@
       "sample_partial_image": "sample_partial_cleanup.jpg",
       "cleanups": [
         {
+          "log_id": "LOG-KF-H01",
+          "timestamp": "2026-07-06T04:15:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 20.5,
+          "clearance_effectiveness_pct": 90.8,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "monsoon_preemptive",
+          "notes": "Pre-emptive clearance after 88 mm rain day.",
+          "rainfall_prev_48h_mm": 115.1,
+          "first_reported_at": "2026-07-05T13:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 38.5,
+            "plastic_bag_wrapper": 19.1,
+            "can_metal": 23.3,
+            "carton_paper": 14.3,
+            "other_plastic": 4.8
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H02",
+          "timestamp": "2026-07-09T02:15:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 23.0,
+          "clearance_effectiveness_pct": 89.1,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 23.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 60.6,
+          "first_reported_at": "2026-07-07T12:00:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 39.6,
+            "plastic_bag_wrapper": 14.1,
+            "can_metal": 25.6,
+            "carton_paper": 16.5,
+            "other_plastic": 4.2
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H03",
+          "timestamp": "2026-07-16T02:30:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 29.5,
+          "clearance_effectiveness_pct": 93.2,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 29.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 2.4,
+          "first_reported_at": "2026-07-14T17:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 40.6,
+            "plastic_bag_wrapper": 13.9,
+            "can_metal": 23.4,
+            "carton_paper": 16.7,
+            "other_plastic": 5.4
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H04",
+          "timestamp": "2026-07-22T01:45:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 27.0,
+          "clearance_effectiveness_pct": 92.5,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 27.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 16.0,
+          "first_reported_at": "2026-07-18T21:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 33.6,
+            "plastic_bag_wrapper": 14.8,
+            "can_metal": 30.9,
+            "carton_paper": 15.6,
+            "other_plastic": 5.1
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H05",
+          "timestamp": "2026-07-26T03:30:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 22.5,
+          "clearance_effectiveness_pct": 87.4,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 22.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 17.2,
+          "first_reported_at": "2026-07-25T00:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 38.8,
+            "plastic_bag_wrapper": 13.1,
+            "can_metal": 27.7,
+            "carton_paper": 15.3,
+            "other_plastic": 5.1
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H06",
+          "timestamp": "2026-07-31T00:30:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 23.0,
+          "clearance_effectiveness_pct": 88.6,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 23.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 11.1,
+          "first_reported_at": "2026-07-30T14:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 31.7,
+            "plastic_bag_wrapper": 15.5,
+            "can_metal": 31.8,
+            "carton_paper": 15.9,
+            "other_plastic": 5.1
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H07",
+          "timestamp": "2026-08-04T01:30:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 22.5,
+          "clearance_effectiveness_pct": 93.9,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 22.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 14.0,
+          "first_reported_at": "2026-08-01T15:10:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 41.8,
+            "plastic_bag_wrapper": 13.9,
+            "can_metal": 23.1,
+            "carton_paper": 16.6,
+            "other_plastic": 4.6
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H08",
+          "timestamp": "2026-08-10T01:30:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 25.0,
+          "clearance_effectiveness_pct": 91.8,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 25.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 3.5,
+          "first_reported_at": "2026-08-09T11:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 41.0,
+            "plastic_bag_wrapper": 14.3,
+            "can_metal": 23.3,
+            "carton_paper": 16.5,
+            "other_plastic": 4.9
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H09",
+          "timestamp": "2026-08-15T01:30:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 22.5,
+          "clearance_effectiveness_pct": 91.6,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 22.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 7.4,
+          "first_reported_at": "2026-08-13T12:40:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 33.9,
+            "plastic_bag_wrapper": 17.2,
+            "can_metal": 24.8,
+            "carton_paper": 18.9,
+            "other_plastic": 5.2
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H10",
+          "timestamp": "2026-08-21T01:30:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 26.5,
+          "clearance_effectiveness_pct": 94.8,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 26.5 kg accumulation.",
+          "rainfall_prev_48h_mm": 0.8,
+          "first_reported_at": "2026-08-20T13:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 37.4,
+            "plastic_bag_wrapper": 15.5,
+            "can_metal": 25.9,
+            "carton_paper": 16.3,
+            "other_plastic": 4.9
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H11",
+          "timestamp": "2026-08-27T00:45:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 25.0,
+          "clearance_effectiveness_pct": 94.6,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 25.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 1.3,
+          "first_reported_at": "2026-08-25T14:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 33.6,
+            "plastic_bag_wrapper": 19.1,
+            "can_metal": 23.4,
+            "carton_paper": 18.7,
+            "other_plastic": 5.2
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
+          "log_id": "LOG-KF-H12",
+          "timestamp": "2026-09-01T03:00:00Z",
+          "crew_id": "PMC-CREW-5",
+          "truck_id": "PMC-TRUCK-09",
+          "weight_removed_kg": 24.0,
+          "clearance_effectiveness_pct": 92.8,
+          "verification_status": "PASS",
+          "before_image": "sample_plastic_cups_gutter.jpg",
+          "after_image": "sample_cleared_drain.jpg",
+          "operator_signed_off": true,
+          "trigger": "accumulation_threshold",
+          "notes": "Routine clearance of 24.0 kg accumulation.",
+          "rainfall_prev_48h_mm": 0.6,
+          "first_reported_at": "2026-08-29T09:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 33.2,
+            "plastic_bag_wrapper": 15.6,
+            "can_metal": 31.5,
+            "carton_paper": 14.9,
+            "other_plastic": 4.8
+          },
+          "record_source": "seeded_prototype"
+        },
+        {
           "log_id": "LOG-KF-01",
           "timestamp": "2026-09-08T07:00:00Z",
           "crew_id": "PMC-CREW-5",
@@ -429,7 +1799,18 @@
           "before_image": "sample_plastic_cups_gutter.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Plastic drink cups and bottles scooped from roadside inlet."
+          "notes": "Plastic drink cups and bottles scooped from roadside inlet.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 7.4,
+          "first_reported_at": "2026-09-06T15:50:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 36.6,
+            "plastic_bag_wrapper": 16.5,
+            "can_metal": 28.5,
+            "carton_paper": 13.3,
+            "other_plastic": 5.1
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-KF-02",
@@ -442,7 +1823,18 @@
           "before_image": "sample_plastic_cups_gutter.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Catchpit cleared after evening market."
+          "notes": "Catchpit cleared after evening market.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 9.2,
+          "first_reported_at": "2026-09-13T15:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 34.9,
+            "plastic_bag_wrapper": 17.2,
+            "can_metal": 27.0,
+            "carton_paper": 15.4,
+            "other_plastic": 5.5
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-KF-03",
@@ -455,7 +1847,18 @@
           "before_image": "sample_bottles_drain.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "PET bottle buildup cleared before weekend."
+          "notes": "PET bottle buildup cleared before weekend.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 6.9,
+          "first_reported_at": "2026-09-17T08:30:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 37.9,
+            "plastic_bag_wrapper": 17.1,
+            "can_metal": 25.3,
+            "carton_paper": 14.6,
+            "other_plastic": 5.1
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-KF-04",
@@ -468,7 +1871,18 @@
           "before_image": "sample_plastic_cups_gutter.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Routine de-silting."
+          "notes": "Routine de-silting.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 4.2,
+          "first_reported_at": "2026-09-23T17:00:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 36.7,
+            "plastic_bag_wrapper": 13.2,
+            "can_metal": 29.4,
+            "carton_paper": 15.3,
+            "other_plastic": 5.4
+          },
+          "record_source": "pilot_log"
         },
         {
           "log_id": "LOG-KF-05",
@@ -481,9 +1895,22 @@
           "before_image": "sample_plastic_cups_gutter.jpg",
           "after_image": "sample_cleared_drain.jpg",
           "operator_signed_off": true,
-          "notes": "Post-Gandhi Jayanti cleanup run."
+          "notes": "Post-Gandhi Jayanti cleanup run.",
+          "trigger": "accumulation_threshold",
+          "rainfall_prev_48h_mm": 5.7,
+          "first_reported_at": "2026-09-29T13:20:00Z",
+          "waste_composition_pct": {
+            "plastic_bottle": 31.3,
+            "plastic_bag_wrapper": 16.9,
+            "can_metal": 27.1,
+            "carton_paper": 19.3,
+            "other_plastic": 5.4
+          },
+          "record_source": "pilot_log"
         }
       ]
     }
-  ]
+  ],
+  "rainfall_source": "data/pune_rainfall_2026.json (Open-Meteo archive, real)",
+  "data_notes": "Logs from 2026-09-05 onward are the project's original demo dossier (committed 2026-10-06). 2026-07-05 to 2026-09-04 logs are seeded prototype records generated from REAL daily Pune rainfall by data/generate_historical_dossier.py. Neither set is an official PMC export."
 }
