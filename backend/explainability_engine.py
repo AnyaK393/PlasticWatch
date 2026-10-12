@@ -18,6 +18,11 @@ ACTION_META = {
         "color": "#ef4444",
         "crew": "Suction & Desilting Crew",
     },
+    "DOWNSTREAM_SCREEN_INTERCEPT": {
+        "badge": "🌊 DOWNSTREAM SCREEN INTERCEPT",
+        "color": "#22d3ee",
+        "crew": "Grate & Screen Interception Crew (downstream)",
+    },
     "PREVENTIVE_DRAIN_SCREEN": {
         "badge": "🛡️ PREVENTIVE DRAIN SCREEN",
         "color": "#f59e0b",
@@ -176,7 +181,7 @@ class ExplainabilityEngine:
     def recommend_action(hotspot: dict, now: Optional[datetime] = None) -> dict:
         """
         Evaluates hotspot attributes and returns:
-        - action_type: 'IMMEDIATE_CLEANUP_DISPATCH' | 'PREVENTIVE_DRAIN_SCREEN' |
+        - action_type: 'IMMEDIATE_CLEANUP_DISPATCH' | 'DOWNSTREAM_SCREEN_INTERCEPT' | 'PREVENTIVE_DRAIN_SCREEN' |
                        'HUMAN_VERIFICATION_REQUIRED' | 'ROUTINE_MONITORING'
         - reason_summary: Plain-English explanation
         - recommended_crew: e.g. 'Suction & Desilting Crew' vs 'Manual Litter Sweep'
@@ -203,6 +208,10 @@ class ExplainabilityEngine:
                 " and ".join(why).capitalize()
                 + ". An operator must confirm the site before a crew or payment is committed."
             )
+        elif (hotspot.get("flow_dynamics") or {}).get("classification") == "TRANSIENT_SURCHARGE":
+            # Floating waste will not be at the reported spot when the crew arrives
+            action = "DOWNSTREAM_SCREEN_INTERCEPT"
+            reason = hotspot["flow_dynamics"]["reason"]
         elif score >= DISPATCH_SCORE and dist <= DISPATCH_DRAIN_M and rain >= DISPATCH_RAIN_MMH:
             action = "IMMEDIATE_CLEANUP_DISPATCH"
             reason = (
@@ -256,5 +265,6 @@ class ExplainabilityEngine:
                 "recent_reports_14d": recent,
                 "dominant_waste_class": dominant,
                 "status": status or "ACTIVE",
+                "flow_classification": (hotspot.get("flow_dynamics") or {}).get("classification", "n/a"),
             },
         }

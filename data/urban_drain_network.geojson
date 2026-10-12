@@ -19,7 +19,9 @@
         "clog_vulnerability": "HIGH",
         "risk_weight": 1.0,
         "last_desilted": null,
-        "silt_accrual_pct_per_day": 0.0
+        "silt_accrual_pct_per_day": 0.0,
+        "channel_form": "open",
+        "hydraulic_class": "river"
       },
       "geometry": {
         "type": "LineString",
@@ -66,7 +68,9 @@
         "clog_vulnerability": "HIGH",
         "risk_weight": 1.0,
         "last_desilted": null,
-        "silt_accrual_pct_per_day": 0.0
+        "silt_accrual_pct_per_day": 0.0,
+        "channel_form": "open",
+        "hydraulic_class": "river"
       },
       "geometry": {
         "type": "LineString",
@@ -105,7 +109,9 @@
         "clog_vulnerability": "CRITICAL",
         "risk_weight": 1.0,
         "last_desilted": null,
-        "silt_accrual_pct_per_day": 0.0
+        "silt_accrual_pct_per_day": 0.0,
+        "channel_form": "open",
+        "hydraulic_class": "river"
       },
       "geometry": {
         "type": "LineString",
@@ -140,7 +146,9 @@
         "clog_vulnerability": "CRITICAL",
         "risk_weight": 0.95,
         "last_desilted": "2026-05-12",
-        "silt_accrual_pct_per_day": 0.3
+        "silt_accrual_pct_per_day": 0.3,
+        "channel_form": "open",
+        "hydraulic_class": "nallah"
       },
       "geometry": {
         "type": "LineString",
@@ -187,7 +195,9 @@
         "clog_vulnerability": "CRITICAL",
         "risk_weight": 0.9,
         "last_desilted": "2026-05-18",
-        "silt_accrual_pct_per_day": 0.34
+        "silt_accrual_pct_per_day": 0.34,
+        "channel_form": "open",
+        "hydraulic_class": "nallah"
       },
       "geometry": {
         "type": "LineString",
@@ -226,7 +236,9 @@
         "clog_vulnerability": "HIGH",
         "risk_weight": 0.85,
         "last_desilted": "2026-05-08",
-        "silt_accrual_pct_per_day": 0.26
+        "silt_accrual_pct_per_day": 0.26,
+        "channel_form": "open",
+        "hydraulic_class": "nallah"
       },
       "geometry": {
         "type": "LineString",
@@ -265,7 +277,9 @@
         "clog_vulnerability": "HIGH",
         "risk_weight": 0.8,
         "last_desilted": "2026-05-25",
-        "silt_accrual_pct_per_day": 0.22
+        "silt_accrual_pct_per_day": 0.22,
+        "channel_form": "open",
+        "hydraulic_class": "nallah"
       },
       "geometry": {
         "type": "LineString",
@@ -300,7 +314,9 @@
         "clog_vulnerability": "HIGH",
         "risk_weight": 0.75,
         "last_desilted": "2026-04-30",
-        "silt_accrual_pct_per_day": 0.2
+        "silt_accrual_pct_per_day": 0.2,
+        "channel_form": "closed",
+        "hydraulic_class": "culvert"
       },
       "geometry": {
         "type": "LineString",
@@ -331,7 +347,9 @@
         "clog_vulnerability": "MODERATE",
         "risk_weight": 0.7,
         "last_desilted": "2026-05-05",
-        "silt_accrual_pct_per_day": 0.18
+        "silt_accrual_pct_per_day": 0.18,
+        "channel_form": "open",
+        "hydraulic_class": "canal"
       },
       "geometry": {
         "type": "LineString",
@@ -362,7 +380,9 @@
         "clog_vulnerability": "CRITICAL",
         "risk_weight": 0.92,
         "last_desilted": "2026-05-20",
-        "silt_accrual_pct_per_day": 0.32
+        "silt_accrual_pct_per_day": 0.32,
+        "channel_form": "closed",
+        "hydraulic_class": "culvert"
       },
       "geometry": {
         "type": "LineString",
@@ -397,7 +417,9 @@
         "clog_vulnerability": "HIGH",
         "risk_weight": 0.88,
         "last_desilted": "2026-05-15",
-        "silt_accrual_pct_per_day": 0.24
+        "silt_accrual_pct_per_day": 0.24,
+        "channel_form": "open",
+        "hydraulic_class": "lined_drain"
       },
       "geometry": {
         "type": "LineString",
@@ -428,7 +450,9 @@
         "clog_vulnerability": "CRITICAL",
         "risk_weight": 0.85,
         "last_desilted": "2026-04-28",
-        "silt_accrual_pct_per_day": 0.36
+        "silt_accrual_pct_per_day": 0.36,
+        "channel_form": "open",
+        "hydraulic_class": "lined_drain"
       },
       "geometry": {
         "type": "LineString",
@@ -449,5 +473,6 @@
       }
     }
   ],
-  "maintenance_note": "last_desilted = PMC pre-monsoon nallah desilting date; silt_accrual_pct_per_day = share of conveyance capacity lost per day since. Rivers are not inlet-desilted (rate 0)."
+  "maintenance_note": "last_desilted = PMC pre-monsoon nallah desilting date; silt_accrual_pct_per_day = share of conveyance capacity lost per day since. Rivers are not inlet-desilted (rate 0).",
+  "channel_note": "channel_form: open = floating debris can travel with the flow; closed = piped/covered culvert where debris is held at the inlet grate. hydraulic_class selects the Manning geometry in backend/simulator_engine.py CHANNEL_HYDRAULICS (estimated, not surveyed)."
 }

@@ -21,6 +21,7 @@ from backend.drain_risk_engine import DrainRiskEngine
 from backend.recurrence_engine import attribute_landuse_root_cause
 from backend.route_optimizer import RouteOptimizer
 from backend.storage import CorruptDataError, locked, read_json, write_bytes_atomic, write_json
+from backend.transient_flow_engine import DEFAULT_CREW_ETA_MIN, TRANSIENT, TransientFlowEngine
 from backend.taco_adapter import REVIEW_STATUS, detect_waste, get_sample_images
 
 logger = logging.getLogger(__name__)
@@ -181,6 +182,7 @@ class PlasticWatchUrbanPipeline:
         self.clustering_engine = DBSCANClusteringEngine(eps_meters=50.0, min_samples=2)
         self.risk_engine = DrainRiskEngine()
         self.route_optimizer = RouteOptimizer()
+        self.transient_engine = TransientFlowEngine()
         self._reports_cache: Optional[List[Dict[str, Any]]] = None
         self._reports_mtime: Optional[float] = None
 
@@ -387,6 +389,7 @@ class PlasticWatchUrbanPipeline:
         rainfall_intensity_mmh: Optional[float] = None,
         drain_silt_ratio: Optional[float] = None,
         surface_slope_factor: float = 1.0,
+        crew_eta_min: float = DEFAULT_CREW_ETA_MIN,
     ) -> Dict[str, Any]:
         """Run the end-to-end urban intelligence pipeline.
 
@@ -395,6 +398,7 @@ class PlasticWatchUrbanPipeline:
             rainfall_intensity_mmh: Rainfall intensity 0-75 mm/hr; None = live Open-Meteo current hour.
             drain_silt_ratio: Siltation override 0.0-1.0; None = each drain's own desilting record.
             surface_slope_factor: 1.0 flat, 1.25 moderate, 1.5 steep.
+            crew_eta_min: expected crew arrival time, used to project floating-debris drift.
         """
         if rainfall_intensity_mmh is None:
             live = self.risk_engine.fetch_live_rainfall_intensity()
@@ -440,6 +444,8 @@ class PlasticWatchUrbanPipeline:
             rep_photos = [r.get("photo_filename") for r in cluster_reports if r.get("photo_filename")]
             combined["primary_photo"] = existing[0] if existing else (rep_photos[0] if rep_photos else "sample_bottles_drain.jpg")
             
+            # Floating vs anchored: where will this waste be when the crew arrives?
+            combined["flow_dynamics"] = self.transient_engine.assess(combined, rainfall_intensity_mmh, crew_eta_min)
             scored_hotspots.append(combined)
 
         # Sort ranked by risk score descending
@@ -479,6 +485,7 @@ class PlasticWatchUrbanPipeline:
                 "moderate_sites": moderate_count,
                 "mean_detection_confidence": round(mean_conf, 2),
                 "pending_review_reports": len(review_queue),
+                "transient_hotspots": sum(1 for h in scored_hotspots if h["flow_dynamics"]["classification"] == TRANSIENT),
                 "compression_ratio_pct": cluster_telemetry["compression_ratio_pct"],
                 "prevented_duplicate_dispatches": cluster_telemetry["prevented_duplicate_dispatches"],
                 "estimated_civic_savings_inr": cluster_telemetry["estimated_civic_savings_inr"],
@@ -493,6 +500,7 @@ class PlasticWatchUrbanPipeline:
                     max((h["drain_silt_ratio"] for h in scored_hotspots), default=0.0),
                 ],
                 "surface_slope_factor": max(1.0, min(1.5, float(surface_slope_factor))),
+                "crew_eta_min": float(crew_eta_min),
             },
             "cluster_telemetry": cluster_telemetry,
             "hotspots": scored_hotspots,
@@ -517,7 +525,21 @@ class PlasticWatchUrbanPipeline:
         if not target_hotspots:
             target_hotspots = pipeline_data["hotspots"][:3]  # Default to top critical hotspots
 
-        plan = self.route_optimizer.generate_dispatch_plan(target_hotspots)
+        # Transient floating waste: send the truck to the downstream intercept, not the report point
+        routed = []
+        for h in target_hotspots:
+            flow = h.get("flow_dynamics") or {}
+            if flow.get("classification") == TRANSIENT and flow.get("intercept"):
+                ic = flow["intercept"]
+                routed.append({**h, "lat": ic["lat"], "lon": ic["lon"], "dispatch_target": "downstream_intercept",
+                               "intercept_name": ic["name"], "reported_lat": h["lat"], "reported_lon": h["lon"]})
+            else:
+                routed.append(h)
+        plan = self.route_optimizer.generate_dispatch_plan(routed)
+        plan["intercept_redirects"] = [
+            {"hotspot_id": h["id"], "intercept": h["intercept_name"], "lat": h["lat"], "lon": h["lon"]}
+            for h in routed if h.get("dispatch_target") == "downstream_intercept"
+        ]
         return plan
 
 

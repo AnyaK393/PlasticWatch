@@ -70,272 +70,263 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  /* ═══ "Monsoon River" design tokens ═══════════════════════════════════════ */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&display=swap');
 
-  .stApp { 
-    background-color: #07131a; 
-    color: #e2e8f0; 
+  :root {
+    --pw-bg: #06161f;
+    --pw-surface: #0b2230;
+    --pw-surface-2: #0f2c3b;
+    --pw-surface-3: #133646;
+    --pw-border: #1b3f50;
+    --pw-border-strong: #2a5a6e;
+    --pw-text: #e2ecf2;
+    --pw-text-dim: #9db3c0;
+    --pw-text-faint: #6b8797;
+    --pw-water: #2dd4bf;      /* primary: stormwater teal */
+    --pw-sky: #38bdf8;        /* moderate / derived */
+    --pw-leaf: #34d399;       /* cleared / safe */
+    --pw-monsoon: #fbbf24;    /* warning / high */
+    --pw-coral: #f87171;      /* critical */
+    --pw-violet: #c084fc;     /* simulated / merged */
+    --pw-radius: 14px;
+    --pw-radius-sm: 10px;
+    --pw-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.28);
   }
-  
-  /* Ample breathing room below Streamlit top navigation bar */
-  .block-container { 
-    padding-top: 4.6rem !important; 
-    padding-bottom: 3.5rem !important; 
+
+  html, body, .stApp, [class*="css"] {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  .stApp {
+    background:
+      radial-gradient(1200px 500px at 85% -10%, rgba(45, 212, 191, 0.07), transparent 60%),
+      radial-gradient(900px 400px at -10% 10%, rgba(56, 189, 248, 0.06), transparent 60%),
+      var(--pw-bg);
+    color: var(--pw-text);
+  }
+  .block-container {
+    padding-top: 3.2rem !important;
+    padding-bottom: 3.5rem !important;
     padding-left: 2.2rem !important;
     padding-right: 2.2rem !important;
-    max-width: 100% !important;
+    max-width: 1680px !important;
   }
 
-  /* Spacious Hero Banner */
+  /* ── Typography ─────────────────────────────────────────────────────────── */
+  h1, h2, h3, h4 { font-family: 'Inter', sans-serif !important; letter-spacing: -0.015em; }
+  .stMarkdown h3 {
+    font-size: 1.35rem !important; font-weight: 800 !important; color: #f3f8fb !important;
+    margin: 0.2rem 0 0.35rem 0 !important; padding: 0 !important;
+  }
+  .stMarkdown h4 {
+    font-size: 1.02rem !important; font-weight: 700 !important; color: #d6e6ee !important;
+    margin: 1.1rem 0 0.55rem 0 !important; padding: 0 0 0.45rem 0 !important;
+    border-bottom: 1px solid var(--pw-border);
+  }
+  .stMarkdown h5 { font-size: 0.92rem !important; font-weight: 700 !important; color: var(--pw-text-dim) !important; }
+  .stCaption, [data-testid="stCaptionContainer"] { color: var(--pw-text-faint) !important; line-height: 1.5; }
+  code, .font-mono-code { font-family: 'JetBrains Mono', ui-monospace, monospace !important; }
+
+  /* ── Hero banner: water surface with a wave line ───────────────────────── */
   .hero-card {
-    padding: 1.6rem 2rem;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #092832 0%, #0d1e26 100%);
-    border: 1px solid #1a4954;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
-    margin-bottom: 1.4rem;
+    position: relative; overflow: hidden;
+    padding: 1.5rem 1.9rem 1.7rem 1.9rem;
+    border-radius: 18px;
+    background:
+      linear-gradient(120deg, rgba(45, 212, 191, 0.16) 0%, rgba(56, 189, 248, 0.08) 45%, rgba(6, 22, 31, 0) 100%),
+      linear-gradient(180deg, #0c2a38 0%, #08202b 100%);
+    border: 1px solid #1f4a5c;
+    box-shadow: var(--pw-shadow);
+    margin-bottom: 1.1rem;
   }
-  
+  .hero-card::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 34px; opacity: 0.55;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40' preserveAspectRatio='none'><path d='M0 22 C 150 2 300 42 450 22 S 750 2 900 22 S 1100 40 1200 20 L1200 40 L0 40 Z' fill='%232dd4bf' fill-opacity='0.18'/><path d='M0 28 C 200 12 350 44 600 28 S 950 12 1200 30 L1200 40 L0 40 Z' fill='%2338bdf8' fill-opacity='0.14'/></svg>") repeat-x;
+    background-size: 1200px 34px;
+  }
   .hero-kicker {
-    color: #38bdf8;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 0.35rem;
+    display: inline-block; color: var(--pw-water); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.45rem;
+    padding: 3px 10px; border-radius: 999px; background: rgba(45, 212, 191, 0.10); border: 1px solid rgba(45, 212, 191, 0.30);
   }
+  .hero-title { margin: 0; font-size: 1.85rem; font-weight: 800; color: #ffffff; line-height: 1.2; letter-spacing: -0.02em; }
+  .hero-sub { font-size: 0.86rem; color: var(--pw-text-dim); margin-top: 0.45rem; line-height: 1.55; }
 
-  .hero-title {
-    margin: 0;
-    font-size: 1.95rem;
-    font-weight: 800;
-    color: #ffffff;
-    line-height: 1.25;
-  }
-
-  .hero-sub {
-    font-size: 0.88rem;
-    color: #94a3b8;
-    margin-top: 0.4rem;
-    line-height: 1.5;
-  }
-
-  /* Spacious KPI Stat Cards */
+  /* ── KPI stat cards ─────────────────────────────────────────────────────── */
   .stat-card {
-    padding: 1.1rem 1.25rem;
-    border-radius: 14px;
-    background: #0d2029;
-    border: 1px solid #1b414f;
-    min-height: 98px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    position: relative; padding: 1rem 1.1rem 0.95rem 1.1rem; border-radius: var(--pw-radius);
+    background: linear-gradient(180deg, var(--pw-surface-2) 0%, var(--pw-surface) 100%);
+    border: 1px solid var(--pw-border); min-height: 104px; box-shadow: var(--pw-shadow);
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: border-color 0.2s ease, transform 0.2s ease;
   }
-  
-  .stat-label {
-    font-size: 0.74rem;
-    letter-spacing: 0.06em;
-    font-weight: 700;
-    color: #94a3b8;
-    text-transform: uppercase;
+  .stat-card::before {
+    content: ""; position: absolute; left: 14px; right: 14px; top: 0; height: 2px; border-radius: 0 0 2px 2px;
+    background: linear-gradient(90deg, var(--pw-water), var(--pw-sky)); opacity: 0.7;
   }
+  .stat-card:hover { border-color: var(--pw-border-strong); transform: translateY(-1px); }
+  .stat-label { font-size: 0.7rem; letter-spacing: 0.08em; font-weight: 700; color: var(--pw-text-dim); text-transform: uppercase; }
+  .stat-val { font-size: 1.85rem; font-weight: 800; margin: 0.3rem 0 0.15rem 0; line-height: 1.1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .stat-note { font-size: 0.75rem; color: var(--pw-text-faint); }
 
-  .stat-val {
-    font-size: 1.9rem;
-    font-weight: 800;
-    margin: 0.25rem 0;
-    line-height: 1.1;
-  }
-
-  .stat-note {
-    font-size: 0.77rem;
-    color: #64748b;
-  }
-
-  /* Left Queue Cards with breathing room */
-  .queue-card {
-    padding: 0.9rem 1rem;
-    border-radius: 12px;
-    background: #0d212a;
-    border: 1px solid #1c4250;
-    margin-bottom: 0.7rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .queue-card:hover {
-    border-color: #38bdf8;
-    background: #12303c;
-    transform: translateY(-1px);
-  }
-  .queue-card-active {
-    border-color: #38bdf8 !important;
-    background: #153745 !important;
-    box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
-  }
-
-  /* Badges */
-  .badge-critical {
-    background: rgba(239, 68, 68, 0.22);
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.55);
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 0.74rem;
-    font-weight: 700;
-  }
-  .badge-high {
-    background: rgba(245, 158, 11, 0.22);
-    color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.55);
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 0.74rem;
-    font-weight: 700;
-  }
-  .badge-moderate {
-    background: rgba(56, 189, 248, 0.22);
-    color: #38bdf8;
-    border: 1px solid rgba(56, 189, 248, 0.55);
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-size: 0.74rem;
-    font-weight: 700;
-  }
-  .badge-merged {
-    background: rgba(168, 85, 247, 0.22);
-    color: #c084fc;
-    border: 1px solid rgba(168, 85, 247, 0.55);
-    padding: 3px 7px;
-    border-radius: 6px;
-    font-size: 0.72rem;
-    font-weight: 600;
-  }
-  .badge-observed {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.55);
-    padding: 2px 7px;
-    border-radius: 6px;
-    font-size: 0.74rem;
-    font-weight: 700;
-  }
-  .badge-derived {
-    background: rgba(56, 189, 248, 0.2);
-    color: #38bdf8;
-    border: 1px solid rgba(56, 189, 248, 0.55);
-    padding: 2px 7px;
-    border-radius: 6px;
-    font-size: 0.74rem;
-    font-weight: 700;
-  }
-  .badge-inferred {
-    background: rgba(251, 191, 36, 0.2);
-    color: #fbbf24;
-    border: 1px solid rgba(251, 191, 36, 0.55);
-    padding: 2px 7px;
-    border-radius: 6px;
-    font-size: 0.74rem;
-    font-weight: 700;
-  }
-  .badge-simulated {
-    background: rgba(192, 132, 252, 0.2);
-    color: #c084fc;
-    border: 1px solid rgba(192, 132, 252, 0.55);
-    padding: 2px 7px;
-    border-radius: 6px;
-    font-size: 0.74rem;
-    font-weight: 700;
-  }
-  .disclaimer-box {
-    background: rgba(245, 158, 11, 0.12);
-    border: 1px solid rgba(245, 158, 11, 0.5);
-    border-radius: 10px;
-    padding: 12px 16px;
-    color: #fde68a;
-    font-size: 0.86rem;
-    margin: 12px 0;
-  }
+  /* ── Panels & queue cards ───────────────────────────────────────────────── */
   .feature-panel {
-    background: #0d2029;
-    border: 1px solid #1c4250;
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 16px;
+    background: linear-gradient(180deg, var(--pw-surface-2) 0%, var(--pw-surface) 100%);
+    border: 1px solid var(--pw-border); border-radius: var(--pw-radius);
+    padding: 18px 20px; margin-bottom: 16px; box-shadow: var(--pw-shadow);
   }
-  .tiny-text { font-size: 0.77rem; color: #94a3b8; }
+  .queue-card {
+    padding: 0.85rem 0.95rem; border-radius: 12px; background: var(--pw-surface);
+    border: 1px solid var(--pw-border); border-left: 3px solid var(--pw-border-strong);
+    margin-bottom: 0.45rem; transition: all 0.18s ease;
+  }
+  .queue-card:hover { border-color: var(--pw-border-strong); background: var(--pw-surface-2); }
+  .queue-card-active {
+    border-color: rgba(45, 212, 191, 0.65) !important; border-left: 3px solid var(--pw-water) !important;
+    background: linear-gradient(90deg, rgba(45, 212, 191, 0.10), var(--pw-surface-2)) !important;
+    box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.15), 0 8px 22px rgba(45, 212, 191, 0.10);
+  }
+  .tiny-text { font-size: 0.76rem; color: var(--pw-text-dim); }
 
-  /* Paper Theme Mobile Simulator inside Streamlit */
-  .paper-mobile-frame {
-    max-width: 410px;
-    margin: 0 auto;
-    background: #fffdfa;
-    border: 2px solid #e3d7c3;
-    border-radius: 28px;
-    padding: 16px;
-    box-shadow: 0 18px 45px rgba(50, 40, 25, 0.18), 0 2px 8px rgba(50, 40, 25, 0.08);
-    font-family: 'Newsreader', Georgia, serif;
-    color: #211d1a;
+  /* ── Badges (meaning-coded) ─────────────────────────────────────────────── */
+  .badge-critical, .badge-high, .badge-moderate, .badge-merged,
+  .badge-observed, .badge-derived, .badge-inferred, .badge-simulated {
+    display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.71rem;
+    font-weight: 700; letter-spacing: 0.02em; white-space: nowrap; border: 1px solid;
   }
-  .paper-card {
-    background: #faf6ee;
-    border: 1px solid #e5dac7;
-    border-radius: 12px;
-    padding: 12px;
+  .badge-critical  { background: rgba(248, 113, 113, 0.14); color: #fca5a5; border-color: rgba(248, 113, 113, 0.45); }
+  .badge-high      { background: rgba(251, 191, 36, 0.13);  color: #fcd34d; border-color: rgba(251, 191, 36, 0.45); }
+  .badge-moderate  { background: rgba(56, 189, 248, 0.13);  color: #7dd3fc; border-color: rgba(56, 189, 248, 0.45); }
+  .badge-merged    { background: rgba(192, 132, 252, 0.13); color: #d8b4fe; border-color: rgba(192, 132, 252, 0.45); }
+  .badge-observed  { background: rgba(52, 211, 153, 0.13);  color: #6ee7b7; border-color: rgba(52, 211, 153, 0.45); }
+  .badge-derived   { background: rgba(56, 189, 248, 0.13);  color: #7dd3fc; border-color: rgba(56, 189, 248, 0.45); }
+  .badge-inferred  { background: rgba(251, 191, 36, 0.13);  color: #fcd34d; border-color: rgba(251, 191, 36, 0.45); }
+  .badge-simulated { background: rgba(192, 132, 252, 0.13); color: #d8b4fe; border-color: rgba(192, 132, 252, 0.45); }
+
+  .disclaimer-box {
+    background: rgba(251, 191, 36, 0.08); border: 1px solid rgba(251, 191, 36, 0.35);
+    border-left: 3px solid var(--pw-monsoon); border-radius: var(--pw-radius-sm);
+    padding: 11px 15px; color: #fde68a; font-size: 0.85rem; margin: 12px 0;
   }
-  .paper-inner-box {
-    background: #fffdf9;
-    border: 1px solid #e3d7c3;
-    border-radius: 8px;
-    padding: 8px 12px;
+
+  /* ── Native Streamlit components ────────────────────────────────────────── */
+  /* Tabs as a segmented navigation bar */
+  .stTabs [data-baseweb="tab-list"], .stTabs [role="tablist"] {
+    gap: 4px; padding: 5px; border-radius: 14px; background: var(--pw-surface);
+    border: 1px solid var(--pw-border); overflow-x: auto;
   }
-  .font-mono-code {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  .stTabs [data-baseweb="tab"], .stTabs [data-testid="stTab"] {
+    height: auto; padding: 9px 16px; border-radius: 10px; font-weight: 600; font-size: 0.88rem;
+    color: var(--pw-text-dim); background: transparent; white-space: nowrap;
   }
+  .stTabs [data-baseweb="tab"]:hover, .stTabs [data-testid="stTab"]:hover { color: var(--pw-text); background: var(--pw-surface-2); }
+  .stTabs [aria-selected="true"] {
+    color: #04221d !important; background: linear-gradient(135deg, #2dd4bf, #5eead4) !important;
+    box-shadow: 0 4px 14px rgba(45, 212, 191, 0.25);
+  }
+  .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"], .stTabs [role="tablist"] + div:empty { display: none; }
+  .stTabs [data-testid="stTab"] p { font-size: 0.88rem; font-weight: 600; }
+  .stTabs [data-baseweb="tab-panel"], .stTabs [data-testid="stTabPanel"] { padding-top: 1.2rem; }
+
+  /* Buttons */
+  .stButton > button, .stFormSubmitButton > button, .stDownloadButton > button {
+    font-weight: 600; border: 1px solid var(--pw-border-strong); background: var(--pw-surface-2);
+    transition: all 0.15s ease;
+  }
+  .stButton > button:hover, .stFormSubmitButton > button:hover { border-color: var(--pw-water); color: var(--pw-water); }
+  .stButton > button[kind="primary"], .stFormSubmitButton > button[kind="primary"] {
+    background: linear-gradient(135deg, #14b8a6, #2dd4bf); color: #04221d; border: none;
+    box-shadow: 0 6px 16px rgba(45, 212, 191, 0.22);
+  }
+  .stButton > button[kind="primary"]:hover { filter: brightness(1.08); color: #04221d; }
+  .stButton > button:disabled { opacity: 0.55; }
+
+  /* Expanders, tables, alerts, uploaders, metrics */
+  [data-testid="stExpander"] details {
+    border: 1px solid var(--pw-border) !important; border-radius: var(--pw-radius-sm) !important; background: var(--pw-surface);
+  }
+  [data-testid="stExpander"] summary { font-weight: 600; }
+  [data-testid="stDataFrame"] { border-radius: var(--pw-radius-sm); overflow: hidden; }
+  [data-testid="stAlert"] { border-radius: var(--pw-radius-sm); }
+  [data-testid="stFileUploaderDropzone"] { background: var(--pw-surface); border: 1px dashed var(--pw-border-strong); }
+  [data-testid="stMetric"] {
+    background: var(--pw-surface); border: 1px solid var(--pw-border); border-radius: var(--pw-radius-sm); padding: 10px 14px;
+  }
+  [data-testid="stMetricLabel"] { color: var(--pw-text-dim); }
+  [data-testid="stImage"] img { border-radius: 12px; }
+  [data-testid="stImageCaption"], [data-testid="caption"] { color: var(--pw-text-faint) !important; }
+  .stProgress > div > div > div > div { background: linear-gradient(90deg, var(--pw-water), var(--pw-sky)); }
+  iframe { border-radius: var(--pw-radius); }
+  hr { border-color: var(--pw-border) !important; }
+
+  /* Sidebar */
+  [data-testid="stSidebar"] { border-right: 1px solid var(--pw-border); }
+  [data-testid="stSidebar"] .block-container { padding-top: 1.5rem !important; }
+  .pw-brand { display: flex; align-items: center; gap: 12px; margin: 0.2rem 0 1rem 0; }
+  .pw-brand-mark {
+    width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.35rem; background: linear-gradient(135deg, #14b8a6, #38bdf8); box-shadow: 0 6px 18px rgba(45, 212, 191, 0.3);
+  }
+  .pw-brand-name { font-weight: 800; font-size: 1.12rem; color: #fff; line-height: 1.1; }
+  .pw-brand-sub { font-size: 0.74rem; color: var(--pw-text-dim); }
+  .pw-legend-row { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--pw-text-dim); margin: 5px 0; }
+  .pw-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Paper-theme helpers (kept for the citizen PWA preview styles) */
+  .paper-card { background: #faf6ee; border: 1px solid #e5dac7; border-radius: 12px; padding: 12px; }
+  .paper-inner-box { background: #fffdf9; border: 1px solid #e3d7c3; border-radius: 8px; padding: 8px 12px; }
 </style>
 """, unsafe_allow_html=True)
 
 
 # ── Sidebar & Map API Key Configuration ──────────────────────────────────────
-st.sidebar.title("♻️ PlasticWatch Civic")
-st.sidebar.caption("Urban Environmental Intelligence • Pune Pilot")
+st.sidebar.markdown("""
+<div class="pw-brand">
+  <div class="pw-brand-mark">♻️</div>
+  <div>
+    <div class="pw-brand-name">PlasticWatch Civic</div>
+    <div class="pw-brand-sub">Urban drain intelligence • Pune pilot</div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
-st.sidebar.markdown("---")
-st.sidebar.subheader("🗺️ Map Tiles & API Key")
-map_tile_choice = st.sidebar.selectbox(
-    "Active Map Basemap Layer",
-    [
-        "OpenStreetMap (Free & Open • No Key Needed)",
-        "CARTO Dark Matter (Open CDN • High Contrast)",
-        "CARTO Voyager (Open CDN • Clean Light)",
-        "ESRI Satellite Aerial (Open CDN)",
-    ],
-    index=0,
-    help="PlasticWatch runs on open public tile servers that do NOT require any API key.",
-)
-
-with st.sidebar.expander("ℹ️ Why did the map mention an API key?"):
+with st.sidebar.expander("📖 How to read this dashboard", expanded=True):
     st.markdown("""
-    **No API key is required to run PlasticWatch.**
-    
-    1. **Default Free Open Basemap:** We configure direct, open tile layers (**OpenStreetMap & CARTO CDN**) with zero API key or billing needed.
-    2. **Where to get a key (Optional):** If your organization uses private Mapbox or Stadia styles:
-       - **Mapbox:** Sign up at [mapbox.com](https://www.mapbox.com) for a free public token (`pk.eyJ1...`).
-       - **Stadia Maps:** Sign up at [stadiamaps.com](https://stadiamaps.com).
-    3. **Where to put it:** You can enter it in the input below or set `MAP_API_KEY` in your `.env` file.
-    """)
+    <div style="font-size:0.78rem; font-weight:700; color:#9db3c0; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">Priority</div>
+    <div class="pw-legend-row"><span class="pw-dot" style="background:#f87171;"></span><b style="color:#fca5a5;">Critical</b>&nbsp;score ≥ 70, act now</div>
+    <div class="pw-legend-row"><span class="pw-dot" style="background:#fbbf24;"></span><b style="color:#fcd34d;">High</b>&nbsp;score ≥ 50, clean today</div>
+    <div class="pw-legend-row"><span class="pw-dot" style="background:#38bdf8;"></span><b style="color:#7dd3fc;">Moderate</b>&nbsp;routine queue</div>
+    <div class="pw-legend-row"><span class="pw-dot" style="background:#34d399;"></span><b style="color:#6ee7b7;">Cleared / safe</b></div>
+    <div style="font-size:0.78rem; font-weight:700; color:#9db3c0; text-transform:uppercase; letter-spacing:0.06em; margin:10px 0 4px 0;">Evidence tags</div>
+    <div class="pw-legend-row"><span class="badge-observed">Observed</span> raw field data</div>
+    <div class="pw-legend-row"><span class="badge-derived">Derived</span> calculated</div>
+    <div class="pw-legend-row"><span class="badge-inferred">Inferred</span> AI estimate</div>
+    <div class="pw-legend-row"><span class="badge-simulated">Simulated</span> scenario model</div>
+    """, unsafe_allow_html=True)
 
-custom_map_key = st.sidebar.text_input(
-    "Optional Custom Mapbox/Stadia Token",
-    type="password",
-    help="Optional: Leave blank to use free OpenStreetMap/CARTO tiles.",
-)
-if custom_map_key:
-    st.sidebar.success("Custom Map Token Registered.")
-else:
-    st.sidebar.info("Using Free Open Basemap (100% Key-Free).")
+with st.sidebar.expander("🗺️ Map settings"):
+    map_tile_choice = st.selectbox(
+        "Active Map Basemap Layer",
+        [
+            "OpenStreetMap (Free & Open • No Key Needed)",
+            "CARTO Dark Matter (Open CDN • High Contrast)",
+            "CARTO Voyager (Open CDN • Clean Light)",
+            "ESRI Satellite Aerial (Open CDN)",
+        ],
+        index=0,
+        help="PlasticWatch runs on open public tile servers that do NOT require any API key.",
+    )
+    custom_map_key = st.text_input(
+        "Optional Custom Mapbox/Stadia Token",
+        type="password",
+        help="Optional: Leave blank to use free OpenStreetMap/CARTO tiles.",
+    )
+    if custom_map_key:
+        st.success("Custom Map Token Registered.")
+    else:
+        st.caption("✅ Using free open basemap: no API key needed. A private Mapbox/Stadia token is optional "
+                   "(or set `MAP_API_KEY` in `.env`).")
 
-st.sidebar.markdown("---")
 # Live environment: rainfall from Open-Meteo (current hour) and siltation from each drain's
 # desilting record. The Triage tab's Storm Scenario panel can override them for drills/demos.
 storm_on = bool(st.session_state.get("storm_override", False))
@@ -345,11 +336,14 @@ live_env_kwargs = {
         st.session_state.get("storm_silt", 60) / 100.0
         if storm_on and st.session_state.get("storm_silt_override", False) else None
     ),
+    "crew_eta_min": float(st.session_state.get("crew_eta", 45)),
 }
 
-st.sidebar.markdown("---")
-st.sidebar.markdown("**Simulation Safeguards**")
-st.sidebar.caption("AI detects waste probabilities and hydrological exposure. Human operators verify site conditions before dispatch.")
+st.sidebar.markdown("""
+<div style="margin-top:0.6rem; padding:10px 12px; border-radius:10px; background:rgba(45,212,191,0.07); border:1px solid rgba(45,212,191,0.25); font-size:0.78rem; color:#9db3c0; line-height:1.5;">
+  <b style="color:#5eead4;">🛡️ Human in the loop</b><br>AI estimates waste and hydrological exposure; operators verify sites, approve photos and sign off payments.
+</div>
+""", unsafe_allow_html=True)
 
 
 # ── Pipeline & State Management ──────────────────────────────────────────────
@@ -494,7 +488,7 @@ with k5:
     """, unsafe_allow_html=True)
 
 st.markdown(f"""
-<div style="margin-top:12px; padding:10px 16px; border-radius:12px; background:#0b1c24; border:1px solid #1a3c48;
+<div style="margin-top:12px; padding:10px 16px; border-radius:12px; background:#0b2230; border:1px solid #1b3f50;
             display:flex; flex-wrap:wrap; gap:22px; align-items:center; font-size:0.84rem; color:#cbd5e1;">
   <span style="font-weight:800; color:#c084fc;">🧬 DBSCAN Deduplication Telemetry</span>
   <span><b>{cluster_telemetry['total_reports']}</b> citizen reports → <b>{cluster_telemetry['consolidated_hotspots']}</b> hotspots</span>
@@ -511,13 +505,13 @@ st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
 # ── Main Tabs ─────────────────────────────────────────────────────────────────
 tab_command, tab_tender, tab_forecast, tab_verify, tab_recurrence, tab_simulator, tab_provenance = st.tabs([
-    "🏛️ Triage & Live Map",
-    "📑 Tendering & Work Orders",
-    "🔮 Predictive Forecasting (24–72h)",
-    "📸 AI Cleanup Verification",
+    "🏛️ Triage & Map",
+    "📑 Tendering",
+    "🔮 Forecast",
+    "📸 Cleanup Verification",
     "🔁 Recurrence & Root Cause",
-    "☔ Monsoon What-If Simulator",
-    "🔎 Evidence & Provenance Layer",
+    "☔ Monsoon Simulator",
+    "🔎 Evidence & Model",
 ])
 
 
@@ -527,7 +521,7 @@ tab_command, tab_tender, tab_forecast, tab_verify, tab_recurrence, tab_simulator
 with tab_command:
     # ── Live environment strip + Storm Scenario override ──────────────────────
     env_now = pipeline_data["environment"]
-    sc1, sc2, sc3, sc4 = st.columns([1.15, 1.35, 1.35, 2.6], gap="medium")
+    sc1, sc2, sc3, sc_eta, sc4 = st.columns([1.0, 1.25, 1.25, 1.05, 2.45], gap="medium")
     with sc1:
         st.toggle(
             "⛈️ Storm Scenario",
@@ -542,6 +536,9 @@ with tab_command:
                   help="Off = each drain's own silt level from its desilting date.")
         st.slider("🍂 Siltation (%)", 0, 90, 60, 5, key="storm_silt",
                   disabled=not (storm_on and st.session_state.get("storm_silt_override", False)), label_visibility="collapsed")
+    with sc_eta:
+        st.slider("🚚 Crew ETA (min)", 10, 120, 45, 5, key="crew_eta",
+                  help="Time until a crew reaches a reported site. Floating waste in open channels drifts downstream meanwhile.")
     with sc4:
         if storm_on:
             moves = []
@@ -554,12 +551,13 @@ with tab_command:
             st.markdown(f"""
             <div style="background:rgba(239,68,68,0.10); border:1px solid #ef4444; border-radius:10px; padding:8px 12px; font-size:0.8rem; color:#fecaca;">
               <b>⛈️ STORM DRILL ACTIVE</b> • {env_now['rainfall_intensity_mmh']:.1f} mm/h • silt {'override ' + format(env_now['drain_silt_ratio'], '.0%') if env_now['drain_silt_ratio'] is not None else 'per drain'}<br>
-              Re-ranking vs live: {', '.join(moves) if moves else 'order unchanged (scores rose uniformly)'} • <b>{escalated}</b> site(s) escalate to IMMEDIATE DISPATCH
+              Re-ranking vs live: {', '.join(moves) if moves else 'order unchanged (scores rose uniformly)'} • <b>{escalated}</b> site(s) escalate to IMMEDIATE DISPATCH •
+              <b>{metrics.get('transient_hotspots', 0)}</b> floating (TRANSIENT) site(s) re-routed downstream
             </div>
             """, unsafe_allow_html=True)
         else:
             st.markdown(f"""
-            <div style="background:#0b1c24; border:1px solid #1a3c48; border-radius:10px; padding:8px 12px; font-size:0.8rem; color:#cbd5e1;">
+            <div style="background:#0b2230; border:1px solid #1b3f50; border-radius:10px; padding:8px 12px; font-size:0.8rem; color:#cbd5e1;">
               <b style="color:#34d399;">● LIVE</b> Rain <b>{env_now['rainfall_intensity_mmh']:.1f} mm/h</b> ({env_now['rainfall_source']}) •
               Drain siltation <b>{env_now['silt_range'][0]:.0%}–{env_now['silt_range'][1]:.0%}</b> from desilting records.<br>
               <span class="tiny-text">Both feed the 35% drain-proximity × environment term; immediate dispatch triggers at ≥ 10 mm/h.</span>
@@ -651,6 +649,13 @@ with tab_command:
             status_tag = "🚚 DISPATCHED" if is_dispatched else "PENDING"
             score_chip = render_provenance_badge("derived", f"{score:.1f}")
             move_html = ""
+            flow_h = h.get("flow_dynamics") or {}
+            transient_html = (
+                "<div style='margin:0 0 5px 0;'><span style='display:inline-block; padding:2px 8px; border-radius:999px; font-size:0.7rem; "
+                "font-weight:700; color:#67e8f9; background:rgba(34,211,238,0.12); border:1px solid rgba(34,211,238,0.45);'>"
+                f"🌊 TRANSIENT • intercept {flow_h['intercept']['distance_downstream_m']:,.0f} m downstream</span></div>"
+                if flow_h.get("classification") == "TRANSIENT_SURCHARGE" and flow_h.get("intercept") else ""
+            )
             if storm_on and h.get("site_key") in live_rank:
                 rank_now = hotspots.index(h) + 1
                 shift = live_rank[h["site_key"]] - rank_now
@@ -667,6 +672,7 @@ with tab_command:
               <div style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 5px;">
                 🌊 <b>{dist_m:.0f}m</b> to {drain_name} {render_provenance_badge('derived', f'{dist_m:.0f}m', '0.68rem')}
               </div>
+              {transient_html}
               <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
                 <span class="{ 'badge-merged' if is_merged else 'tiny-text' }">
                   👥 {recurrence} {'reports merged' if is_merged else 'single report'} {render_provenance_badge('observed', f'{recurrence}R', '0.68rem')}
@@ -808,6 +814,26 @@ with tab_command:
                 tooltip=f"<b>{hid}</b>: {priority} ({h_score:.1f}/100)<br>Drain: {dist_m:.0f}m to {drain_name}<br>Reports: {recurrence}",
             ).add_to(fmap)
 
+        # 3b. Floating-debris drift paths and downstream intercept points (TRANSIENT_SURCHARGE)
+        for h in hotspots:
+            flow_h = h.get("flow_dynamics") or {}
+            if flow_h.get("classification") != "TRANSIENT_SURCHARGE" or not flow_h.get("intercept"):
+                continue
+            ic = flow_h["intercept"]
+            if len(flow_h.get("drift_path", [])) >= 2:
+                folium.PolyLine(
+                    locations=flow_h["drift_path"], color="#22d3ee", weight=5, opacity=0.9, dash_array="2, 10",
+                    tooltip=f"🌊 {h['id']} floating debris drift: {flow_h.get('drift_m', 0):,.0f} m in {flow_h['crew_eta_min']:.0f} min",
+                ).add_to(fmap)
+            folium.Marker(
+                location=[ic["lat"], ic["lon"]],
+                icon=folium.DivIcon(html="""
+                    <div style="background:#22d3ee; color:#05232b; font-weight:900; font-size:13px; border:2px solid white;
+                                border-radius:6px; width:24px; height:24px; display:flex; align-items:center; justify-content:center;
+                                box-shadow:0 0 12px rgba(34,211,238,0.9);">⛛</div>"""),
+                tooltip=f"🛡️ Intercept screen for {h['id']}: {ic['name']} ({ic['kind']}) • debris arrives in ≈{ic['debris_arrival_min']:.0f} min",
+            ).add_to(fmap)
+
         # 4. Render Municipal Central Sanitation Depot
         depot_lat, depot_lon = 18.5015, 73.8580
         folium.Marker(
@@ -854,13 +880,14 @@ with tab_command:
 
         # Bottom Route & Map Legend
         st.markdown("""
-        <div style="display:flex; flex-wrap:wrap; gap:16px; font-size:0.77rem; color:#94a3b8; margin-top:6px; padding: 4px 6px; background:#0b1c24; border-radius:8px; border:1px solid #1a3c48;">
+        <div style="display:flex; flex-wrap:wrap; gap:16px; font-size:0.77rem; color:#94a3b8; margin-top:6px; padding: 4px 6px; background:#0b2230; border-radius:8px; border:1px solid #1b3f50;">
           <span><span style="color:#ef4444;">●</span> Critical Hotspot</span>
           <span><span style="color:#f59e0b;">●</span> High Priority</span>
           <span><span style="color:#38bdf8;">●</span> Moderate Risk</span>
           <span><span style="color:#facc15;">•</span> Citizen Report Pin</span>
           <span><span style="color:#06b6d4;">―</span> Stormwater Drain</span>
           <span><span style="color:#10b981;">―</span> Dispatched Truck Route</span>
+          <span><span style="color:#22d3ee;">┅</span> Floating-debris drift → <span style="color:#22d3ee;">⛛</span> intercept screen</span>
           <span style="margin-left:auto; color:#64748b;">Tiles: OpenStreetMap (No API key needed)</span>
         </div>
         """, unsafe_allow_html=True)
@@ -999,12 +1026,49 @@ with tab_command:
               <div style="font-size:0.82rem; color:#e2e8f0; line-height:1.45;">{recommendation['reason_summary']}</div>
               <div style="font-size:0.78rem; color:#cbd5e1; margin-top:6px;">👷 Recommended crew: <b>{recommendation['recommended_crew']}</b></div>
               {escalation_html}
-              <div style="font-size:0.8rem; color:#cbd5e1; margin-top:10px; padding-top:8px; border-top:1px solid #1a3c48; line-height:1.45;">
+              <div style="font-size:0.8rem; color:#cbd5e1; margin-top:10px; padding-top:8px; border-top:1px solid #1b3f50; line-height:1.45;">
                 ⚖️ <b>Why this rank?</b> {ranking_text}
               </div>
               {landuse_html}
             </div>
             """, unsafe_allow_html=True)
+
+            # ── Flow dynamics: floating (transient) vs anchored waste ─────────
+            flow = active_h.get("flow_dynamics") or {}
+            fl = flow.get("flow") or {}
+            is_transient = flow.get("classification") == "TRANSIENT_SURCHARGE"
+            fcolor = "#22d3ee" if is_transient else "#94a3b8"
+            stats_html = ""
+            if fl.get("available"):
+                stats_html = (
+                    "<div style='display:flex; gap:14px; flex-wrap:wrap; margin:8px 0; padding:8px 12px; background:#08202b; border-radius:10px;'>"
+                    f"<div><div class='tiny-text'>Water velocity</div><div style='font-weight:800; color:#38bdf8;'>{fl['mean_velocity_ms']:.2f} m/s</div></div>"
+                    f"<div><div class='tiny-text'>Debris velocity</div><div style='font-weight:800; color:#22d3ee;'>{fl['debris_velocity_ms']:.2f} m/s</div></div>"
+                    f"<div><div class='tiny-text'>Flow depth</div><div style='font-weight:700; color:#cbd5e1;'>{fl['flow_depth_m']:.2f} m</div></div>"
+                    f"<div><div class='tiny-text'>Discharge</div><div style='font-weight:700; color:#cbd5e1;'>{fl['discharge_m3s']:.1f} m³/s</div></div>"
+                    "</div>"
+                )
+            intercept_html = ""
+            if is_transient and flow.get("intercept"):
+                ic = flow["intercept"]
+                intercept_html = (
+                    f"<div style='font-size:0.8rem; color:#cffafe; margin-top:6px;'>🛡️ <b>Intercept at:</b> {ic['name']} ({ic['kind']})<br>"
+                    f"{ic['distance_downstream_m']:,.0f} m downstream • debris arrives in ≈{ic['debris_arrival_min']:.0f} min • "
+                    f"crew ETA {flow['crew_eta_min']:.0f} min • drift in that time ≈{flow.get('drift_m', 0):,.0f} m</div>"
+                )
+            st.markdown(
+                f"<div class='feature-panel' style='border-left:4px solid {fcolor}; padding:14px 16px;'>"
+                f"<div style='font-size:0.78rem; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:8px;'>🌊 Flow Dynamics • Floating vs Anchored</div>"
+                f"<div style='display:inline-block; background:{fcolor}22; border:1px solid {fcolor}; color:{fcolor}; font-weight:800; "
+                f"font-size:0.84rem; padding:4px 10px; border-radius:8px; margin-bottom:6px;'>{'🌊 TRANSIENT SURCHARGE' if is_transient else '⚓ ANCHORED'}</div>"
+                f"<div class='tiny-text'>{flow.get('channel_name') or '—'} • {flow.get('channel_form') or '—'} channel ({flow.get('hydraulic_class') or '—'}) • "
+                f"{flow.get('distance_to_channel_m') if flow.get('distance_to_channel_m') is not None else '—'} m away • "
+                f"{flow.get('floatable_share', 0):.0%} floatable • rain {flow.get('rainfall_intensity_mmh', 0):.1f} mm/h</div>"
+                f"{stats_html}"
+                f"<div style='font-size:0.82rem; color:#e2e8f0; line-height:1.45;'>{flow.get('reason', '')}</div>"
+                f"{intercept_html}</div>",
+                unsafe_allow_html=True,
+            )
 
             # ── Tendering summary (full board lives in the Tendering tab) ──────
             assessment = dispatch_engine.assess_hotspot(active_h)
@@ -1021,7 +1085,7 @@ with tab_command:
             else:
                 shield_html = "<span style='color:#34d399; font-weight:700;'>🛡️ CLEAR</span> • no billed cleanup within 35 m / 90 days"
             st.markdown(f"""
-            <div style="background:#0b1c24; border:1px solid #1a3c48; border-radius:10px; padding:9px 12px; font-size:0.78rem; color:#cbd5e1; margin-bottom:10px;">
+            <div style="background:#0b2230; border:1px solid #1b3f50; border-radius:10px; padding:9px 12px; font-size:0.78rem; color:#cbd5e1; margin-bottom:10px;">
               🏗️ <b>{vendor.get('name')}</b> • quote <b>₹{quote.get('total_quote_inr', 0):,.0f}</b><br>{shield_html}
             </div>
             """, unsafe_allow_html=True)
@@ -1087,6 +1151,7 @@ with tab_command:
                     Distance: <b>{plan.get('total_distance_km')} km</b> • Total Est: <b>{plan.get('total_duration_minutes')} mins</b><br>
                     Stops: <b>{plan.get('total_stops')} hotspots</b> from Swargate Central Depot<br>
                     Vendor: <b>{plan.get('vendor_name') or 'PMC in-house crew'}</b>{f" • Quote ₹{plan['quote_inr']:,.0f}" if plan.get('quote_inr') else ''}
+                    {"".join(f"<br>🌊 <b>{r['hotspot_id']}</b> re-routed to downstream intercept: {r['intercept']}" for r in plan.get('intercept_redirects', []))}
                   </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -1179,7 +1244,7 @@ with tab_tender:
           <div style="display:flex; justify-content:space-between; font-size:0.84rem; color:#cbd5e1;">
             <span>GST 18%</span><span>₹{t_quote.get('gst_inr', 0):,.0f}</span>
           </div>
-          <div style="display:flex; justify-content:space-between; font-size:1rem; font-weight:800; color:#34d399; margin-top:6px; padding-top:6px; border-top:1px solid #1a3c48;">
+          <div style="display:flex; justify-content:space-between; font-size:1rem; font-weight:800; color:#34d399; margin-top:6px; padding-top:6px; border-top:1px solid #1b3f50;">
             <span>Work Order Quote</span><span>₹{t_quote.get('total_quote_inr', 0):,.0f}</span>
           </div>
           <div class="tiny-text" style="margin-top:6px;">Weight model: severity × 6.5 kg + drain-proximity load, +15% per repeat report (same basis as the monsoon simulator).</div>
@@ -1352,48 +1417,31 @@ with tab_forecast:
             r_badge_class = "badge-critical" if risk == "CRITICAL" else ("badge-high" if risk == "HIGH" else "badge-moderate")
             tl = hf["timeline"]
             
-            st.markdown(f"""
-            <div class="feature-panel" style="border-left: 4px solid {hf['risk_color']};">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-weight:800; font-size:1.05rem; color:#f8fafc;">{hf['hotspot_id']} • {hf['nearest_drain_name']}</span>
-                <span class="{r_badge_class}">{risk} ESCALATION</span>
-              </div>
-              <div style="font-size:0.82rem; color:#cbd5e1; margin-bottom:8px;">
-                🌊 <b>{hf['drain_distance_m']:.0f}m</b> to drain channel • Historical Return: <b>{hf['historical_return_interval_days']} days</b>
-              </div>
-              <div style="display:flex; gap:16px; margin-bottom:12px; background:#081921; padding:8px 12px; border-radius:8px;">
-                <div>
-                  <div class="tiny-text">Predicted Mass</div>
-                  <div style="font-weight:800; color:#38bdf8; font-size:1.1rem;">{hf['predicted_accumulation_kg']} kg</div>
-                </div>
-                <div>
-                  <div class="tiny-text">Est. Volume</div>
-                  <div style="font-weight:700; color:#94a3b8; font-size:1.05rem;">{hf['predicted_volume_liters']:.0f} L</div>
-                </div>
-                <div style="margin-left:auto; text-align:right;">
-                  <div class="tiny-text">Critical Window</div>
-                  <div style="font-weight:800; color:#f59e0b; font-size:0.95rem;">⏱️ {hf['critical_time_window']}</div>
-                </div>
-              </div>
-              <div style="font-size:0.82rem; font-weight:700; color:#94a3b8; margin-bottom:6px;">
-                🛠️ Specific Preventive Actions Recommended:
-              </div>
-            """, unsafe_allow_html=True)
-
-            for act in hf["preventive_actions"]:
-                st.markdown(f"<div style='font-size:0.8rem; color:#e2e8f0; margin-bottom:3px;'>▫️ {act}</div>", unsafe_allow_html=True)
-
-            st.markdown(f"""
-              <div style="margin-top:10px; padding-top:8px; border-top:1px solid #1a3c48; display:flex; justify-content:space-between; font-size:0.75rem; color:#94a3b8;">
-                <span>T+24h: <b>{tl['24h']['accum_kg']} kg</b></span>
-                <span>T+48h: <b>{tl['48h']['accum_kg']} kg</b></span>
-                <span>T+72h: <b>{tl['72h']['accum_kg']} kg</b></span>
-              </div>
-              <div style="margin-top:8px; text-align:right;">
-                {render_provenance_badge('simulated', '[Predicted / Modelled]')}
-              </div>
-            </div>
-            """, unsafe_allow_html=True)
+            actions_html = "".join(
+                f"<div style='font-size:0.8rem; color:#e2e8f0; margin:0 0 4px 0; padding-left:2px;'>▫️ {act}</div>"
+                for act in hf["preventive_actions"]
+            )
+            card_html = (
+                f"<div class='feature-panel' style='border-left: 4px solid {hf['risk_color']};'>"
+                f"<div style='display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px;'>"
+                f"<span style='font-weight:800; font-size:1.02rem; color:#f8fafc;'>{hf['hotspot_id']} • {hf['nearest_drain_name']}</span>"
+                f"<span class='{r_badge_class}'>{risk} ESCALATION</span></div>"
+                f"<div style='font-size:0.82rem; color:#cbd5e1; margin-bottom:10px;'>🌊 <b>{hf['drain_distance_m']:.0f}m</b> to drain channel • "
+                f"Historical Return: <b>{hf['historical_return_interval_days']} days</b></div>"
+                f"<div style='display:flex; gap:18px; margin-bottom:12px; background:#08202b; padding:10px 14px; border-radius:10px;'>"
+                f"<div><div class='tiny-text'>Predicted Mass</div><div style='font-weight:800; color:#38bdf8; font-size:1.1rem;'>{hf['predicted_accumulation_kg']} kg</div></div>"
+                f"<div><div class='tiny-text'>Est. Volume</div><div style='font-weight:700; color:#94a3b8; font-size:1.05rem;'>{hf['predicted_volume_liters']:.0f} L</div></div>"
+                f"<div style='margin-left:auto; text-align:right;'><div class='tiny-text'>Critical Window</div>"
+                f"<div style='font-weight:800; color:#f59e0b; font-size:0.95rem;'>⏱️ {hf['critical_time_window']}</div></div></div>"
+                f"<div style='font-size:0.78rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;'>🛠️ Preventive actions</div>"
+                f"{actions_html}"
+                f"<div style='margin-top:10px; padding-top:8px; border-top:1px solid #1b3f50; display:flex; justify-content:space-between; font-size:0.75rem; color:#94a3b8;'>"
+                f"<span>T+24h: <b>{tl['24h']['accum_kg']} kg</b></span><span>T+48h: <b>{tl['48h']['accum_kg']} kg</b></span>"
+                f"<span>T+72h: <b>{tl['72h']['accum_kg']} kg</b></span></div>"
+                f"<div style='margin-top:8px; text-align:right;'>{render_provenance_badge('simulated', '[Predicted / Modelled]')}</div>"
+                f"</div>"
+            )
+            st.markdown(card_html, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1502,8 +1550,8 @@ with tab_verify:
         final = case_final[cid]
         m1, m2, m3, m4 = st.columns(4)
         for col, label, val, color, note in [
-            (m1, "Plastic Items Removed", f"-{m['count_reduction']}", "#38bdf8", f"<b>{m['count_reduction_pct']:.0f}%</b> of plastic objects"),
-            (m2, "Clog-Weighted Load", f"-{m['clog_weighted_load_reduction_pct']:.0f}%", "#34d399", f"Severity Δ {m['delta_severity']:.1f}"),
+            (m1, "Plastic Items Removed", f"{m['count_reduction']}", "#38bdf8", f"<b>{m['count_reduction_pct']:.0f}%</b> of plastic objects"),
+            (m2, "Clog-Weighted Load", f"{m['clog_weighted_load_reduction_pct']:.0f}% removed", "#34d399", f"Severity Δ {m['delta_severity']:.1f}"),
             (m3, "Effectiveness Score", f"{eff:.1f}%", "#10b981" if eff >= 85 else "#f59e0b", "Standard target &ge; 85%"),
             (m4, "Diverted Plastic Mass", f"{m['diverted_plastic_weight_kg']} kg", "#c084fc", f"~{m['diverted_volume_liters']:.0f} L volume"),
         ]:
@@ -1569,15 +1617,18 @@ with tab_verify:
                              caption="Before-photo • 🟩 cleared • 🟥 still there • 🟧 out of after-frame • 🟪 new litter in after-photo")
             with item_col:
                 st.markdown(f"#### 📍 {al['items_cleared']}/{al['items_total']} items cleared at their original spots")
-                st.dataframe(pd.DataFrame([
-                    {"#": i + 1, "Class": r["class"].replace("_", " "), "Found by": r["source"], "Status": r["status"],
-                     "Plastic px before → after": f"{r['before_signature_px']} → {r['after_signature_px']}", "Visible": f"{r['visible_share']:.0%}"}
-                    for i, r in enumerate(al["items"])
-                ] + [
-                    {"#": "new", "Class": n["class"].replace("_", " "), "Found by": n["source"], "Status": "new litter",
-                     "Plastic px before → after": "—", "Visible": "—"}
-                    for n in al["new_items"]
-                ]), use_container_width=True, hide_index=True)
+                if not al["items"] and not al["new_items"]:
+                    st.info("No litter items were located in the before-photo, so there is nothing to compare item by item.")
+                else:
+                    st.dataframe(pd.DataFrame([
+                        {"#": i + 1, "Class": r["class"].replace("_", " "), "Found by": r["source"], "Status": r["status"],
+                         "Plastic px before → after": f"{r['before_signature_px']} → {r['after_signature_px']}", "Visible": f"{r['visible_share']:.0%}"}
+                        for i, r in enumerate(al["items"])
+                    ] + [
+                        {"#": "new", "Class": n["class"].replace("_", " "), "Found by": n["source"], "Status": "new litter",
+                         "Plastic px before → after": "—", "Visible": "—"}
+                        for n in al["new_items"]
+                    ]), use_container_width=True, hide_index=True)
                 st.caption(f"The after-photo was warped onto the before-photo using {al['inliers']} matched features; "
                            f"an item counts as cleared when ≤ 35% of its plastic signature remains and no detector box overlaps it.")
         elif al:
@@ -1743,7 +1794,7 @@ with tab_recurrence:
           <div style="font-size:0.86rem; color:#cbd5e1; margin-bottom:12px;">
             🌊 Connected Waterway: <b>{selected_site['drain_name']}</b> ({selected_site['drain_distance_m']}m)
           </div>
-          <div style="display:flex; gap:16px; margin-bottom:14px; background:#081b24; padding:10px 14px; border-radius:10px; flex-wrap:wrap;">
+          <div style="display:flex; gap:16px; margin-bottom:14px; background:#08202b; padding:10px 14px; border-radius:10px; flex-wrap:wrap;">
             <div><div class="tiny-text">Cleanups ({window_days} d)</div><div style="font-weight:800; color:#38bdf8; font-size:1.15rem;">{selected_site['historical_cleanup_events']} ({selected_site['cleanups_per_30d']}/30 d)</div></div>
             <div><div class="tiny-text">Avg Return Interval</div><div style="font-weight:800; color:#f59e0b; font-size:1.15rem;">{selected_site['average_return_interval_days']} days</div></div>
             <div><div class="tiny-text">Diverted Plastic</div><div style="font-weight:800; color:#34d399; font-size:1.15rem;">{selected_site['total_diverted_weight_kg']} kg</div></div>
@@ -1757,13 +1808,8 @@ with tab_recurrence:
             <div class="tiny-text" style="margin-top:6px;">📝 Field crew note: {selected_site.get('field_observation_note') or '—'}</div>
           </div>
           <div style="font-size:0.82rem; font-weight:800; color:#38bdf8; text-transform:uppercase; margin-bottom:6px;">🏛️ Targeted Systemic Interventions</div>
-        """, unsafe_allow_html=True)
-        for inv in selected_site["systemic_interventions"]:
-            st.markdown(f"<div style='font-size:0.84rem; color:#cbd5e1; margin-bottom:4px;'>📌 <b>{inv}</b></div>", unsafe_allow_html=True)
-        st.markdown(f"""
-          <div style="margin-top:12px; text-align:right;">
-            {render_provenance_badge('inferred', '[Inferred / Prototype Historical Dossier]')}
-          </div>
+          {"".join(f"<div style='font-size:0.84rem; color:#cbd5e1; margin-bottom:5px;'>📌 <b>{inv}</b></div>" for inv in selected_site["systemic_interventions"])}
+          <div style="margin-top:12px; text-align:right;">{render_provenance_badge('inferred', '[Inferred / Prototype Historical Dossier]')}</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1789,17 +1835,15 @@ with tab_recurrence:
 
     with s_col_right:
         st.markdown("#### 🧬 Evidence Fingerprint")
-        e1, e2 = st.columns(2)
-        with e1:
-            comp_df = pd.DataFrame([{"Class": k.replace("_", " "), "Share %": v} for k, v in ev["composition"].items()])
-            st.altair_chart(alt.Chart(comp_df).mark_bar(color="#c084fc").encode(
-                x=alt.X("Share %:Q"), y=alt.Y("Class:N", sort="-x", title=None), tooltip=["Class", "Share %"],
-            ).properties(height=150, title="Waste mix (mass-weighted)"), use_container_width=True)
-        with e2:
-            hour_df = pd.DataFrame([{"Band": k, "Share %": v} for k, v in ev["hour_share"].items()])
-            st.altair_chart(alt.Chart(hour_df).mark_bar(color="#fbbf24").encode(
-                x=alt.X("Band:N", sort=list(ev["hour_share"].keys()), title=None), y=alt.Y("Share %:Q"), tooltip=["Band", "Share %"],
-            ).properties(height=150, title="When litter is first reported"), use_container_width=True)
+        comp_df = pd.DataFrame([{"Class": k.replace("_", " "), "Share %": v} for k, v in ev["composition"].items()])
+        st.altair_chart(alt.Chart(comp_df).mark_bar(color="#c084fc", cornerRadiusEnd=3).encode(
+            x=alt.X("Share %:Q"), y=alt.Y("Class:N", sort="-x", title=None), tooltip=["Class", "Share %"],
+        ).properties(height=200, title="Waste mix (mass-weighted)"), use_container_width=True)
+        hour_df = pd.DataFrame([{"Band": k, "Share %": v} for k, v in ev["hour_share"].items()])
+        st.altair_chart(alt.Chart(hour_df).mark_bar(color="#fbbf24", cornerRadiusTopLeft=3, cornerRadiusTopRight=3).encode(
+            x=alt.X("Band:N", sort=list(ev["hour_share"].keys()), title=None, axis=alt.Axis(labelAngle=0)),
+            y=alt.Y("Share %:Q"), tooltip=["Band", "Share %"],
+        ).properties(height=160, title="When litter is first reported"), use_container_width=True)
         st.caption(
             f"Weekend/weekday report ratio **{ev['weekend_ratio']}** • rain explains **{ev['rain_share_of_load']:.0%}** of the "
             f"accumulation rate (r = {ev['rain_load_correlation']:+.2f}, {ev['rain_intervals_analyzed']} intervals)"
@@ -1922,7 +1966,7 @@ with tab_simulator:
       <div style="font-weight:800; color:{sim_res['alert_color']}; font-size:0.95rem;">
         ⚡ {sim_res['scenario_alert']}
         <span style="font-weight:600; font-size:0.8rem; color:#cbd5e1; margin-left:12px;">
-          {sim_res['inputs']['rainfall_category']} • runoff {hydraulics['runoff_per_inlet_lps']:.0f} L/s vs clean-inlet capacity {hydraulics['clean_inlet_capacity_lps']:.0f} L/s • flush factor {hydraulics['flush_factor']:.2f} • silt adds {hydraulics['silt_added_flood_m2']:,.0f} m² flooding
+          {sim_res['inputs']['rainfall_category']} • runoff {hydraulics['runoff_per_inlet_lps']:.0f} L/s vs clean-inlet capacity {hydraulics['clean_inlet_capacity_lps']:.0f} L/s • flush factor {hydraulics['flush_factor']:.2f} • silt adds {hydraulics['silt_added_flood_m2']:,.0f} m² flooding • open nallah flow {hydraulics['open_channel_velocity_ms']:.2f} m/s
         </span>
       </div>
       <div>
@@ -2039,7 +2083,7 @@ with tab_simulator:
         <div class="feature-panel">
           <table style="width:100%; border-collapse:collapse; font-size:0.86rem;">
             <thead>
-              <tr style="border-bottom:1px solid #1e4253; color:#94a3b8; text-align:left;">
+              <tr style="border-bottom:1px solid #1b3f50; color:#94a3b8; text-align:left;">
                 <th style="padding:8px 6px;">Scenario Model</th>
                 <th style="padding:8px 6px;">Fleet</th>
                 <th style="padding:8px 6px;">Delay</th>
@@ -2050,7 +2094,7 @@ with tab_simulator:
               </tr>
             </thead>
             <tbody>
-              <tr style="border-bottom:1px solid #133240; color:#34d399;">
+              <tr style="border-bottom:1px solid #16384a; color:#34d399;">
                 <td style="padding:10px 6px;"><b>🟢 Optimal (Immediate Dispatch)</b></td>
                 <td style="padding:10px 6px;">10 trucks</td>
                 <td style="padding:10px 6px;">0 hrs</td>
@@ -2059,7 +2103,7 @@ with tab_simulator:
                 <td style="padding:10px 6px;">&le; {opt.get('flood_area_sqm', 450):,.0f} m²</td>
                 <td style="padding:10px 6px;"><b>₹{opt['estimated_cost_inr']:,.0f}</b></td>
               </tr>
-              <tr style="border-bottom:1px solid #133240; color:#38bdf8; background:#081b24;">
+              <tr style="border-bottom:1px solid #16384a; color:#38bdf8; background:#08202b;">
                 <td style="padding:10px 6px;"><b>🔵 Current Selected Scenario</b></td>
                 <td style="padding:10px 6px;">{sim_fleet} trucks</td>
                 <td style="padding:10px 6px;">{sim_delay:.0f} hrs</td>
@@ -2109,7 +2153,7 @@ with tab_simulator:
               <span style="font-weight:700; color:#cbd5e1;">₹{cb['emergency_contractor_surcharge']:,.0f}</span>
             </div>
           </div>
-          <div style="padding-top:10px; border-top:1px solid #1a3c48; display:flex; justify-content:space-between; font-weight:800; font-size:1.05rem; color:#c084fc;">
+          <div style="padding-top:10px; border-top:1px solid #1b3f50; display:flex; justify-content:space-between; font-weight:800; font-size:1.05rem; color:#c084fc;">
             <span>Total Civic Burden:</span>
             <span>₹{outcomes['estimated_civic_cost_of_inaction_inr']:,.0f}</span>
           </div>

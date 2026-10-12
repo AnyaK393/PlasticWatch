@@ -583,5 +583,54 @@
     "verification": "pending",
     "notes": "Mobile Citizen Camera Observation",
     "status": "ACTIVE"
+  },
+  {
+    "id": "CR-234",
+    "lat": 18.652391,
+    "lon": 73.762757,
+    "plastic_confidence": 0.41,
+    "severity": 2.44,
+    "photo_filename": "CR-234.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper",
+      "other_plastic"
+    ],
+    "submitted_at": "2026-10-09T09:43:52+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Mobile Citizen Camera Observation",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "CR-235",
+    "lat": 18.652461,
+    "lon": 73.762731,
+    "plastic_confidence": 0.5,
+    "severity": 1.25,
+    "photo_filename": "CR-235.jpg",
+    "detected_classes": [
+      "other_plastic"
+    ],
+    "submitted_at": "2026-10-09T09:47:44+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Tgeh",
+    "status": "ACTIVE"
+  },
+  {
+    "id": "CR-236",
+    "lat": 18.652387,
+    "lon": 73.762731,
+    "plastic_confidence": 0.25,
+    "severity": 0.62,
+    "photo_filename": "CR-236.jpg",
+    "detected_classes": [
+      "other_plastic"
+    ],
+    "submitted_at": "2026-10-09T11:46:12+00:00",
+    "source": "Citizen Mobile App (Live Ingestion)",
+    "verification": "pending",
+    "notes": "Mobile Citizen Camera Observation",
+    "status": "ACTIVE"
   }
 ]

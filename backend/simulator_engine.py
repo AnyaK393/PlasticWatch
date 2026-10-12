@@ -56,6 +56,74 @@ def _a(key: str) -> float:
     return float(ASSUMPTIONS[key]["value"])
 
 
+# ── Open-channel flow velocity (Manning) ─────────────────────────────────────
+# Rectangular-section approximation per channel class. Estimated typical Pune
+# geometry, not surveyed: width b (m), bed slope S, Manning n, bank-full depth (m),
+# contributing catchment (ha), runoff coefficient, dry-weather base flow (m³/s).
+CHANNEL_HYDRAULICS: Dict[str, Dict[str, Any]] = {
+    "river": {"width_m": 60.0, "slope": 0.0008, "manning_n": 0.035, "max_depth_m": 6.0, "catchment_ha": 2500.0,
+              "runoff_c": 0.6, "base_flow_m3s": 5.0, "debris_transport": 0.55,
+              "basis": "Mutha/Mula urban reach, natural bed with vegetation"},
+    "nallah": {"width_m": 8.0, "slope": 0.003, "manning_n": 0.030, "max_depth_m": 2.5, "catchment_ha": 150.0,
+               "runoff_c": 0.75, "base_flow_m3s": 0.25, "debris_transport": 0.45,
+               "basis": "Open urban nallah, partly lined, bank vegetation snags debris"},
+    "lined_drain": {"width_m": 2.5, "slope": 0.004, "manning_n": 0.018, "max_depth_m": 1.2, "catchment_ha": 25.0,
+                    "runoff_c": 0.85, "base_flow_m3s": 0.03, "debris_transport": 0.70,
+                    "basis": "Concrete-lined open storm drain"},
+    "canal": {"width_m": 12.0, "slope": 0.001, "manning_n": 0.025, "max_depth_m": 2.0, "catchment_ha": 80.0,
+              "runoff_c": 0.7, "base_flow_m3s": 0.5, "debris_transport": 0.50,
+              "basis": "Earthen/lined spillway canal"},
+}
+SURFACE_TO_MEAN_VELOCITY = 1.15  # floating debris rides the faster surface layer
+
+
+def channel_flow_velocity(hydraulic_class: str, rainfall_intensity_mmh: float, silt_ratio: float = 0.0) -> Dict[str, Any]:
+    """Mean and surface velocity in an open channel for a given rainfall (Manning's equation).
+
+    Discharge = dry-weather base flow + rational-method storm runoff from the catchment.
+    Flow depth is solved by bisection on Q = (1/n)·A·R^(2/3)·S^(1/2). Silt raises bed
+    roughness (n × (1 + 0.5·silt)) and takes away part of the bank-full depth.
+    """
+    g = CHANNEL_HYDRAULICS.get(hydraulic_class)
+    if g is None:
+        return {"available": False, "reason": f"no open-channel hydraulics for '{hydraulic_class}'"}
+    rain = max(0.0, min(75.0, float(rainfall_intensity_mmh)))
+    silt = max(0.0, min(0.9, float(silt_ratio)))
+    b, s = g["width_m"], g["slope"]
+    n = g["manning_n"] * (1.0 + 0.5 * silt)
+    max_depth = g["max_depth_m"] * (1.0 - 0.6 * silt)
+    q = g["base_flow_m3s"] + g["runoff_c"] * rain * g["catchment_ha"] * 10000.0 / 3.6e6
+
+    def manning_q(y: float) -> float:
+        area, perim = b * y, b + 2.0 * y
+        return (1.0 / n) * area * (area / perim) ** (2.0 / 3.0) * math.sqrt(s)
+
+    capacity = manning_q(max_depth)
+    if q >= capacity:
+        depth, surcharged = max_depth, True
+        mean_v = capacity / (b * max_depth)
+    else:
+        lo, hi = 1e-4, max_depth
+        for _ in range(60):
+            mid = 0.5 * (lo + hi)
+            lo, hi = (mid, hi) if manning_q(mid) < q else (lo, mid)
+        depth, surcharged = 0.5 * (lo + hi), False
+        mean_v = q / (b * depth)
+    return {
+        "available": True,
+        "hydraulic_class": hydraulic_class,
+        "discharge_m3s": round(q, 3),
+        "capacity_m3s": round(capacity, 3),
+        "flow_depth_m": round(depth, 3),
+        "mean_velocity_ms": round(mean_v, 3),
+        "surface_velocity_ms": round(mean_v * SURFACE_TO_MEAN_VELOCITY, 3),
+        "debris_transport_factor": g["debris_transport"],
+        "debris_velocity_ms": round(mean_v * SURFACE_TO_MEAN_VELOCITY * g["debris_transport"], 3),
+        "surcharged": surcharged,
+        "manning_n_effective": round(n, 4),
+    }
+
+
 def rain_category(rain_mmh: float) -> str:
     if rain_mmh <= 0.0:
         return "Dry"
@@ -210,6 +278,15 @@ class MonsoonSimulatorEngine:
                 )
             else:
                 narrative.append("All inlets keep up with the runoff, so no waterlogging is expected.")
+            nallah = channel_flow_velocity("nallah", rain, silt_pct / 100.0)
+            narrative.append(
+                f"Open nallahs run at ≈{nallah['mean_velocity_ms']:.2f} m/s: floating litter reported now drifts "
+                f"≈{nallah['debris_velocity_ms'] * delay * 3600:,.0f} m downstream before a crew {delay:.0f} h away arrives, "
+                "so open-channel reports are intercepted at downstream screens (TRANSIENT_SURCHARGE)."
+                if delay > 0 else
+                f"Open nallahs run at ≈{nallah['mean_velocity_ms']:.2f} m/s: floating litter keeps moving, so open-channel "
+                "reports are intercepted at downstream screens (TRANSIENT_SURCHARGE)."
+            )
             narrative.append(
                 f"Wind {wind:.0f} km/h and silt {silt_pct:.0f}% give a flush factor of {res['flush_factor']:.2f}: "
                 f"≈{res['swept_kg']:.0f} kg of loose plastic is carried toward the Mula-Mutha."
@@ -316,6 +393,7 @@ class MonsoonSimulatorEngine:
                 "silt_added_flood_m2": round(max(0.0, res["flood_m2"] - no_silt["flood_m2"]), 0),
                 "drain_capacity_remaining_pct": round(100.0 * (1.0 - _a("silt_capacity_loss") * silt_pct / 100.0), 1),
                 "sites_cleared_before_peak": res["cleared_before_peak"],
+                "open_channel_velocity_ms": channel_flow_velocity("nallah", rain_i, silt_pct / 100.0)["mean_velocity_ms"],
             },
             "scenario_alert": scenario_alert,
             "alert_color": alert_color,

@@ -6,6 +6,27 @@ from backend.api import app
 
 class TestFastAPIEndpoints(unittest.TestCase):
     def setUp(self):
+        # Keep the real work-order ledger untouched by /api/dispatch calls
+        import tempfile
+        from pathlib import Path as _Path
+        from unittest import mock
+        from backend import smart_dispatch_engine
+
+        self._ledger_dir = tempfile.TemporaryDirectory()
+        self._ledger_patch = mock.patch.object(smart_dispatch_engine, "WORK_ORDER_LEDGER_PATH", _Path(self._ledger_dir.name) / "work_orders.json")
+        self._ledger_patch.start()
+        self.addCleanup(self._ledger_patch.stop)
+        self.addCleanup(self._ledger_dir.cleanup)
+        # ...and the real citizen report database / uploads
+        from backend import api as _api, plasticwatch_pipeline
+
+        for attr, value in (("REPORTS_DB_PATH", _Path(self._ledger_dir.name) / "citizen_reports.json"),
+                            ("UPLOADS_DIR", _Path(self._ledger_dir.name) / "uploads")):
+            patcher = mock.patch.object(plasticwatch_pipeline, attr, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        _api.pipeline._reports_cache = None
+        self.addCleanup(setattr, _api.pipeline, "_reports_cache", None)
         self.client = TestClient(app)
 
     def test_mobile_simulator_endpoint(self):

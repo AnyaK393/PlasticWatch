@@ -112,6 +112,7 @@ class DispatchRequest(BaseModel):
     rainfall_intensity_mmh: Optional[float] = Field(None, ge=0.0, le=75.0, description="Rainfall override used for ranking; null = live")
     drain_silt_ratio: Optional[float] = Field(None, ge=0.0, le=1.0, description="Siltation override used for ranking; null = per drain")
     surface_slope_factor: float = Field(1.0, ge=1.0, le=1.5, description="Surface slope factor used for ranking")
+    crew_eta_min: float = Field(45.0, ge=5.0, le=240.0, description="Expected crew arrival (min) for floating-debris drift")
 
 
 class ForecastRequest(BaseModel):
@@ -305,6 +306,7 @@ async def get_hotspots(
     rainfall_intensity_mmh: Optional[float] = Query(None, ge=0.0, le=75.0, description="Rainfall intensity override (mm/hr); omit for live Open-Meteo"),
     drain_silt_ratio: Optional[float] = Query(None, ge=0.0, le=1.0, description="Siltation override (0-1); omit for per-drain desilting records"),
     surface_slope_factor: float = Query(1.0, ge=1.0, le=1.5, description="1.0 flat, 1.25 moderate, 1.5 steep"),
+    crew_eta_min: float = Query(45.0, ge=5.0, le=240.0, description="Expected crew arrival (min) for floating-debris drift"),
 ):
     """Run DBSCAN spatial clustering and 0-100 urban drain risk engine with live environment factors."""
     result = pipeline.run_pipeline(
@@ -312,6 +314,7 @@ async def get_hotspots(
         rainfall_intensity_mmh=rainfall_intensity_mmh,
         drain_silt_ratio=drain_silt_ratio,
         surface_slope_factor=surface_slope_factor,
+        crew_eta_min=crew_eta_min,
     )
     return result
 
@@ -323,13 +326,15 @@ async def get_hotspot_decision_support(
     rainfall_intensity_mmh: Optional[float] = Query(None, ge=0.0, le=75.0),
     drain_silt_ratio: Optional[float] = Query(None, ge=0.0, le=1.0),
     surface_slope_factor: float = Query(1.0, ge=1.0, le=1.5),
+    crew_eta_min: float = Query(45.0, ge=5.0, le=240.0),
 ):
-    """XAI recommendation, comparative ranking explanation, vendor match, quote and 90-day fraud check."""
+    """XAI recommendation, ranking explanation, flow dynamics, vendor match, quote and 90-day fraud check."""
     data = pipeline.run_pipeline(
         rainfall_override_mm=rain_override_mm,
         rainfall_intensity_mmh=rainfall_intensity_mmh,
         drain_silt_ratio=drain_silt_ratio,
         surface_slope_factor=surface_slope_factor,
+        crew_eta_min=crew_eta_min,
     )
     hotspots = data["hotspots"]
     target = next((h for h in hotspots if hotspot_id in (h["id"], h.get("site_key"))), None)
@@ -344,6 +349,7 @@ async def get_hotspot_decision_support(
         "recommendation": ExplainabilityEngine.recommend_action(target),
         "ranking_explanation": ExplainabilityEngine.explain_queue_position(target, hotspots),
         "landuse_attribution": target.get("landuse_attribution"),
+        "flow_dynamics": target.get("flow_dynamics"),
         "smart_dispatch": dispatch_engine.assess_hotspot(target),
     }
 
@@ -400,6 +406,7 @@ async def dispatch_cleanup(request: DispatchRequest):
         "rainfall_intensity_mmh": request.rainfall_intensity_mmh,
         "drain_silt_ratio": request.drain_silt_ratio,
         "surface_slope_factor": request.surface_slope_factor,
+        "crew_eta_min": request.crew_eta_min,
     }
     plan = pipeline.dispatch_work_order(request.hotspot_ids, **env)
     if request.truck_id:

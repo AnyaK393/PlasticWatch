@@ -336,6 +336,56 @@ class TestApiValidation(unittest.TestCase):
         self.assertIn("class_policy", r.json()["model"])
 
 
+class TestTransientFlow(unittest.TestCase):
+    """Floating debris in open channels drifts downstream; anchored waste stays put."""
+
+    @classmethod
+    def setUpClass(cls):
+        from backend.transient_flow_engine import TransientFlowEngine
+
+        cls.engine = TransientFlowEngine()
+        cls.floating = [{"detected_classes": ["plastic_bottle", "plastic_bag_wrapper"]}]
+
+    def _assess(self, lat, lon, rain, reports=None, eta=45):
+        return self.engine.assess({"lat": lat, "lon": lon, "reports": reports or self.floating}, rain, eta)
+
+    def test_channel_velocity_physics(self):
+        from backend.simulator_engine import channel_flow_velocity
+
+        v = [channel_flow_velocity("nallah", r)["mean_velocity_ms"] for r in (0, 10, 30, 60)]
+        self.assertEqual(v, sorted(v))
+        self.assertGreater(channel_flow_velocity("nallah", 30)["debris_velocity_ms"], 0.2)
+        self.assertGreater(channel_flow_velocity("nallah", 30, 0.6)["manning_n_effective"], channel_flow_velocity("nallah", 30)["manning_n_effective"])
+        self.assertFalse(channel_flow_velocity("culvert", 30)["available"])
+
+    def test_open_nallah_in_storm_is_transient_with_downstream_intercept(self):
+        a = self._assess(18.5100, 73.8630, 30.0)
+        self.assertEqual(a["classification"], "TRANSIENT_SURCHARGE")
+        self.assertGreater(a["intercept"]["lat"], 18.5100)  # Nagzari flows north
+        self.assertGreater(a["intercept"]["distance_downstream_m"], 0)
+        self.assertGreaterEqual(len(a["drift_path"]), 2)
+
+    def test_anchored_cases(self):
+        self.assertEqual(self._assess(18.5100, 73.8630, 0.0)["classification"], "ANCHORED")            # dry weather
+        self.assertEqual(self._assess(18.5204, 73.8568, 30.0)["classification"], "ANCHORED")           # closed culvert
+        self.assertEqual(self._assess(18.5100, 73.8630, 30.0, [{"detected_classes": ["can_metal", "carton_paper"]}])["classification"], "ANCHORED")
+        self.assertEqual(self._assess(18.5600, 73.9500, 30.0)["classification"], "ANCHORED")           # far from any channel
+
+    def test_longer_eta_drifts_further(self):
+        short = self._assess(18.4980, 73.8615, 30.0, eta=10)
+        long_ = self._assess(18.4980, 73.8615, 30.0, eta=90)
+        self.assertGreater(long_["drift_m"], short["drift_m"])
+
+    def test_recommendation_and_dispatch_redirect(self):
+        hs = {"lat": 18.5100, "lon": 73.8630, "total_score": 90, "nearest_drain_distance_m": 3, "rainfall_intensity_mmh": 30,
+              "confidence": 0.9, "reports": self.floating}
+        hs["flow_dynamics"] = self.engine.assess(hs, 30.0)
+        rec = ExplainabilityEngine.recommend_action(hs)
+        self.assertEqual(rec["action_type"], "DOWNSTREAM_SCREEN_INTERCEPT")
+        # Human verification still takes precedence
+        self.assertEqual(ExplainabilityEngine.recommend_action({**hs, "confidence": 0.3})["action_type"], "HUMAN_VERIFICATION_REQUIRED")
+
+
 class TestDecisionInvariants(unittest.TestCase):
     def test_simulator_monotonic(self):
         sim = MonsoonSimulatorEngine()

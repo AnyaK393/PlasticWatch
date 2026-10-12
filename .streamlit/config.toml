@@ -1,0 +1,30 @@
+# "Monsoon River" theme: deep river-night base, water-teal accents,
+# leaf green = cleared/safe, monsoon amber = warning, coral = critical.
+[theme]
+base = "dark"
+primaryColor = "#2dd4bf"
+backgroundColor = "#06161f"
+secondaryBackgroundColor = "#0c2430"
+textColor = "#e2ecf2"
+linkColor = "#5eead4"
+borderColor = "#1b3f50"
+dataframeBorderColor = "#1b3f50"
+dataframeHeaderBackgroundColor = "#0f2e3d"
+dataframeHeaderTextColor = "#9fe7dc"
+showWidgetBorder = true
+baseRadius = "0.7rem"
+buttonRadius = "0.7rem"
+font = "sans-serif"
+baseFontSize = 15
+chartCategoricalColors = ["#2dd4bf", "#38bdf8", "#fbbf24", "#f87171", "#c084fc", "#34d399", "#94a3b8"]
+redColor = "#f87171"
+orangeColor = "#fb923c"
+yellowColor = "#fbbf24"
+blueColor = "#38bdf8"
+greenColor = "#34d399"
+violetColor = "#c084fc"
+
+[theme.sidebar]
+backgroundColor = "#041119"
+secondaryBackgroundColor = "#0a1e29"
+borderColor = "#16384a"
