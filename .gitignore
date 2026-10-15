@@ -24,6 +24,7 @@ data/cache/
 .streamlit/secrets.toml
 *.json
 !data/*.json
+!data/cleanup_verification/cases.json
 venv/
 pycache/.codex-build/**/node_modules/
 
@@ -31,5 +32,6 @@ pycache/.codex-build/**/node_modules/
 
 data/uploads/
 data/work_orders.json
+data/reward_ledger.json
 data/cleanup_verification/verification_overrides.json
 *.lock

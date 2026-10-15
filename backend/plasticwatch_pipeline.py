@@ -60,14 +60,42 @@ class CitizenReport:
     source: str
     verification: str
     notes: str = ""
+    # Reporter identity for the incentive ledger (defaults keep old rows valid)
+    reporter_id: Optional[str] = None
+    channel: str = "citizen"
+    ward: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
 
+def _incentive_hook(name: str, *args: Any) -> Any:
+    """Call an incentive_engine hook; a ledger failure never breaks the core pipeline."""
+    try:
+        from backend import incentive_engine
+
+        return getattr(incentive_engine, name)(*args)
+    except Exception as exc:
+        logger.error("Incentive hook %s failed: %s", name, exc, exc_info=True)
+        return None
+
+
+# Demo personas from data/reporters.json: report id -> (reporter_id, channel, ward)
+SEED_REPORT_IDENTITIES = {
+    "CR-201": ("RP-0001", "waste_picker", "Kasba Peth"),
+    "CR-202": ("RP-0003", "citizen", "Kasba Peth"),
+    "CR-203": ("RP-0002", "gig_rider", "Kasba Peth"),
+    "CR-204": ("RP-0001", "waste_picker", "Kasba Peth"),
+    "CR-205": ("RP-0007", "gig_rider", "Kasba Peth"),
+    "CR-206": ("RP-0008", "citizen", "Kothrud"),
+    "CR-207": ("RP-0004", "sanitary_inspector", "Sangamwadi"),
+    "CR-208": ("RP-0006", "rwa", "Sangamwadi"),
+}
+
+
 def get_seed_reports() -> List[CitizenReport]:
     """Default citizen reports along Pune drainage corridors for demonstration."""
-    return [
+    reports = [
         CitizenReport(
             id="CR-201",
             lat=18.5204,
@@ -173,6 +201,10 @@ def get_seed_reports() -> List[CitizenReport]:
             notes="Yerawada side canal minor litter accumulation.",
         ),
     ]
+    for r in reports:
+        if r.id in SEED_REPORT_IDENTITIES:
+            r.reporter_id, r.channel, r.ward = SEED_REPORT_IDENTITIES[r.id]
+    return reports
 
 
 class PlasticWatchUrbanPipeline:
@@ -252,20 +284,43 @@ class PlasticWatchUrbanPipeline:
         photo_filename: str = "sample_bottles_drain.jpg",
         notes: str = "",
         image_bytes: Optional[bytes] = None,
+        reporter_id: Optional[str] = None,
+        channel: Optional[str] = None,
+        source: Optional[str] = None,
+        detection: Optional[Dict[str, Any]] = None,
+        extra_fields: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
-        """Ingest a new citizen mobile report, run TACO detection, and append to database."""
+        """Ingest a new citizen mobile report, run TACO detection, and append to database.
+
+        ``detection`` lets a caller that already ran detect_waste (dashcam ingest) skip a
+        second inference; ``source`` labels the origin; ``extra_fields`` adds keys such as
+        provenance or vehicle_id without overriding core fields.
+        Raises incentive_engine.UnknownReporterError for an unregistered reporter_id.
+        """
         if not (-90.0 <= float(lat) <= 90.0 and -180.0 <= float(lon) <= 180.0):
             raise ValueError("Coordinates out of range")
+        from backend.incentive_engine import resolve_identity
+        from backend.ward_engine import assign_ward
+
+        reporter, channel = resolve_identity(reporter_id, channel)
+        identity = {
+            "reporter_id": reporter["reporter_id"] if reporter else None,
+            "channel": channel,
+            "ward": assign_ward(lat, lon),
+        }
         notes = (notes or "")[:500]
         ran_detection = True
         upload_suffix = None
 
         # Run AI detection (slow: done before taking the database lock)
         if image_bytes:
-            detection = detect_waste(image_bytes, filename_hint=photo_filename)
             upload_suffix = Path(photo_filename or "").suffix.lower()
             if upload_suffix not in {".jpg", ".jpeg", ".png", ".webp"}:
                 upload_suffix = ".jpg"
+        if detection is not None:
+            pass  # already analysed by the caller
+        elif image_bytes:
+            detection = detect_waste(image_bytes, filename_hint=photo_filename)
         else:
             sample_path = resolve_photo_path(photo_filename)
             if sample_path is not None:
@@ -303,14 +358,34 @@ class PlasticWatchUrbanPipeline:
                     photo_filename = stored_name
                 except OSError as e:
                     logger.error("Failed to store uploaded photo: %s", e)
-            new_rep = self._build_report(next_id, lat, lon, photo_filename, notes, detection, classes, needs_review, review_reasons)
+            new_rep = self._build_report(next_id, lat, lon, photo_filename, notes, detection, classes, needs_review, review_reasons, identity,
+                                         source=source)
+            for key, value in (extra_fields or {}).items():
+                new_rep.setdefault(key, value)
             reports.append(new_rep)
             self.save_reports(reports)
 
-        return self._submission_response(next_id, new_rep, detection, needs_review, review_reasons)
+        response = self._submission_response(next_id, new_rep, detection, needs_review, review_reasons)
+        if new_rep.get("reporter_id"):
+            # Earlier tagged reports nearby decide first-reporter vs corroborator
+            _incentive_hook("backfill_from_reports", reports)
+        reward = _incentive_hook("on_report", new_rep, image_bytes)
+        if reward:
+            from backend.incentive_engine import status_message
+
+            response["incentive"] = {
+                "reward_id": reward["reward_id"],
+                "state": reward["state"],
+                "amount_inr": reward["amount_inr"],
+                "role": reward["role"],
+                "program_id": reward["program_id"],
+                "message": status_message(reward),
+            }
+        return response
 
     @staticmethod
-    def _build_report(next_id, lat, lon, photo_filename, notes, detection, classes, needs_review, review_reasons) -> Dict[str, Any]:
+    def _build_report(next_id, lat, lon, photo_filename, notes, detection, classes, needs_review, review_reasons,
+                      identity: Optional[Dict[str, Any]] = None, source: Optional[str] = None) -> Dict[str, Any]:
         new_rep = CitizenReport(
             id=next_id,
             lat=round(lat, 6),
@@ -320,9 +395,10 @@ class PlasticWatchUrbanPipeline:
             photo_filename=photo_filename,
             detected_classes=list(set(classes)),
             submitted_at=datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
-            source="Citizen Mobile App (Live Ingestion)",
+            source=source or "Citizen Mobile App (Live Ingestion)",
             verification=REVIEW_STATUS if needs_review else "pending",
             notes=notes or "Citizen mobile upload via PWA/API Feeder",
+            **(identity or {}),
         ).to_dict()
         new_rep["status"] = REVIEW_STATUS if needs_review else "ACTIVE"
         if needs_review:
@@ -377,11 +453,15 @@ class PlasticWatchUrbanPipeline:
 
     def approve_report(self, report_id: str, operator_note: str = "") -> Optional[Dict[str, Any]]:
         """Operator confirms the capture; it joins DBSCAN clustering and the cleanup queue."""
-        return self._set_review_outcome(report_id, "verified", "APPROVED", operator_note)
+        report = self._set_review_outcome(report_id, "verified", "APPROVED", operator_note)
+        _incentive_hook("on_review", report)
+        return report
 
     def reject_report(self, report_id: str, operator_note: str = "") -> Optional[Dict[str, Any]]:
         """Operator rejects the capture; it stays on record but out of the queue."""
-        return self._set_review_outcome(report_id, "rejected", "REJECTED", operator_note)
+        report = self._set_review_outcome(report_id, "rejected", "REJECTED", operator_note)
+        _incentive_hook("on_review", report)
+        return report
 
     def run_pipeline(
         self,
@@ -539,6 +619,12 @@ class PlasticWatchUrbanPipeline:
         plan["intercept_redirects"] = [
             {"hotspot_id": h["id"], "intercept": h["intercept_name"], "lat": h["lat"], "lon": h["lon"]}
             for h in routed if h.get("dispatch_target") == "downstream_intercept"
+        ]
+        # Reporter rewards for these sites move to escrow until cleanup is verified
+        escrowed = _incentive_hook("on_dispatch", target_hotspots, plan.get("work_order_id")) or []
+        plan["incentives_escrowed"] = [
+            {"reward_id": r["reward_id"], "reporter_id": r["reporter_id"], "amount_inr": r["amount_inr"], "role": r["role"]}
+            for r in escrowed
         ]
         return plan
 

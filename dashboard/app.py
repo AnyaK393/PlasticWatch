@@ -11,6 +11,8 @@ Operator decision-support dashboard featuring:
 from __future__ import annotations
 
 import base64
+from contextlib import suppress
+from html import escape as html_escape
 from datetime import datetime, timezone
 import json
 import os
@@ -30,6 +32,7 @@ if str(ROOT) not in sys.path:
 
 from backend.explainability_engine import ExplainabilityEngine
 from backend.forecasting_engine import ForecastingEngine
+from backend import incentive_engine, route_ingest_engine, ward_engine
 from backend.plasticwatch_pipeline import PlasticWatchUrbanPipeline, resolve_photo_path, run_plasticwatch
 from backend.provenance import (
     PROVENANCE_TIERS,
@@ -504,11 +507,13 @@ st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
 
 # ── Main Tabs ─────────────────────────────────────────────────────────────────
-tab_command, tab_tender, tab_forecast, tab_verify, tab_recurrence, tab_simulator, tab_provenance = st.tabs([
+tab_command, tab_tender, tab_forecast, tab_verify, tab_incentives, tab_wards, tab_recurrence, tab_simulator, tab_provenance = st.tabs([
     "🏛️ Triage & Map",
     "📑 Tendering",
     "🔮 Forecast",
     "📸 Cleanup Verification",
+    "🤝 Incentives & Adoption",
+    "🏆 Ward Drain Score",
     "🔁 Recurrence & Root Cause",
     "☔ Monsoon Simulator",
     "🔎 Evidence & Model",
@@ -1469,7 +1474,466 @@ def _case_result(case):
                                case["site_name"], case["contractor"], case["lat"], case["lon"])
 
 
-with tab_verify:
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB: INCENTIVES & ADOPTION (pay on verified clearance)
+# Rendered after the verification tab, so rewards for freshly decided cases are settled.
+# ══════════════════════════════════════════════════════════════════════════════
+INCENTIVE_BAR_COLOR = "#11a796"  # brand teal stepped into the dark-mode lightness band (palette-validated)
+CHANNEL_NAMES = {
+    "waste_picker": "SWaCH waste pickers", "gig_rider": "Delivery riders", "citizen": "Residents",
+    "sanitary_inspector": "Sanitary inspectors", "dashcam": "Fleet dashcams", "rwa": "Residents associations",
+}
+INCENTIVE_WINDOWS = {"7 days": 7, "30 days": 30, "90 days": 90}
+
+
+@st.cache_data(ttl=600, show_spinner=False)
+def _flood_damage_per_site(_engine, _hotspots, cache_key) -> float | None:
+    """Simulated cost of a 25 mm/h storm with no crew response, per monitored site."""
+    try:
+        sim = _engine.simulate(rainfall_intensity_mmh=25.0, available_fleet=4, action_delay_hours=2.0, base_hotspots=_hotspots)
+        worst = sim["comparative_benchmarks"]["unmitigated_worst_case"]["estimated_cost_inr"]
+        return worst / max(1, sim["outcomes"]["total_monitored_hotspots"])
+    except Exception:
+        return None
+
+
+def _channel_bar(df: pd.DataFrame, field: str, title: str, fmt: str, tooltip: list) -> alt.LayerChart:
+    axis_text = {"labelColor": "#9db3c0", "titleColor": "#9db3c0", "labelFontSize": 11, "titleFontSize": 11}
+    base = alt.Chart(df).encode(
+        y=alt.Y("Channel:N", sort="-x", title=None, axis=alt.Axis(ticks=False, domain=False, labelLimit=170, **axis_text)),
+    )
+    # Fixed zero baseline with headroom for the tip labels; an all-zero window must not collapse the axis
+    x_max = max(float(df[field].max() or 0.0), 1.0) * 1.18
+    bars = base.mark_bar(color=INCENTIVE_BAR_COLOR, cornerRadiusEnd=4, size=14).encode(
+        x=alt.X(f"{field}:Q", title=title, scale=alt.Scale(domain=[0, x_max], nice=False),
+                axis=alt.Axis(gridColor="#1b3f50", domain=False, tickCount=4, format=fmt, **axis_text)),
+        tooltip=tooltip,
+    )
+    labels = base.mark_text(align="left", dx=5, color="#e2ecf2", fontSize=11).encode(
+        x=alt.X(f"{field}:Q", scale=alt.Scale(domain=[0, x_max], nice=False)), text=alt.Text(f"{field}:Q", format=fmt), tooltip=tooltip,
+    )
+    return (bars + labels).properties(height=34 * len(df) + 30).configure_view(strokeWidth=0)
+
+
+def _settle_verified_rewards():
+    """Release / hold reporter rewards for every decided verification case.
+
+    Uses the same cached AI result (_case_result) and override as the Cleanup Verification tab,
+    so nothing runs twice. Never raises: a missing cases.json simply means no outcomes.
+    Returns (outcomes for the ward score, warnings to show).
+    """
+    outcomes, warnings = [], []
+    try:
+        all_cases = list_verification_cases()
+    except Exception as exc:
+        return outcomes, [f"Verification cases unavailable: {exc}"]
+    for c in all_cases:
+        try:
+            ai = _case_result(c)
+            if not ai:
+                continue
+            final = effective_decision(ai, get_active_override(c["case_id"], c["evidence_fingerprint"]))
+            for r in incentive_engine.on_verification(c, final):
+                st.toast(f"🤝 {r['reward_id']}: ₹{r['amount_inr']} {r['state'].lower()} for {r['reporter_id']}")
+            outcomes.append({"case_id": c["case_id"], "lat": c["lat"], "lon": c["lon"], "decision": final["decision"]})
+        except Exception as exc:
+            warnings.append(f"Incentive ledger not updated for {c.get('case_id', '?')}: {exc}")
+    return outcomes, warnings
+
+
+verified_outcomes, settlement_warnings = _settle_verified_rewards()
+
+
+with tab_incentives:
+    st.markdown("### 🤝 Incentives & Adoption")
+    st.markdown(
+        f"Reporters are paid **only when their report leads to a cleanup that passes verification**. "
+        f"Ledger: {render_provenance_badge('derived', '[Derived / Rule-based]')} • "
+        f"flood comparison: {render_provenance_badge('simulated', '[Simulated / Modelled Estimate]')}",
+        unsafe_allow_html=True,
+    )
+    try:
+        incentive_engine.backfill_from_reports(pipeline.get_reports())
+    except Exception as exc:
+        st.caption(f"⚠️ Ledger backfill skipped: {exc}")
+    for warning in settlement_warnings:
+        st.caption(f"⚠️ {warning}")
+    if not list_verification_cases():
+        st.info("No cleanup verification cases found (data/cleanup_verification/cases.json), so no reward can be "
+                "released yet. Everything else on this tab works.")
+
+    inc_window_label = st.radio("Activity window", list(INCENTIVE_WINDOWS), horizontal=True, key="incentive_window")
+    inc_days = INCENTIVE_WINDOWS[inc_window_label]
+    adoption = incentive_engine.adoption_stats(pipeline.get_reports(), inc_days)
+    ledger = incentive_engine.summary()
+    inc_rewards = incentive_engine.list_rewards()
+    inc_reporters = {r["reporter_id"]: r for r in incentive_engine.list_reporters()}
+    held = [r for r in inc_rewards if r["state"] == "HELD"]
+    escrowed = [r for r in inc_rewards if r["state"] == "ESCROWED"]
+    flood_per_site = _flood_damage_per_site(simulator_engine, hotspots, tuple(sorted(h["site_key"] for h in hotspots)))
+    per_clearance = ledger["inr_per_verified_clearance"]
+    cov = adoption["coverage"]
+
+    ik1, ik2, ik3, ik4, ik5 = st.columns(5)
+    for col, label, value, color, note in [
+        (ik1, f"Active Reporters ({inc_days}d)", f"{adoption['active_reporters']}", "#38bdf8",
+         f"{len(inc_reporters)} registered • {adoption['reports']} reports in window"),
+        (ik2, f"Drain Coverage ({inc_days}d)", f"{cov['coverage_pct']:.1f}%", "#2dd4bf",
+         f"{cov['covered_km']:.1f} of {cov['drain_km']:.0f} km within {cov['radius_m']:.0f} m of a report"),
+        (ik3, "₹ Released", f"₹{ledger['released_inr']:,}", "#34d399",
+         f"{ledger['verified_clearances']} verified clearance(s)"),
+        (ik4, "₹ per Verified Clearance", f"₹{per_clearance:,.0f}" if per_clearance is not None else "—", "#34d399",
+         (f"vs ≈₹{flood_per_site:,.0f} simulated flood damage per site left choked" if flood_per_site else "No flood estimate available")),
+        (ik5, "Payout Queue", f"{len(held)}", "#fbbf24" if held else "#9db3c0",
+         f"on hold • {len(escrowed)} more in escrow awaiting verification"),
+    ]:
+        with col:
+            st.markdown(f"""
+            <div class="stat-card">
+              <div class="stat-label">{label}</div>
+              <div class="stat-val" style="color:{color};">{value}</div>
+              <div class="stat-note">{note}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    # ── Passive dashcam ingestion: coverage without asking anyone to take photos ──
+    st.markdown("#### 🚌 Passive dashcam ingestion")
+    replay_routes = route_ingest_engine.list_routes()
+    rc1, rc2 = st.columns([3.2, 1.0])
+    with rc1:
+        replay_pick = st.selectbox("Route", range(len(replay_routes)), format_func=lambda i: replay_routes[i]["name"],
+                                   key="replay_route_pick", label_visibility="collapsed")
+    with rc2:
+        if st.button("▶️ Replay bus route", type="primary", use_container_width=True, key="replay_route_btn"):
+            with st.spinner("Running the detector on dashcam frames..."):
+                try:
+                    st.session_state.replay_result = route_ingest_engine.replay_route(pipeline, replay_routes[replay_pick]["route_id"])
+                except Exception as exc:
+                    st.session_state.replay_result = {"error": str(exc)}
+            st.rerun()
+    th = route_ingest_engine
+    st.markdown(
+        f"Buses and garbage vans already drive every street. A frame becomes a report only if it is within "
+        f"{th.NEAR_DRAIN_M:.0f} m of a mapped drain, sharp enough, and the detector is ≥{th.MIN_CONFIDENCE:.0%} confident; "
+        f"each vehicle reports a spot once per {th.DEDUP_WINDOW_H:.0f} h. Replay drives sample photos along a fixed route: "
+        f"{render_provenance_badge('simulated', '[Simulated replay]')}",
+        unsafe_allow_html=True,
+    )
+    replay = st.session_state.get("replay_result")
+    if replay and replay.get("error"):
+        st.error(f"Replay failed: {replay['error']}")
+    elif replay:
+        st.markdown(f"""
+        <div style="margin:6px 0 10px 0; padding:10px 16px; border-radius:12px; background:#0b2230; border:1px solid #1b3f50;
+                    display:flex; flex-wrap:wrap; gap:22px; align-items:center; font-size:0.84rem; color:#cbd5e1;">
+          <span style="font-weight:800; color:#e2ecf2;">{html_escape(replay['source'])}</span>
+          <span><b>{replay['frames_received']}</b> frames</span>
+          <span>→ <b>{replay['near_drain']}</b> near a drain</span>
+          <span>→ <b>{replay['analysed']}</b> run through YOLO</span>
+          <span>→ <b style="color:#2dd4bf;">{replay['accepted']} reports created</b></span>
+          <span class="tiny-text" style="margin-left:auto;">{', '.join(replay['report_ids'][:4])}{' …' if len(replay['report_ids']) > 4 else ''}</span>
+        </div>
+        """, unsafe_allow_html=True)
+        rm_col, rt_col = st.columns([1.6, 1.0], gap="medium")
+        with rm_col:
+            rmap = folium.Map(location=list(replay["waypoints"][len(replay["waypoints"]) // 2]), zoom_start=14,
+                              tiles=None, control_scale=True)
+            folium.TileLayer(tiles=globals().get("tile_url", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"),
+                             attr=globals().get("tile_attr", "&copy; OpenStreetMap contributors"), name="Base Map").add_to(rmap)
+            drains_path = ROOT / "data" / "urban_drain_network.geojson"
+            if drains_path.is_file():
+                folium.GeoJson(json.loads(drains_path.read_text(encoding="utf-8")), name="Drains",
+                               style_function=lambda _: {"color": "#38bdf8", "weight": 3, "opacity": 0.55}).add_to(rmap)
+            folium.PolyLine(replay["waypoints"], color="#475569", weight=3, opacity=0.8, dash_array="6 6",
+                            tooltip=replay["route_name"]).add_to(rmap)
+            for fr in replay["frames"]:
+                accepted = fr["decision"] == route_ingest_engine.ACCEPTED
+                why = route_ingest_engine.DECISION_LABELS.get(fr["decision"], fr["decision"])
+                conf = f" • conf {fr['confidence']:.0%}" if fr.get("confidence") is not None else ""
+                folium.CircleMarker(
+                    [fr["lat"], fr["lon"]], radius=7 if accepted else 4, weight=2, color="#ffffff" if accepted else "#64748b",
+                    fill=True, fill_color="#0d9488" if accepted else "#94a3b8", fill_opacity=0.95 if accepted else 0.7,
+                    tooltip=f"Frame {fr['frame']}: {why}{conf} • {fr['drain_distance_m']:.0f} m to {fr.get('drain_name') or 'drain'}"
+                            + (f" → {fr['report_id']}" if fr.get("report_id") else ""),
+                ).add_to(rmap)
+            st_folium(rmap, height=330, use_container_width=True, returned_objects=[], key="replay_map")
+            st.caption("● large teal: report created • ● small grey: frame skipped (hover for the reason) • blue: mapped drains")
+        with rt_col:
+            st.dataframe(pd.DataFrame([
+                {"Frame outcome": label, "Frames": replay["decisions"].get(key, 0)}
+                for key, label in route_ingest_engine.DECISION_LABELS.items()
+            ]), use_container_width=True, hide_index=True)
+            if replay["accepted"] == 0 and replay["decisions"].get(route_ingest_engine.SKIP_REPEAT):
+                st.info("This vehicle already reported these spots today, so the repeat drive added nothing.")
+            else:
+                st.caption("New reports join DBSCAN clustering and the cleanup queue like any citizen report.")
+
+    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+    inc_left, inc_right = st.columns([1.15, 1.0], gap="large")
+
+    # ── Channel comparison: who actually covers the drain network ─────────────
+    with inc_left:
+        st.markdown("#### 📡 Channel comparison")
+        ch_df = pd.DataFrame([
+            {"Channel": CHANNEL_NAMES.get(ch, ch), "Coverage %": s["coverage_pct"], "Covered km": s["covered_km"],
+             "Reports": s["reports"], "Active reporters": s["active_reporters"], "Anonymous reports": s["anonymous_reports"],
+             "Verified clearances": s["verified_clearances"], "₹ released": s["released_inr"]}
+            for ch, s in adoption["by_channel"].items()
+        ])
+        st.altair_chart(_channel_bar(
+            ch_df, "Coverage %", f"Share of drain length within 50 m of a report, last {inc_days} days (%)", ".1f",
+            ["Channel", "Coverage %", "Covered km", "Reports", "Active reporters"],
+        ), use_container_width=True)
+        if not ch_df["Coverage %"].any():
+            st.caption(f"No report in the last {inc_days} days lies within 50 m of a mapped drain line.")
+        st.altair_chart(_channel_bar(
+            ch_df, "Reports", f"Reports submitted, last {inc_days} days", "d",
+            ["Channel", "Reports", "Active reporters", "Anonymous reports"],
+        ), use_container_width=True)
+        st.caption("Residents report where they live; waste pickers, riders and fleet dashcams pass every lane daily. "
+                   "Coverage is what the city actually sees, so it is the number to grow. Anonymous reports count as residents.")
+        with st.expander("Channel table"):
+            st.dataframe(ch_df, use_container_width=True, hide_index=True)
+
+    # ── Payout queue: operator decisions with the evidence alongside ──────────
+    with inc_right:
+        st.markdown("#### 🧾 Payout queue")
+        queue = held + escrowed
+        if not queue:
+            st.success("✅ Nothing on hold or in escrow. Rewards appear here once a hotspot is dispatched.")
+        else:
+            def _queue_label(i):
+                q = queue[i]
+                name = inc_reporters.get(q["reporter_id"], {}).get("display_name", q["reporter_id"])
+                return f"{'⏸️ HELD' if q['state'] == 'HELD' else '🔒 ESCROW'} • {q['reward_id']} • ₹{q['amount_inr']} • {name}"
+
+            pick = st.selectbox("Reward", range(len(queue)), format_func=_queue_label, key="payout_pick")
+            q = queue[pick]
+            rp = inc_reporters.get(q["reporter_id"], {})
+            hold = q.get("hold") or {}
+            ev = q.get("evidence") or {}
+            hotspot_info = q.get("hotspot") or {}
+            hold_html = (f'<div class="disclaimer-box" style="margin:8px 0 0 0;">⏸️ <b>{html_escape(hold.get("kind", "hold").replace("_", " "))}</b>: '
+                         f'{html_escape(hold.get("reason", ""))}</div>') if hold else ""
+            ev_html = (f'Verification <b>{html_escape(ev.get("verification_case", ""))}</b>: <b>{html_escape(ev.get("decision", ""))}</b> '
+                       f'({html_escape(ev.get("decision_source", ""))})') if ev else "No verification decision yet"
+            st.markdown(f"""
+            <div class="queue-card" style="border-left-color:{'#fbbf24' if q['state'] == 'HELD' else '#38bdf8'};">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <span style="font-weight:800; font-size:0.95rem; color:#f8fafc;">{html_escape(rp.get('display_name', q['reporter_id']))}</span>
+                <span class="{'badge-high' if q['state'] == 'HELD' else 'badge-derived'}">{q['state']}</span>
+              </div>
+              <div class="tiny-text">{html_escape(CHANNEL_NAMES.get(q['channel'], q['channel']))} • {html_escape(q.get('program_id') or '')} •
+                ₹{q['amount_inr']} as {q['role'].replace('_', ' ')} • trust {float(rp.get('trust_score', 0)):.2f}</div>
+              <div class="tiny-text">Report {q['report_id']} → {html_escape(str(hotspot_info.get('label', '—')))} → {html_escape(str(q.get('work_order_id') or '—'))}</div>
+              <div class="tiny-text">{ev_html}</div>
+              {hold_html}
+            </div>
+            """, unsafe_allow_html=True)
+
+            report_row = next((r for r in pipeline.get_reports() if r.get("id") == q["report_id"]), {})
+            case_row = next((c for c in list_verification_cases() if c["case_id"] == ev.get("verification_case")), {})
+            photos = [("Reported", resolve_photo_path(report_row.get("photo_filename"))),
+                      ("Before", case_row.get("before_path")), ("After", case_row.get("after_path"))]
+            # Fixed three slots keep a single portrait photo thumbnail-sized
+            for pcol, (cap, p) in zip(st.columns(3), photos):
+                with pcol:
+                    if p:
+                        st.image(str(p), caption=cap, use_container_width=True)
+                    else:
+                        st.caption(f"{cap}: no photo yet")
+
+            is_held = q["state"] == "HELD"
+            with st.form(key=f"payout_form_{q['reward_id']}"):
+                op_name = st.text_input("Operator", value=st.session_state.get("payout_operator", ""), max_chars=80)
+                op_note = st.text_area("Decision note (at least 10 characters)", max_chars=500, height=80)
+                submitted = st.form_submit_button("✅ Release hold" if is_held else "⏸️ Hold this payout",
+                                                  type="primary", use_container_width=True)
+            if submitted:
+                try:
+                    action = incentive_engine.release_reward if is_held else incentive_engine.hold_reward
+                    result = action(q["reward_id"], op_name, op_note)
+                    st.session_state.payout_operator = op_name
+                    st.toast(f"{q['reward_id']}: {incentive_engine.status_message(result)}")
+                    st.rerun()
+                except (incentive_engine.IncentiveError, KeyError) as exc:
+                    st.error(f"Not applied: {exc}")
+            st.caption("Releasing a hold pays only if cleanup verification passed; otherwise the reward goes back to waiting "
+                       "for verification. Dispute an AI verdict with the override on the Cleanup Verification tab.")
+
+    with st.expander(f"📒 Reward ledger ({len(inc_rewards)} rewards, {len(incentive_engine.ledger_events())} state changes)"):
+        if inc_rewards:
+            st.dataframe(pd.DataFrame([
+                {"Reward": r["reward_id"], "Reporter": inc_reporters.get(r["reporter_id"], {}).get("display_name", r["reporter_id"]),
+                 "Channel": CHANNEL_NAMES.get(r["channel"], r["channel"]), "State": r["state"], "₹": r["amount_inr"],
+                 "Role": r["role"].replace("_", " "), "Hotspot": (r.get("hotspot") or {}).get("label", ""),
+                 "Work order": r.get("work_order_id") or "", "Verification": (r.get("evidence") or {}).get("verification_case", ""),
+                 "Last change": r.get("reason", ""), "At": str(r.get("recorded_at", ""))[:16].replace("T", " ")}
+                for r in inc_rewards
+            ]), use_container_width=True, hide_index=True)
+        else:
+            st.caption("No rewards yet. Rewards are created when a registered reporter submits a report.")
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# TAB: WARD DRAIN SCORE (leaderboard for pre-monsoon desilting priority)
+# ══════════════════════════════════════════════════════════════════════════════
+WARD_RAMP = ["#14b8a6", "#0d9488", "#0f766e", "#134e4a"]  # one hue, light → dark (palette-validated ordinal ramp)
+WARD_BINS = [40.0, 55.0, 70.0]
+WARD_UNSCORED = "#94a3b8"
+
+
+def _ward_fill(score):
+    return WARD_UNSCORED if score is None else WARD_RAMP[sum(score >= b for b in WARD_BINS)]
+
+
+def _unscored_reason(w) -> str:
+    if not w["drain_km"]:
+        return "no mapped drains in this zone yet"
+    if not w["cleanups_judged"] and w["median_hours_to_clear"] is None:
+        return "no cleanup history yet"
+    return "fewer than two score components available"
+
+
+def _fmt(value, pattern: str, missing: str = "—") -> str:
+    return missing if value is None else pattern.format(value)
+
+
+with tab_wards:
+    st.markdown("### 🏆 Ward Drain Score")
+    st.markdown(
+        "Each ward is scored 0–100 on how well its drains are watched and cleared. "
+        "**Top wards get priority in the pre-monsoon desilting allocation.** "
+        f"{render_provenance_badge('derived', '[Derived / Rule-based score]')}",
+        unsafe_allow_html=True,
+    )
+    ward_days = INCENTIVE_WINDOWS[st.radio("Coverage window", list(INCENTIVE_WINDOWS), index=1, horizontal=True, key="ward_window")]
+    scorecard = ward_engine.ward_scorecard(pipeline.get_reports(), incentive_engine.list_rewards(), verified_outcomes, days=ward_days)
+    scored = [w for w in scorecard["wards"] if w["score"] is not None]
+    unscored = [w for w in scorecard["wards"] if w["score"] is None]
+
+    if scored:
+        order = " &nbsp;→&nbsp; ".join(f"<b>{w['rank']}. {html_escape(w['ward'])}</b> ({w['score']:.0f})" for w in scored)
+        st.markdown(f"""
+        <div style="margin:4px 0 14px 0; padding:11px 16px; border-radius:12px; background:rgba(45,212,191,0.08);
+                    border:1px solid rgba(45,212,191,0.35); font-size:0.88rem; color:#e2ecf2;">
+          🌧️ <span style="color:#5eead4; font-weight:800;">Pre-monsoon desilting priority:</span> &nbsp;{order}
+        </div>
+        """, unsafe_allow_html=True)
+
+    w_left, w_right = st.columns([1.0, 1.1], gap="large")
+    with w_left:
+        by_ward = {w["ward"]: w for w in scorecard["wards"]}
+        polys = ward_engine.ward_polygons()
+        features = []
+        for f in polys["features"]:
+            w = by_ward.get(f["properties"]["ward"], {})
+            features.append({**f, "properties": {
+                "ward": f["properties"]["ward"],
+                "score": _fmt(w.get("score"), "{:.0f} / 100", "not scored"),
+                "rank": _fmt(w.get("rank"), "#{}", "—"),
+                "coverage": _fmt(w.get("coverage_pct"), "{:.1f}%"),
+                "clear": _fmt(w.get("verified_clear_rate_pct"), "{:.0f}%"),
+                "speed": _fmt(w.get("median_hours_to_clear"), "{:.0f} h"),
+                "_fill": _ward_fill(w.get("score")),
+                "_scored": w.get("score") is not None,
+            }})
+        wmap = folium.Map(location=[18.54, 73.85], zoom_start=11, tiles=None, control_scale=True)
+        folium.TileLayer(tiles=globals().get("tile_url", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"),
+                         attr=globals().get("tile_attr", "&copy; OpenStreetMap contributors"), name="Base Map").add_to(wmap)
+        folium.GeoJson(
+            {"type": "FeatureCollection", "features": features}, name="Wards",
+            style_function=lambda f: {
+                "fillColor": f["properties"]["_fill"], "fillOpacity": 0.55 if f["properties"]["_scored"] else 0.25,
+                # white outline keeps neighbouring wards in the same score band distinguishable
+                "color": "#ffffff", "weight": 2.5, "dashArray": None if f["properties"]["_scored"] else "6 6",
+            },
+            highlight_function=lambda _: {"weight": 4, "fillOpacity": 0.7},
+            tooltip=folium.GeoJsonTooltip(fields=["ward", "rank", "score", "coverage", "clear", "speed"],
+                                          aliases=["Ward", "Rank", "Drain Score", "Coverage", "Verified clear", "Median time to clear"]),
+        ).add_to(wmap)
+        drains_path = ROOT / "data" / "urban_drain_network.geojson"
+        if drains_path.is_file():
+            folium.GeoJson(json.loads(drains_path.read_text(encoding="utf-8")), name="Drains",
+                           style_function=lambda _: {"color": "#1d4ed8", "weight": 2, "opacity": 0.6}).add_to(wmap)
+        from shapely.geometry import shape as _shape
+        for f in features:
+            spot = _shape(f["geometry"]).representative_point()
+            label = f"{f['properties']['ward']} · {f['properties']['score'].split(' ')[0]}" if f["properties"]["_scored"] else f["properties"]["ward"]
+            folium.Marker([spot.y, spot.x], icon=folium.DivIcon(
+                icon_size=(150, 22), icon_anchor=(75, 11),
+                html=f'<div style="text-align:center; font: 700 12px Inter, sans-serif; color:#0f172a; '
+                     f'text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;">{html_escape(label)}</div>')).add_to(wmap)
+        st_folium(wmap, height=430, use_container_width=True, returned_objects=[], key="ward_map")
+        swatches = "".join(
+            f'<span style="display:inline-flex; align-items:center; gap:5px; margin-right:12px;">'
+            f'<span style="width:14px; height:14px; border-radius:3px; background:{c}; display:inline-block;"></span>{label}</span>'
+            for c, label in zip(WARD_RAMP + [WARD_UNSCORED], ["&lt; 40", "40–55", "55–70", "≥ 70", "not scored"])
+        )
+        st.markdown(f'<div class="tiny-text" style="margin-top:4px;">Drain Score: {swatches}</div>', unsafe_allow_html=True)
+        st.caption("Ward zones are the regions nearest each vendor's zone anchors (the same rule used to assign reports) "
+                   "until real PMC ward boundaries are loaded.")
+
+    with w_right:
+        st.markdown("#### Leaderboard")
+        st.dataframe(
+            pd.DataFrame([{
+                "Rank": _fmt(w["rank"], "{}"), "Ward": w["ward"], "Drain Score": w["score"],
+                f"Coverage ({ward_days}d)": _fmt(w["coverage_pct"], "{:.1f}%"),
+                "Verified clear": _fmt(w["verified_clear_rate_pct"], "{:.0f}%"),
+                "Median time to clear": _fmt(w["median_hours_to_clear"], "{:.0f} h"),
+                "Clogs / site (30d)": _fmt(w["clogs_per_site_30d"], "{:.1f}"),
+                "Clog trend": _fmt(w["recurrence_trend_pct"], "{:+.0f}%").replace("+", "▲ ").replace("-", "▼ "),
+                "Active reporters": w["active_reporters"],
+            } for w in scorecard["wards"]]).astype({"Drain Score": "Float64"}),
+            use_container_width=True, hide_index=True,
+            column_config={"Drain Score": st.column_config.ProgressColumn("Drain Score", min_value=0, max_value=100, format="%.0f")},
+        )
+        st.caption("Clog trend compares logged clogs in the last 30 days with the 30 days before: ▼ is fewer repeat clogs (better).")
+        for w in unscored:
+            st.markdown(f'<div class="tiny-text">⚪ <b>{html_escape(w["ward"])}</b>: not scored, {_unscored_reason(w)}.</div>',
+                        unsafe_allow_html=True)
+
+        st.markdown("#### Score breakdown")
+        comp_labels = {"coverage": "Coverage", "clear_rate": "Verified clear", "speed": "Speed to clear", "recurrence": "Few repeat clogs"}
+        if scored:
+            pick_w = st.selectbox("Ward", [w["ward"] for w in scored], key="ward_breakdown_pick", label_visibility="collapsed")
+            sel = next(w for w in scored if w["ward"] == pick_w)
+            bd = pd.DataFrame([{"Component": comp_labels[k], "Points": v, "Weight": f"{scorecard['weights'][k]:.0%}"}
+                               for k, v in sel["components"].items() if v is not None])
+            bd_max = 100.0 * 1.12
+            bd_axis = {"labelColor": "#9db3c0", "titleColor": "#9db3c0", "labelFontSize": 11, "titleFontSize": 11}
+            bd_base = alt.Chart(bd).encode(y=alt.Y("Component:N", sort=None, title=None,
+                                                   axis=alt.Axis(ticks=False, domain=False, labelLimit=170, **bd_axis)))
+            st.altair_chart((
+                bd_base.mark_bar(color=INCENTIVE_BAR_COLOR, cornerRadiusEnd=4, size=14).encode(
+                    x=alt.X("Points:Q", title="Component score (0–100)", scale=alt.Scale(domain=[0, bd_max], nice=False),
+                            axis=alt.Axis(gridColor="#1b3f50", domain=False, tickCount=5, **bd_axis)),
+                    tooltip=["Component", alt.Tooltip("Points:Q", format=".0f"), "Weight"])
+                + bd_base.mark_text(align="left", dx=5, color="#e2ecf2", fontSize=11).encode(
+                    x=alt.X("Points:Q", scale=alt.Scale(domain=[0, bd_max], nice=False)), text=alt.Text("Points:Q", format=".0f"))
+            ).properties(height=34 * len(bd) + 30).configure_view(strokeWidth=0), use_container_width=True)
+
+    with st.expander("How the Drain Score is calculated"):
+        t = scorecard["targets"]
+        st.markdown(f"""
+- **Coverage ({scorecard['weights']['coverage']:.0%})**: share of the ward's mapped drain length within 50 m of any report in the last {ward_days} days; {t['coverage_pct']:.0f}% earns full marks.
+- **Verified clear ({scorecard['weights']['clear_rate']:.0%})**: share of cleanups in the last {scorecard['history_window_days']} days that passed before/after verification.
+- **Speed to clear ({scorecard['weights']['speed']:.0%})**: median hours from first report to clearance; ≤ {t['fast_clear_h']:.0f} h full marks, ≥ {t['slow_clear_h']:.0f} h zero.
+- **Few repeat clogs ({scorecard['weights']['recurrence']:.0%})**: logged clogs per site in the last 30 days; 0 full marks, ≥ {t['clogs_per_site_zero_score']:.0f} zero.
+
+Missing components are left out and the remaining weights re-normalised; a ward needs at least two to be ranked.
+Cleanup history comes from the seeded prototype dossier (`data/historical_urban_dossier.json`) plus live verification
+decisions and reward releases. Wards: {scorecard['ward_method']}.
+""")
+
+
+class _NoVerificationCases(Exception):
+    """Raised inside the verification tab when there is nothing to show; suppressed by its `with`."""
+
+
+with tab_verify, suppress(_NoVerificationCases):
     st.markdown("### 📸 AI Before/After Cleanup Verification")
     st.markdown(
         f"Evidence-grade photo gate • YOLOv8 + plastic material check • Same-scene, EXIF & GPS checks • Human override with audit trail • "
@@ -1500,6 +1964,9 @@ with tab_verify:
         for c in cases
     ]), use_container_width=True, hide_index=True)
 
+    if not cases:
+        st.info("No cleanup verification cases on this machine: add data/cleanup_verification/cases.json.")
+        raise _NoVerificationCases
     pick = st.selectbox("Select verification work order", range(len(cases)),
                         format_func=lambda i: f"{cases[i]['case_id']} • {cases[i]['site_name']} ({cases[i]['ward']})", key="verify_case_pick")
     case = cases[pick]

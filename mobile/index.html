@@ -71,8 +71,20 @@
       </div>
     </header>
 
+    <!-- Reporter Identity Bar -->
+    <div class="flex items-center justify-between px-5 py-2 bg-[#f7f1e5] border-b border-[#e7dcce]">
+      <button onclick="openOnboarding()" class="flex items-center gap-2 text-left min-w-0">
+        <i class="fa-solid fa-id-badge text-[#284e3a] text-xs"></i>
+        <span class="text-[11px] font-serif text-[#443e37] truncate" id="identity-label">Reporting anonymously</span>
+      </button>
+      <button onclick="showView('wallet')" id="wallet-chip"
+              class="text-[10px] px-2.5 py-1 rounded-full bg-[#284e3a] text-[#f7f3ea] font-mono-code font-semibold flex items-center gap-1.5 active:scale-95 transition flex-shrink-0">
+        <i class="fa-solid fa-wallet"></i> <span id="wallet-chip-label">Join to earn</span>
+      </button>
+    </div>
+
     <!-- Main Content -->
-    <main class="flex-1 px-4 py-4 space-y-4 overflow-y-auto">
+    <main id="report-view" class="flex-1 px-4 py-4 space-y-4 overflow-y-auto">
       
       <!-- Auto-GPS Location Card -->
       <div class="bg-[#faf6ee] rounded-xl p-3.5 border border-[#e5dac7]">
@@ -178,6 +190,63 @@
       </div>
 
     </main>
+
+    <!-- My Impact (wallet) View -->
+    <section id="wallet-view" class="hidden flex-1 px-4 py-4 space-y-4 overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <button onclick="showView('report')" class="text-[11px] font-serif text-[#284e3a] flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left text-[10px]"></i> Back to report
+        </button>
+        <span class="text-[9px] font-mono-code text-[#7c7365]" id="wallet-updated">—</span>
+      </div>
+      <div>
+        <h2 class="text-lg font-bold font-serif text-[#1c1917] leading-tight">My Impact</h2>
+        <p class="text-[11px] italic text-[#6f675c] font-serif" id="wallet-program">Paid only when the drain is verified clear.</p>
+      </div>
+      <div class="grid grid-cols-3 gap-2" id="wallet-totals"></div>
+      <div id="wallet-hold-note" class="hidden text-[11px] font-serif text-[#92400e] bg-[#fef3c7] border border-[#f5d58a] rounded-lg px-3 py-2"></div>
+      <div class="space-y-3" id="wallet-rewards"></div>
+      <button onclick="switchProfile()" class="w-full py-2 text-[11px] font-serif text-[#6f675c] underline">Not you? Switch profile</button>
+    </section>
+
+    <!-- One-time "Who are you?" Sheet -->
+    <div id="onboard-sheet" class="hidden fixed inset-0 z-40 bg-black/40 flex items-end justify-center">
+      <div class="w-full max-w-[420px] bg-[#fffdfa] rounded-t-2xl border-t border-[#e3d7c3] p-5 space-y-3 max-h-[92vh] overflow-y-auto">
+        <div>
+          <h3 class="text-base font-bold font-serif text-[#1c1917]">Who are you?</h3>
+          <p class="text-[11px] text-[#6f675c] font-serif mt-0.5 leading-snug">
+            You earn only when your report leads to a cleanup our AI verifies. Asked once and stored on this phone.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 gap-2" id="channel-options"></div>
+        <input id="ob-name" type="text" maxlength="80" placeholder="Your name"
+               class="w-full bg-[#fffdf9] border border-[#e3d7c3] rounded-lg px-3 py-2 text-xs font-serif focus:outline-none focus:border-[#284e3a]" />
+        <input id="ob-phone" type="tel" maxlength="20" placeholder="Phone (optional: recovers your wallet on a new phone)"
+               class="w-full bg-[#fffdf9] border border-[#e3d7c3] rounded-lg px-3 py-2 text-xs font-serif focus:outline-none focus:border-[#284e3a]" />
+        <input id="ob-org" type="text" maxlength="80" placeholder="Organisation / fleet (optional)"
+               class="w-full bg-[#fffdf9] border border-[#e3d7c3] rounded-lg px-3 py-2 text-xs font-serif focus:outline-none focus:border-[#284e3a]" />
+        <div id="ob-resident" class="hidden space-y-2">
+          <select id="ob-program" class="w-full bg-[#fffdf9] border border-[#e3d7c3] rounded-lg px-3 py-2 text-xs font-serif">
+            <option value="SWACHHATA-TAX">Credit to my property-tax rebate</option>
+            <option value="MSEDCL-CREDIT">Credit to my electricity bill</option>
+          </select>
+          <input id="ob-household" type="text" maxlength="40" placeholder="Property-tax ID or MSEDCL consumer no. (optional)"
+                 class="w-full bg-[#fffdf9] border border-[#e3d7c3] rounded-lg px-3 py-2 text-xs font-serif focus:outline-none focus:border-[#284e3a]" />
+        </div>
+        <p id="ob-error" class="hidden text-[11px] text-[#a63d1e] font-serif"></p>
+        <button id="ob-submit" onclick="registerReporter()"
+                class="w-full py-3 bg-[#284e3a] text-[#f7f3ea] font-serif font-bold text-sm rounded-xl active:scale-[0.98] transition">
+          Start reporting
+        </button>
+        <div id="ob-personas-wrap" class="hidden pt-1 border-t border-[#ece3d4]">
+          <p class="text-[10px] font-mono-code uppercase tracking-wider text-[#7c7365] mt-2 mb-1.5">Demo personas</p>
+          <div class="flex flex-wrap gap-1.5" id="ob-personas"></div>
+        </div>
+        <button onclick="continueAnonymously()" class="w-full py-1.5 text-[11px] font-serif text-[#6f675c] underline">
+          Report anonymously (no rewards)
+        </button>
+      </div>
+    </div>
 
     <!-- Toast Notification Popup -->
     <div id="toast" class="fixed top-14 left-4 right-4 max-w-[390px] mx-auto z-50 transform -translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
@@ -394,6 +463,7 @@
           formData.append('lon', currentLon);
           formData.append('notes', notes);
           formData.append('file', currentFile, currentPhoto);
+          if (reporterId()) formData.append('reporter_id', reporterId());
           data = await apiFetch('/api/reports/upload', { method: 'POST', body: formData });
         } else {
           const payload = {
@@ -402,6 +472,7 @@
             photo_filename: currentPhoto,
             notes: notes
           };
+          if (reporterId()) payload.reporter_id = reporterId();
           data = await apiFetch('/api/reports', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -410,8 +481,14 @@
         }
 
         const ref = `REF #${data.report ? data.report.id : 'CR-' + Math.floor(Math.random()*9000 + 1000)}`;
-        if (data.needs_review) {
-          showToast('Sent for Operator Review', data.review_message || REVIEW_TOAST, ref, 'warn');
+        const reward = data.incentive;
+        if (reward && reward.state === 'VOID') {
+          showToast('Report Logged · No Reward', reward.message, ref, 'warn');
+        } else if (data.needs_review) {
+          showToast('Sent for Operator Review', data.review_message || REVIEW_TOAST, reward ? `${ref} • ${reward.message}` : ref, 'warn');
+        } else if (reward) {
+          showToast(reward.state === 'HELD' ? 'Report Logged · Reward On Hold' : `Report Logged · ₹${reward.amount_inr} pending`,
+                    reward.message, ref, reward.state === 'HELD' ? 'warn' : undefined);
         } else {
           showToast(
             'Report Dispatched!',
@@ -420,14 +497,298 @@
           );
         }
         document.getElementById('report-notes').value = '';
+        refreshWalletChip();
       } catch (err) {
         console.error("Report submission failed:", err);
-        showToast('Submission Failed', err.message, 'Please retry', 'warn');
+        if (String(err.message).includes('Unknown reporter_id')) {
+          // Server data was reset or this phone talks to a different server: re-register
+          setIdentity(null);
+          showToast('Profile Not Found', 'This server does not know your profile. Please choose who you are again, then resend.', 'Not sent', 'warn');
+          openOnboarding();
+        } else {
+          showToast('Submission Failed', err.message, 'Please retry', 'warn');
+        }
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-paper-plane text-xs text-[#c9dec3]"></i> <span>Transmit Report to Municipal Grid</span>';
       }
     }
+
+    // 5. Reporter identity ("Who are you?") and the My Impact wallet
+    const IDENTITY_KEY = 'plasticwatch_reporter_v1';
+    const CHANNEL_OPTIONS = [
+      { id: 'citizen', label: 'Resident', icon: 'fa-house' },
+      { id: 'waste_picker', label: 'SWaCH waste picker', icon: 'fa-recycle' },
+      { id: 'gig_rider', label: 'Delivery rider', icon: 'fa-motorcycle' },
+      { id: 'sanitary_inspector', label: 'Sanitary inspector', icon: 'fa-clipboard-check' },
+    ];
+    const CHANNEL_LABELS = {
+      citizen: 'Resident', waste_picker: 'SWaCH waste picker', gig_rider: 'Delivery rider',
+      sanitary_inspector: 'Sanitary inspector', dashcam: 'Fleet dashcam', rwa: 'Residents association',
+    };
+    const STATE_STYLE = {
+      RELEASED: { fg: '#284e3a', bg: '#eaf2ed', label: 'Released' },
+      ESCROWED: { fg: '#20455e', bg: '#edf4f8', label: 'In escrow' },
+      PENDING: { fg: '#5c5349', bg: '#f1ebe0', label: 'Pending' },
+      SUBMITTED: { fg: '#5c5349', bg: '#f1ebe0', label: 'In review' },
+      HELD: { fg: '#92400e', bg: '#fef3c7', label: 'On hold' },
+      VOID: { fg: '#7c7365', bg: '#efebe4', label: 'No reward' },
+    };
+    const WALLET_REFRESH_MS = 15000;
+    let identity = readIdentity();
+    let selectedChannel = 'citizen';
+    let walletTimer = null;
+
+    function readIdentity() {
+      try { return JSON.parse(localStorage.getItem(IDENTITY_KEY) || 'null'); } catch (_) { return null; }
+    }
+    function setIdentity(value) {
+      identity = value;
+      try {
+        if (value) localStorage.setItem(IDENTITY_KEY, JSON.stringify(value));
+        else localStorage.removeItem(IDENTITY_KEY);
+      } catch (_) { /* private mode: identity lasts for this page load only */ }
+      renderIdentity();
+    }
+    function reporterId() { return identity && identity.reporter_id ? identity.reporter_id : null; }
+    function esc(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function inr(n) { return '₹' + Math.round(Number(n) || 0).toLocaleString('en-IN'); }
+    function shortDate(iso) {
+      const d = new Date(iso);
+      return isNaN(d) ? '' : d.toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function renderIdentity() {
+      const label = document.getElementById('identity-label');
+      const chip = document.getElementById('wallet-chip-label');
+      if (reporterId()) {
+        label.innerText = `${identity.display_name} · ${CHANNEL_LABELS[identity.channel] || identity.channel}`;
+        chip.innerText = 'My Impact';
+      } else {
+        label.innerText = 'Reporting anonymously · tap to join';
+        chip.innerText = 'Join to earn';
+      }
+    }
+
+    function selectChannel(id) {
+      selectedChannel = id;
+      document.querySelectorAll('[data-channel]').forEach(b => {
+        const on = b.dataset.channel === id;
+        b.style.background = on ? '#284e3a' : '#fffdf9';
+        b.style.color = on ? '#f7f3ea' : '#443e37';
+        b.style.borderColor = on ? '#284e3a' : '#e3d7c3';
+      });
+      document.getElementById('ob-resident').classList.toggle('hidden', id !== 'citizen');
+    }
+
+    function openOnboarding() {
+      const box = document.getElementById('channel-options');
+      if (!box.children.length) {
+        box.innerHTML = CHANNEL_OPTIONS.map(c => `
+          <button type="button" data-channel="${c.id}" onclick="selectChannel('${c.id}')"
+                  class="py-2.5 px-2 rounded-lg border text-[11px] font-serif font-semibold flex flex-col items-center gap-1 transition active:scale-95">
+            <i class="fa-solid ${c.icon} text-sm"></i><span>${c.label}</span>
+          </button>`).join('');
+      }
+      selectChannel(identity && identity.channel && CHANNEL_LABELS[identity.channel] ? identity.channel : selectedChannel);
+      document.getElementById('ob-error').classList.add('hidden');
+      document.getElementById('onboard-sheet').classList.remove('hidden');
+      loadDemoPersonas();
+    }
+    function closeOnboarding() { document.getElementById('onboard-sheet').classList.add('hidden'); }
+
+    async function loadDemoPersonas() {
+      const wrap = document.getElementById('ob-personas-wrap');
+      try {
+        const data = await apiFetch('/api/reporters', {}, 15000);
+        const personas = (data.reporters || []).slice(0, 8);
+        if (!personas.length) return;
+        document.getElementById('ob-personas').innerHTML = personas.map((p, i) => `
+          <button type="button" onclick="usePersona(${i})"
+                  class="text-[10px] px-2 py-1 rounded-full border border-[#d8ccb8] bg-[#faf6ee] text-[#443e37] font-serif">
+            ${esc(p.display_name)}
+          </button>`).join('');
+        window._demoPersonas = personas;
+        wrap.classList.remove('hidden');
+      } catch (err) {
+        wrap.classList.add('hidden');  // personas are a demo convenience only
+      }
+    }
+    function usePersona(i) {
+      const p = (window._demoPersonas || [])[i];
+      if (!p) return;
+      setIdentity({ reporter_id: p.reporter_id, display_name: p.display_name, channel: p.channel });
+      closeOnboarding();
+      showToast('Welcome back', `Reporting as ${p.display_name}.`, p.reporter_id);
+      refreshWalletChip();
+    }
+
+    async function registerReporter() {
+      const errBox = document.getElementById('ob-error');
+      const btn = document.getElementById('ob-submit');
+      const name = document.getElementById('ob-name').value.trim();
+      if (name.length < 2) {
+        errBox.innerText = 'Please enter your name.';
+        errBox.classList.remove('hidden');
+        return;
+      }
+      const body = { display_name: name, channel: selectedChannel };
+      const phone = document.getElementById('ob-phone').value.trim();
+      const org = document.getElementById('ob-org').value.trim();
+      if (phone) body.phone = phone;
+      if (org) body.partner_org = org;
+      if (selectedChannel === 'citizen') {
+        body.program_id = document.getElementById('ob-program').value;
+        const household = document.getElementById('ob-household').value.trim();
+        if (household) body.household_link = household;
+      }
+      btn.disabled = true;
+      btn.innerText = 'Registering...';
+      try {
+        const data = await apiFetch('/api/reporters', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+        }, 20000);
+        const r = data.reporter;
+        setIdentity({ reporter_id: r.reporter_id, display_name: r.display_name, channel: r.channel });
+        closeOnboarding();
+        showToast(data.created ? 'You are registered' : 'Wallet recovered',
+                  `${r.display_name} · ${CHANNEL_LABELS[r.channel] || r.channel}. You earn when a report leads to a verified cleanup.`,
+                  r.reporter_id);
+        refreshWalletChip();
+      } catch (err) {
+        errBox.innerText = `Could not register: ${err.message}`;
+        errBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Start reporting';
+      }
+    }
+
+    function continueAnonymously() {
+      setIdentity({ anonymous: true });
+      closeOnboarding();
+    }
+    function switchProfile() {
+      setIdentity(null);
+      showView('report');
+      openOnboarding();
+    }
+
+    function showView(view) {
+      if (view === 'wallet' && !reporterId()) { openOnboarding(); return; }
+      document.getElementById('report-view').classList.toggle('hidden', view === 'wallet');
+      document.getElementById('wallet-view').classList.toggle('hidden', view !== 'wallet');
+      clearInterval(walletTimer);
+      walletTimer = null;
+      if (view === 'wallet') {
+        loadWallet();
+        // Keep refreshing so the wallet flips to "released" as soon as the cleanup is verified
+        walletTimer = setInterval(() => { if (!document.hidden) loadWallet(true); }, WALLET_REFRESH_MS);
+      }
+    }
+
+    function isMissingReporter(err) { return /not found/i.test(String(err.message)); }
+
+    async function loadWallet(quiet) {
+      const id = reporterId();
+      if (!id) return;
+      const list = document.getElementById('wallet-rewards');
+      if (!quiet) list.innerHTML = '<p class="text-[11px] font-serif text-[#7c7365]"><i class="fa-solid fa-spinner fa-spin"></i> Loading your reports...</p>';
+      try {
+        const w = await apiFetch(`/api/reporters/${encodeURIComponent(id)}/wallet`, {}, 20000);
+        renderWallet(w);
+        updateWalletChip(w.totals);
+      } catch (err) {
+        if (isMissingReporter(err)) { switchProfile(); return; }
+        if (!quiet) list.innerHTML = `<p class="text-[11px] font-serif text-[#a63d1e]">Could not load wallet: ${esc(err.message)}</p>`;
+      }
+    }
+
+    function renderWallet(w) {
+      const t = w.totals || {};
+      const card = (label, value, fg, bg) => `
+        <div class="rounded-xl p-2.5 border border-[#e5dac7]" style="background:${bg}">
+          <span class="text-[9px] font-mono-code uppercase tracking-wider font-semibold" style="color:${fg}">${label}</span>
+          <div class="text-lg font-black font-serif leading-tight" style="color:${fg}">${inr(value)}</div>
+        </div>`;
+      document.getElementById('wallet-totals').innerHTML =
+        card('Released', t.released_inr, '#284e3a', '#eaf2ed') +
+        card('In escrow', t.escrowed_inr, '#20455e', '#edf4f8') +
+        card('Pending', t.pending_inr, '#5c5349', '#faf6ee');
+      const hold = document.getElementById('wallet-hold-note');
+      hold.classList.toggle('hidden', !(t.held_inr > 0));
+      hold.innerText = `${inr(t.held_inr)} on hold while an operator reviews it.`;
+      const program = w.program || {};
+      document.getElementById('wallet-program').innerText =
+        `${program.name ? program.name + ': ' : ''}${program.reward_label || 'Paid only when the drain is verified clear.'} · ${t.verified_clearances || 0} verified cleanup(s)`;
+      document.getElementById('wallet-updated').innerText = `updated ${new Date().toTimeString().substring(0, 5)}`;
+
+      const rewards = w.rewards || [];
+      document.getElementById('wallet-rewards').innerHTML = rewards.length ? rewards.map(rewardCard).join('') : `
+        <div class="text-center py-8 bg-[#faf6ee] rounded-xl border border-dashed border-[#d8ccb8]">
+          <i class="fa-solid fa-camera text-[#284e3a]"></i>
+          <p class="text-[12px] font-serif text-[#443e37] mt-2">No reports yet.</p>
+          <p class="text-[11px] font-serif text-[#7c7365]">Snap a choked drain to start earning.</p>
+        </div>`;
+    }
+
+    function rewardCard(r) {
+      const s = STATE_STYLE[r.state] || STATE_STYLE.PENDING;
+      const steps = (r.timeline || []).map(step => `
+        <li class="flex items-start gap-2">
+          <i class="fa-solid ${step.done ? 'fa-circle-check' : 'fa-circle'} text-[10px] mt-0.5" style="color:${step.done ? '#284e3a' : '#d8ccb8'}"></i>
+          <span class="text-[11px] font-serif leading-snug ${step.done ? 'text-[#2b2723]' : 'text-[#998f82]'}">${esc(step.label)}</span>
+        </li>`).join('');
+      const thumb = r.photo_url ? `
+        <img src="${esc(r.photo_url)}" alt="Your photo" onerror="this.remove()"
+             class="w-16 h-16 rounded-lg object-cover border border-[#d8ccb8] flex-shrink-0" />` : '';
+      const pair = r.verification_photos ? `
+        <div class="mt-2.5 pt-2.5 border-t border-[#ece3d4]">
+          <p class="text-[10px] font-mono-code uppercase tracking-wider text-[#284e3a] font-semibold mb-1.5">Your report led to this cleanup</p>
+          <div class="grid grid-cols-2 gap-1.5">
+            ${['before', 'after'].map(k => `
+              <figure>
+                <img src="${esc(r.verification_photos[k])}" alt="${k}" onerror="this.parentElement.remove()"
+                     class="w-full aspect-[4/3] rounded-lg object-cover border border-[#d8ccb8]" />
+                <figcaption class="text-[9px] font-mono-code text-[#7c7365] mt-0.5 uppercase">${k}</figcaption>
+              </figure>`).join('')}
+          </div>
+        </div>` : '';
+      return `
+        <div class="bg-[#faf6ee] rounded-xl p-3 border border-[#e5dac7]">
+          <div class="flex justify-between items-center">
+            <div>
+              <span class="text-[11px] font-mono-code font-semibold text-[#2b2723]">${esc(r.report_id)}</span>
+              <span class="text-[10px] font-serif text-[#7c7365] ml-1">${esc(shortDate(r.report_submitted_at))}</span>
+            </div>
+            <span class="text-[10px] px-2 py-0.5 rounded-full font-mono-code font-semibold ${r.state === 'VOID' ? 'line-through' : ''}"
+                  style="color:${s.fg}; background:${s.bg}">${inr(r.amount_inr)} · ${s.label}</span>
+          </div>
+          <p class="text-[11px] font-serif text-[#5c5349] mt-1 leading-snug">${esc(r.status_message)}</p>
+          <div class="flex gap-3 mt-2">${thumb}<ul class="space-y-1 flex-1">${steps}</ul></div>
+          ${pair}
+        </div>`;
+    }
+
+    function updateWalletChip(t) {
+      if (!t || !reporterId()) return;
+      const open = (t.pending_inr || 0) + (t.escrowed_inr || 0);
+      document.getElementById('wallet-chip-label').innerText = `${inr(t.released_inr)}${open ? ' · +' + inr(open) : ''}`;
+    }
+    async function refreshWalletChip() {
+      if (!reporterId()) return;
+      try {
+        const w = await apiFetch(`/api/reporters/${encodeURIComponent(reporterId())}/wallet`, {}, 20000);
+        updateWalletChip(w.totals);
+      } catch (err) {
+        if (isMissingReporter(err)) setIdentity(null);
+      }
+    }
+
+    renderIdentity();
+    if (!identity) openOnboarding(); else refreshWalletChip();
 
     function showToast(title, desc, ref, variant) {
       const toast = document.getElementById('toast');

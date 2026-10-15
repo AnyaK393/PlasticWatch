@@ -1,0 +1,86 @@
+[
+  {
+    "program_id": "SWACH-ROUTE",
+    "name": "SWaCH Drain Route Checks",
+    "channel": "waste_picker",
+    "default_for_channel": true,
+    "first_reporter_inr": 15,
+    "corroboration_inr": 5,
+    "daily_cap": 12,
+    "reward_label": "₹15 per verified drain clearance (₹5 if someone reported it first)",
+    "funder": "PMC Solid Waste Management",
+    "payout_method": "coop_wallet"
+  },
+  {
+    "program_id": "GIG-FLOODCHOKE",
+    "name": "Gig Rider Flood-Choke Alerts",
+    "channel": "gig_rider",
+    "default_for_channel": true,
+    "first_reporter_inr": 15,
+    "corroboration_inr": 5,
+    "daily_cap": 10,
+    "reward_label": "₹15 to your fleet wallet per verified clearance (₹5 if someone reported it first)",
+    "funder": "Fleet CSR + PMC",
+    "payout_method": "partner_wallet"
+  },
+  {
+    "program_id": "MSEDCL-CREDIT",
+    "name": "Electricity Bill Credit",
+    "channel": "citizen",
+    "default_for_channel": false,
+    "first_reporter_inr": 20,
+    "corroboration_inr": 5,
+    "daily_cap": 5,
+    "reward_label": "₹20 credit on the linked MSEDCL bill per verified clearance",
+    "funder": "MSEDCL CSR",
+    "payout_method": "utility_bill_credit"
+  },
+  {
+    "program_id": "SWACHHATA-TAX",
+    "name": "Swachhata Property-Tax Rebate",
+    "channel": "citizen",
+    "default_for_channel": true,
+    "first_reporter_inr": 20,
+    "corroboration_inr": 5,
+    "daily_cap": 5,
+    "reward_label": "₹20 in points toward the annual property-tax rebate (cap 5%)",
+    "funder": "PMC Property Tax Dept",
+    "payout_method": "property_tax"
+  },
+  {
+    "program_id": "AROGYA-DUTY",
+    "name": "Sanitary Inspector Duty Log",
+    "channel": "sanitary_inspector",
+    "default_for_channel": true,
+    "first_reporter_inr": 0,
+    "corroboration_inr": 0,
+    "daily_cap": 50,
+    "reward_label": "Non-cash: counts toward inspector performance score",
+    "funder": "PMC Health Dept",
+    "payout_method": "performance_record"
+  },
+  {
+    "program_id": "FLEET-DASHCAM",
+    "name": "Municipal Fleet Dashcam",
+    "channel": "dashcam",
+    "default_for_channel": true,
+    "first_reporter_inr": 0,
+    "corroboration_inr": 0,
+    "daily_cap": 500,
+    "reward_label": "Non-cash: passive detections from PMPML buses and PMC vans",
+    "funder": "PMPML / PMC",
+    "payout_method": "none"
+  },
+  {
+    "program_id": "RWA-SCORE",
+    "name": "Society Drain Scorecard",
+    "channel": "rwa",
+    "default_for_channel": true,
+    "first_reporter_inr": 0,
+    "corroboration_inr": 0,
+    "daily_cap": 20,
+    "reward_label": "Non-cash: ward score toward pre-monsoon desilting priority",
+    "funder": "Ward office",
+    "payout_method": "ward_score"
+  }
+]

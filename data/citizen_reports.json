@@ -13,7 +13,10 @@
     "submitted_at": "2026-10-01T10:14:00Z",
     "source": "Citizen Mobile App (GPS Verified)",
     "verification": "verified",
-    "notes": "Severe plastic bottle buildup choking stormwater culvert inlet."
+    "notes": "Severe plastic bottle buildup choking stormwater culvert inlet.",
+    "reporter_id": "RP-0001",
+    "channel": "waste_picker",
+    "ward": "Kasba Peth"
   },
   {
     "id": "CR-202",
@@ -29,7 +32,10 @@
     "submitted_at": "2026-10-01T10:28:00Z",
     "source": "Citizen Mobile App (GPS Verified)",
     "verification": "pending",
-    "notes": "Second report of plastic bags around same culvert curb."
+    "notes": "Second report of plastic bags around same culvert curb.",
+    "reporter_id": "RP-0003",
+    "channel": "citizen",
+    "ward": "Kasba Peth"
   },
   {
     "id": "CR-203",
@@ -45,7 +51,10 @@
     "submitted_at": "2026-10-01T10:45:00Z",
     "source": "Citizen Mobile App (GPS Verified)",
     "verification": "pending",
-    "notes": "Third report: waste overflowing into storm drain opening."
+    "notes": "Third report: waste overflowing into storm drain opening.",
+    "reporter_id": "RP-0002",
+    "channel": "gig_rider",
+    "ward": "Kasba Peth"
   },
   {
     "id": "CR-204",
@@ -61,7 +70,10 @@
     "submitted_at": "2026-10-01T09:30:00Z",
     "source": "Citizen Mobile App (GPS Verified)",
     "verification": "verified",
-    "notes": "Nagzari Nallah street grate covered with multilayer plastic packaging."
+    "notes": "Nagzari Nallah street grate covered with multilayer plastic packaging.",
+    "reporter_id": "RP-0001",
+    "channel": "waste_picker",
+    "ward": "Kasba Peth"
   },
   {
     "id": "CR-205",
@@ -77,7 +89,10 @@
     "submitted_at": "2026-10-01T11:02:00Z",
     "source": "Citizen Mobile App (GPS Verified)",
     "verification": "pending",
-    "notes": "Duplicate report 35m from CR-204 along Nagzari drainage corridor."
+    "notes": "Duplicate report 35m from CR-204 along Nagzari drainage corridor.",
+    "reporter_id": "RP-0007",
+    "channel": "gig_rider",
+    "ward": "Kasba Peth"
   },
   {
     "id": "CR-206",
@@ -93,7 +108,10 @@
     "submitted_at": "2026-10-01T08:45:00Z",
     "source": "Citizen Mobile App (GPS Verified)",
     "verification": "verified",
-    "notes": "Kothrud stormwater feeder roadside waste pile."
+    "notes": "Kothrud stormwater feeder roadside waste pile.",
+    "reporter_id": "RP-0008",
+    "channel": "citizen",
+    "ward": "Kothrud"
   },
   {
     "id": "CR-207",
@@ -110,7 +128,10 @@
     "submitted_at": "2026-10-01T11:20:00Z",
     "source": "Citizen Mobile App (GPS Verified)",
     "verification": "pending",
-    "notes": "Mula-Mutha confluence outfall: heavy floating plastic buildup."
+    "notes": "Mula-Mutha confluence outfall: heavy floating plastic buildup.",
+    "reporter_id": "RP-0004",
+    "channel": "sanitary_inspector",
+    "ward": "Sangamwadi"
   },
   {
     "id": "CR-208",
@@ -126,7 +147,10 @@
     "submitted_at": "2026-10-01T07:15:00Z",
     "source": "Citizen Mobile App (GPS Verified)",
     "verification": "pending",
-    "notes": "Yerawada side canal minor litter accumulation."
+    "notes": "Yerawada side canal minor litter accumulation.",
+    "reporter_id": "RP-0006",
+    "channel": "rwa",
+    "ward": "Sangamwadi"
   },
   {
     "id": "CR-209",
@@ -632,5 +656,295 @@
     "verification": "pending",
     "notes": "Mobile Citizen Camera Observation",
     "status": "ACTIVE"
+  },
+  {
+    "id": "CR-237",
+    "lat": 18.5005,
+    "lon": 73.8613,
+    "plastic_confidence": 0.55,
+    "severity": 1.72,
+    "photo_filename": "sample_bottles_drain.jpg",
+    "detected_classes": [
+      "plastic_bottle"
+    ],
+    "submitted_at": "2026-10-15T17:30:08+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 1 item(s) 47 m from Nagzari Nallah Urban Grate Channel",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:21:28+00:00"
+  },
+  {
+    "id": "CR-238",
+    "lat": 18.503997,
+    "lon": 73.86219,
+    "plastic_confidence": 0.61,
+    "severity": 1.91,
+    "photo_filename": "sample_plastic_cups_gutter.jpg",
+    "detected_classes": [
+      "plastic_bottle"
+    ],
+    "submitted_at": "2026-10-15T17:30:08+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 1 item(s) 4 m from Nagzari Nallah Urban Grate Channel",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:22:08+00:00"
+  },
+  {
+    "id": "CR-239",
+    "lat": 18.507526,
+    "lon": 73.862891,
+    "plastic_confidence": 0.57,
+    "severity": 5.0,
+    "photo_filename": "sample_cardboard_box_drain.jpg",
+    "detected_classes": [
+      "plastic_bottle"
+    ],
+    "submitted_at": "2026-10-15T17:30:09+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 6 item(s) 21 m from Nagzari Nallah Urban Grate Channel",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:22:48+00:00"
+  },
+  {
+    "id": "CR-240",
+    "lat": 18.511098,
+    "lon": 73.863337,
+    "plastic_confidence": 0.49,
+    "severity": 3.47,
+    "photo_filename": "sample_snack_wrappers_curb.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-15T17:30:09+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 2 item(s) 21 m from Nagzari Nallah Urban Grate Channel",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:23:28+00:00"
+  },
+  {
+    "id": "CR-241",
+    "lat": 18.512884,
+    "lon": 73.863561,
+    "plastic_confidence": 0.48,
+    "severity": 2.74,
+    "photo_filename": "sample_partial_cleanup.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "other_plastic"
+    ],
+    "submitted_at": "2026-10-15T17:30:09+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 2 item(s) 21 m from Nagzari Nallah Urban Grate Channel",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:23:48+00:00"
+  },
+  {
+    "id": "CR-242",
+    "lat": 18.514673,
+    "lon": 73.863754,
+    "plastic_confidence": 0.46,
+    "severity": 3.1,
+    "photo_filename": "sample_food_wrappers_culvert.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-15T17:30:09+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 2 item(s) 22 m from Nagzari Nallah Urban Grate Channel",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:24:08+00:00"
+  },
+  {
+    "id": "CR-243",
+    "lat": 18.51826,
+    "lon": 73.864041,
+    "plastic_confidence": 0.5,
+    "severity": 5.0,
+    "photo_filename": "sample_plastic_bag_curb.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-15T17:30:09+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 3 item(s) 29 m from Nagzari Nallah Urban Grate Channel",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:24:48+00:00"
+  },
+  {
+    "id": "CR-244",
+    "lat": 18.521231,
+    "lon": 73.856771,
+    "plastic_confidence": 0.61,
+    "severity": 1.91,
+    "photo_filename": "sample_plastic_cups_gutter.jpg",
+    "detected_classes": [
+      "plastic_bottle"
+    ],
+    "submitted_at": "2026-10-15T17:30:09+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 1 item(s) 20 m from Shaniwar Wada Stormwater Trunk",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:26:28+00:00"
+  },
+  {
+    "id": "CR-245",
+    "lat": 18.526336,
+    "lon": 73.851866,
+    "plastic_confidence": 0.49,
+    "severity": 3.47,
+    "photo_filename": "sample_snack_wrappers_curb.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-15T17:30:10+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 2 item(s) 20 m from Shivajinagar Culvert Line",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:27:48+00:00"
+  },
+  {
+    "id": "CR-246",
+    "lat": 18.528086,
+    "lon": 73.851428,
+    "plastic_confidence": 0.48,
+    "severity": 2.74,
+    "photo_filename": "sample_partial_cleanup.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "other_plastic"
+    ],
+    "submitted_at": "2026-10-15T17:30:10+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 2 item(s) 20 m from Shivajinagar Culvert Line",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:28:08+00:00"
+  },
+  {
+    "id": "CR-247",
+    "lat": 18.529836,
+    "lon": 73.850991,
+    "plastic_confidence": 0.46,
+    "severity": 3.1,
+    "photo_filename": "sample_food_wrappers_culvert.jpg",
+    "detected_classes": [
+      "plastic_bottle",
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-15T17:30:10+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 2 item(s) 20 m from Shivajinagar Culvert Line",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:28:28+00:00"
+  },
+  {
+    "id": "CR-248",
+    "lat": 18.533353,
+    "lon": 73.850196,
+    "plastic_confidence": 0.5,
+    "severity": 5.0,
+    "photo_filename": "sample_plastic_bag_curb.jpg",
+    "detected_classes": [
+      "plastic_bag_wrapper"
+    ],
+    "submitted_at": "2026-10-15T17:30:10+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 3 item(s) 21 m from Shivajinagar Culvert Line",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:29:08+00:00"
+  },
+  {
+    "id": "CR-249",
+    "lat": 18.535116,
+    "lon": 73.849818,
+    "plastic_confidence": 0.67,
+    "severity": 5.0,
+    "photo_filename": "sample_pet_bottle_pile.jpg",
+    "detected_classes": [
+      "plastic_bottle"
+    ],
+    "submitted_at": "2026-10-15T17:30:10+00:00",
+    "source": "PMPML Bus 158 dashcam (replay)",
+    "verification": "pending",
+    "notes": "PMPML Bus 158 dashcam (replay): 3 item(s) 21 m from Shivajinagar Culvert Line",
+    "reporter_id": "RP-0005",
+    "channel": "dashcam",
+    "ward": "Kasba Peth",
+    "status": "ACTIVE",
+    "provenance": "simulated",
+    "vehicle_id": "PMPML-BUS-158",
+    "captured_at": "2026-10-15T17:29:28+00:00"
   }
 ]

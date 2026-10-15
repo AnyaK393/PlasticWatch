@@ -25,6 +25,15 @@ class TestFastAPIEndpoints(unittest.TestCase):
             patcher = mock.patch.object(plasticwatch_pipeline, attr, value)
             patcher.start()
             self.addCleanup(patcher.stop)
+        # ...and the real reward ledger / reporter registry
+        import shutil
+        from backend import incentive_engine
+
+        shutil.copy(incentive_engine.REPORTERS_PATH, _Path(self._ledger_dir.name) / "reporters.json")
+        for attr, name in (("LEDGER_PATH", "reward_ledger.json"), ("REPORTERS_PATH", "reporters.json")):
+            patcher = mock.patch.object(incentive_engine, attr, _Path(self._ledger_dir.name) / name)
+            patcher.start()
+            self.addCleanup(patcher.stop)
         _api.pipeline._reports_cache = None
         self.addCleanup(setattr, _api.pipeline, "_reports_cache", None)
         self.client = TestClient(app)
